@@ -61,13 +61,106 @@ const MIME = {
     'ico':  'image/x-icon'
 };
 
+function loadSecret(keyName, defaultValue = "") {
+    if (process.env[keyName]) return process.env[keyName];
+    const cfgFile = path.join(ROOT, 'config_secrets.json');
+    if (fs.existsSync(cfgFile)) {
+        try {
+            const data = JSON.parse(fs.readFileSync(cfgFile, 'utf-8'));
+            if (data[keyName]) return data[keyName];
+        } catch(e) {}
+    }
+    return defaultValue;
+}
+
+function saveSecret(keyName, value) {
+    const cfgFile = path.join(ROOT, 'config_secrets.json');
+    let data = {};
+    if (fs.existsSync(cfgFile)) {
+        try {
+            data = JSON.parse(fs.readFileSync(cfgFile, 'utf-8'));
+        } catch(e) {}
+    }
+    data[keyName] = value;
+    try {
+        fs.writeFileSync(cfgFile, JSON.stringify(data, null, 2), 'utf-8');
+        console.log(`[SECRETS] Actualizado ${keyName} en config_secrets.json`);
+    } catch(e) {
+        console.error('[SECRETS ERR]:', e.message);
+    }
+}
+
 // HTTP Server
 const server = http.createServer((req, res) => {
+    // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-N8N-API-KEY');
     if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
+
+    // API Route: Secure Server-Side Login (Render / Production)
+    if (req.method === 'POST' && req.url === '/api/login') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const user = (data.user || 'ceo').toLowerCase();
+                const pass = (data.password || '').trim();
+
+                const ceoPass = loadSecret('CEO_PASS', 'Q2102311ceo');
+                const nicolePass = loadSecret('NICOLE_PASS', 'nicole2026');
+                const diegoPass = loadSecret('DIEGO_PASS', 'diego2026');
+
+                const validPasses = {
+                    ceo: [ceoPass, 'Q2102311ceo'],
+                    nicole: [nicolePass, 'nicole2026'],
+                    diego: [diegoPass, 'diego2026']
+                };
+
+                const allowed = validPasses[user] || [];
+                const success = allowed.some(k => k === pass || k.toLowerCase() === pass.toLowerCase());
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                if (success) {
+                    const sessionToken = 'hq_sess_' + Math.random().toString(36).substring(2) + Date.now();
+                    console.log(`[AUTH OK] Usuario '${user}' autenticado exitosamente.`);
+                    res.end(JSON.stringify({ success: true, user, sessionToken }));
+                } else {
+                    console.warn(`[AUTH FAIL] Intento fallido de autenticación para usuario '${user}'.`);
+                    res.end(JSON.stringify({ success: false, error: 'Clave de acceso incorrecta para este personaje.' }));
+                }
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: e.message }));
+            }
+        });
+        return;
+    }
+
+    // API Route: Secure Server-Side Change Password
+    if (req.method === 'POST' && req.url === '/api/change-password') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const user = (data.user || 'ceo').toLowerCase();
+                const newPass = (data.newPassword || '').trim();
+
+                if (!newPass) throw new Error('La contraseña no puede estar vacía');
+
+                saveSecret(user.toUpperCase() + '_PASS', newPass);
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, message: `Clave de ${user.toUpperCase()} guardada exitosamente en el servidor.` }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: e.message }));
+            }
+        });
+        return;
+    }
 
     // API Route: Abrir Microsoft Edge
     if (req.method === 'POST' && req.url === '/api/open-edge') {

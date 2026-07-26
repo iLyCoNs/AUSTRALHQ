@@ -3507,26 +3507,27 @@ window._updateVJoyVisibility = function() {
 window.currentUserRole='guest';
 window.currentUserToken=null;
 
-// Claves únicas de autenticación por Ejecutivo Humano
-const AUTH_KEYS = {
-  ceo:    ['Q2102311ceo'],
-  nicole: ['nicole2026'],
-  diego:  ['diego2026']
-};
-
 window.openChangePasswordModal = function() {
   const newPass = prompt("🔐 INGRESA TU NUEVA CLAVE SEGURA PARA " + (window.currentUserRole === 'ceo' ? 'CEO JAIME' : window.currentUserRole.toUpperCase()) + ":");
   if (!newPass || !newPass.trim()) return;
   
-  let customPasses = {};
-  try {
-    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
-  } catch(e) {}
-  
-  customPasses[window.currentUserRole] = newPass.trim();
-  localStorage.setItem('hq_custom_passwords', JSON.stringify(customPasses));
-  alert("✅ ¡Clave actualizada exitosamente!\n\nTu nueva clave de acceso es: " + newPass.trim());
-  appendLog('s', '🔐 Clave de acceso personalizada guardada para ' + window.currentUserRole);
+  fetch('/api/change-password', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user: window.currentUserRole, newPassword: newPass.trim() })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("✅ ¡Clave actualizada exitosamente en el Servidor Render!\n\nTu nueva clave de acceso está activa.");
+      appendLog('s', '🔐 Clave de acceso guardada en el servidor backend para ' + window.currentUserRole);
+    } else {
+      alert("❌ Error actualizando clave: " + res.error);
+    }
+  })
+  .catch(err => {
+    alert("❌ Error enviando cambio de clave: " + err.message);
+  });
 };
 
 function openLoginModal(){
@@ -3545,62 +3546,56 @@ function submitLogin(){
     return;
   }
 
-  // Cargar claves personalizadas desde localStorage si existen
-  let customPasses = {};
-  try {
-    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
-  } catch(e) {}
-
-  const defaultKeys = AUTH_KEYS[sel] || [];
-  const customKey = customPasses[sel];
-  const allowedKeys = customKey ? [customKey, ...defaultKeys] : defaultKeys;
-
-  const isValid = allowedKeys.some(k => k === token || k.toLowerCase() === token.toLowerCase());
-
-  if(!isValid){
-    err.textContent='❌ Clave incorrecta para este personaje. Acceso denegado.';
-    err.style.display='block';
-    return;
-  }
-  
-  err.style.display='none';
-  
-  // Validar sesión y asignar rol
-  window.currentUserRole=sel;
-  window.currentUserToken=token;
-  localStorage.setItem('hq_user_role', sel);
-  localStorage.setItem('hq_user_token', token);
-  
-  const roleNames={ceo:'CEO JAIME', nicole:'DIR. NICOLE', diego:'SUB. DIEGO'};
-  const roleColors={ceo:'#fbbf24', nicole:'#ec4899', diego:'#3b82f6'};
-  const name=roleNames[sel]||'CEO JAIME';
-  
-  document.getElementById('currentUserTag').textContent=name;
-  document.getElementById('currentUserTag').style.color=roleColors[sel];
-  document.getElementById('chatUserRole').textContent=name;
-  document.getElementById('chatUserRole').style.color=roleColors[sel];
-  
-  document.getElementById('loginModal').style.display='none';
-  appendLog('s','Autenticado exitosamente como '+name+' [AUTH OK]');
-  
-  // Renderizar panel dinámico jerárquico
-  window.renderCommandDeck();
-  
-  // Mostrar joystick en móvil
-  if (window._updateVJoyVisibility) window._updateVJoyVisibility();
-  
-  // En móvil: mostrar tab chat por defecto
-  if (window.innerWidth <= 768) {
-    switchMobTab('chat');
-  }
-  
-  // Mover cámara al personaje elegido
-  if(window.officeScene){
-    const ctrl=window.officeScene.getActiveController();
-    if(ctrl?.sprite){
-      window.officeScene.cameras.main.startFollow(ctrl.sprite, true, 0.08, 0.08);
+  fetch('/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ user: sel, password: token })
+  })
+  .then(r => r.json())
+  .then(res => {
+    if(!res.success){
+      err.textContent = '❌ ' + (res.error || 'Clave incorrecta. Acceso denegado.');
+      err.style.display = 'block';
+      return;
     }
-  }
+    
+    err.style.display = 'none';
+    
+    window.currentUserRole = sel;
+    window.currentUserToken = token;
+    localStorage.setItem('hq_user_role', sel);
+    localStorage.setItem('hq_user_token', token);
+    
+    const roleNames={ceo:'CEO JAIME', nicole:'DIR. NICOLE', diego:'SUB. DIEGO'};
+    const roleColors={ceo:'#fbbf24', nicole:'#ec4899', diego:'#3b82f6'};
+    const name=roleNames[sel]||'CEO JAIME';
+    
+    document.getElementById('currentUserTag').textContent=name;
+    document.getElementById('currentUserTag').style.color=roleColors[sel];
+    document.getElementById('chatUserRole').textContent=name;
+    document.getElementById('chatUserRole').style.color=roleColors[sel];
+    
+    document.getElementById('loginModal').style.display='none';
+    appendLog('s','Autenticado exitosamente en Render Backend como '+name+' [SECURE AUTH OK]');
+    
+    window.renderCommandDeck();
+    if (window._updateVJoyVisibility) window._updateVJoyVisibility();
+    if (window.innerWidth <= 768) {
+      if (window.switchMobTab) window.switchMobTab('chat');
+    }
+    
+    // Mover cámara al personaje elegido
+    if(window.officeScene){
+      const ctrl=window.officeScene.getActiveController();
+      if(ctrl?.sprite){
+        window.officeScene.cameras.main.startFollow(ctrl.sprite, true, 0.08, 0.08);
+      }
+    }
+  })
+  .catch(e => {
+    err.textContent = '⚠️ Error de conexión con el servidor de autenticación.';
+    err.style.display = 'block';
+  });
 }
 
 window.logoutHQ = function() {
