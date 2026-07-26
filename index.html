@@ -2014,6 +2014,9 @@ window.renderProspectsTable = function() {
         <a href="${p.mapsUrl || 'https://www.google.com/maps'}" target="_blank" style="background:#059669; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; text-decoration:none; font-weight:bold;">
           📍 Ver en Maps
         </a>
+        <button onclick="window.abrirEditorCorreo(${p.id})" style="background:#8b5cf6; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer;">
+          ✏️ Editar Correo
+        </button>
         <button onclick="window.eliminarProspecto(${p.id})" style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid #ef4444; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">
           🗑️ Descartar
         </button>
@@ -2072,6 +2075,128 @@ window.agregarProspectoManual = function() {
 
   window.renderProspectsTable();
   alert(`✅ EMPRESA AGREGADA EXITOSAMENTE:\n\n'${nombre.trim()}' (${cleanDomain}) fue agregada al War Room y aprobada [✓] para despacho.`);
+};
+
+window.abrirEditorCorreo = function(id) {
+  const item = window._bananaProspects.find(p => p.id === id);
+  if (!item) return;
+  
+  const currentPromptText = document.getElementById('cbPromptCustom')?.value || '';
+  const personalContent = currentPromptText.replace('[Nombre de la Inmobiliaria / Corredora]', item.empresa);
+
+  let modal = document.getElementById('editorCorreoModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'editorCorreoModal';
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; display:flex; align-items:center; justify-content:center; padding:20px;';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="background:linear-gradient(135deg, #0f172a, #1e1b4b); border:2px solid #a78bfa; border-radius:16px; max-width:720px; width:100%; padding:24px; box-shadow:0 0 40px rgba(167,139,250,0.4); font-family:sans-serif; color:#fff; position:relative;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; border-bottom:1px solid rgba(167,139,250,0.3); padding-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:24px;">✏️</div>
+          <div>
+            <div style="font-size:16px; font-weight:900; color:#a78bfa;">EDITOR DIRECTO DE CORREO B2B</div>
+            <div style="font-size:10px; color:#cbd5e1;">EDITA MANUALMENTE O MEJORA CON IA ANTES DE ENVIAR A <b style="color:#fde047;">${item.empresa}</b></div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('editorCorreoModal').style.display='none';" style="background:none; border:none; color:#ef4444; font-size:20px; font-weight:bold; cursor:pointer;">✕</button>
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-size:10px; color:#a78bfa; font-weight:bold; display:block; margin-bottom:4px;">📩 DESTINATARIO</label>
+        <input id="modalEditEmail" type="text" value="${item.email}" style="width:100%; background:#090d16; border:1px solid #a78bfa; color:#fff; padding:8px; border-radius:6px; font-size:11px;">
+      </div>
+
+      <div style="margin-bottom:12px;">
+        <label style="font-size:10px; color:#a78bfa; font-weight:bold; display:block; margin-bottom:4px;">✉️ ASUNTO DEL CORREO</label>
+        <input id="modalEditSubject" type="text" value="Alianza Estratégica & MasterPlan 360° Económico para sus Parcelaciones | ${item.empresa}" style="width:100%; background:#090d16; border:1px solid #a78bfa; color:#fff; padding:8px; border-radius:6px; font-size:11px; font-weight:bold;">
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+          <label style="font-size:10px; color:#a78bfa; font-weight:bold;">✍️ CUERPO DEL CORREO (EDITABLE EN DIRECTO)</label>
+          <button onclick="window.mejorarTextoConIA('${item.empresa}')" style="background:linear-gradient(135deg, #ec4899, #8b5cf6); color:#fff; border:none; padding:5px 12px; border-radius:4px; font-size:10px; font-weight:bold; cursor:pointer; box-shadow:0 0 10px rgba(236,72,153,0.4);">
+            ✨ Mejorar Redacción con IA (Llama 70B)
+          </button>
+        </div>
+        <textarea id="modalEditText" rows="12" style="width:100%; background:#090d16; border:1px solid #a78bfa; color:#e2e8f0; padding:10px; border-radius:6px; font-size:11px; font-family:'JetBrains Mono', monospace; line-height:1.5;">${personalContent}</textarea>
+      </div>
+
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button onclick="document.getElementById('editorCorreoModal').style.display='none';" style="background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); padding:10px 16px; border-radius:6px; font-size:11px; font-weight:bold; cursor:pointer;">
+          Cancelar
+        </button>
+        <button onclick="window.guardarYEnviarDirecto(${item.id})" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:10px 20px; border-radius:6px; font-size:11px; font-weight:900; cursor:pointer; box-shadow:0 0 15px rgba(16,185,129,0.4);">
+          🚀 GUARDAR Y DISPARAR ESTE CORREO
+        </button>
+      </div>
+    </div>
+  `;
+  modal.style.display = 'flex';
+};
+
+window.mejorarTextoConIA = function(empresa) {
+  const currentText = document.getElementById('modalEditText')?.value || '';
+  const btn = event.target;
+  btn.innerText = "⏳ Puliendo redacción con Llama 3.1 70B...";
+  btn.disabled = true;
+
+  fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      agent: 'cazadorbanana',
+      prompt: `Optimiza y pule la redacción del siguiente correo comercial B2B para la empresa '${empresa}'. Mantén el tono consultivo de alto valor, los detalles del Plan Básico (MasterPlan 360 + Drone 4K) y Plan Premium (con IA 24/7), el +40% de ventas a distancia, y la invitación a 10 min. Devuelve ÚNICAMENTE el texto del correo mejorado:\n\n${currentText}`,
+      sender: 'CEO Jaime'
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    btn.innerText = "✨ Mejorar Redacción con IA (Llama 70B)";
+    btn.disabled = false;
+    if (res.reply) {
+      document.getElementById('modalEditText').value = res.reply.trim();
+      alert("✨ REDACCIÓN MEJORADA EXITOSAMENTE CON LLAMA 3.1 70B.");
+    }
+  })
+  .catch(err => {
+    btn.innerText = "✨ Mejorar Redacción con IA (Llama 70B)";
+    btn.disabled = false;
+  });
+};
+
+window.guardarYEnviarDirecto = function(id) {
+  const item = window._bananaProspects.find(p => p.id === id);
+  if (!item) return;
+
+  const emailTarget = document.getElementById('modalEditEmail')?.value || item.email;
+  const subjectTarget = document.getElementById('modalEditSubject')?.value || 'Alianza Estratégica AustralDrone';
+  const textTarget = document.getElementById('modalEditText')?.value || '';
+
+  item.email = emailTarget;
+
+  appendLog('s', `🚀 [CAZADOR BANANA] Enviando propuesta personalizada a ${item.empresa} (${emailTarget})...`);
+  
+  fetch('/api/run-agent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      agent: 'cazadorbanana',
+      aprobados: [item],
+      customEmailText: textTarget,
+      customSubject: subjectTarget
+    })
+  })
+  .then(r => r.json())
+  .then(res => {
+    item.yaContactado = true;
+    window.renderProspectsTable();
+    document.getElementById('editorCorreoModal').style.display = 'none';
+    alert(`✅ CORREO ENVIADO EXITOSAMENTE A '${item.empresa}' (${emailTarget}).`);
+  });
 };
 
 window.dispararCazadorBanana = function() {
