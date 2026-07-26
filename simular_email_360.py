@@ -3,9 +3,78 @@ import json
 import base64
 import os
 
+import re
+from datetime import datetime
+
 TARGET_EMAIL = "vidalparedes.jaime@gmail.com"
 TELEGRAM_CHAT_ID = "1024898120"
 N8N_WEBHOOK_URL = "https://lycons.app.n8n.cloud/webhook/cazador-b2b-dual"
+MEMORY_FILE = os.path.join(os.path.dirname(__file__), "CAZADOR_BANANA_MEMORY.json")
+
+def cargar_memoria_banana():
+    if os.path.exists(MEMORY_FILE):
+        try:
+            with open(MEMORY_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"enviados": [], "emails": [], "dominios": [], "empresas": []}
+
+def guardar_memoria_banana(memoria):
+    try:
+        with open(MEMORY_FILE, "w", encoding="utf-8") as f:
+            json.dump(memoria, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error guardando memoria Cazador Banana: {e}")
+
+def ya_fue_contactado(email, empresa="", website=""):
+    memoria = cargar_memoria_banana()
+    
+    # 1. Chequeo por email (excepto test mail personal)
+    if email and email.lower().strip() != "vidalparedes.jaime@gmail.com":
+        if email.lower().strip() in [e.lower() for e in memoria.get("emails", [])]:
+            return True, f"Correo '{email}' ya fue contactado previamente."
+        
+    # 2. Chequeo por nombre de empresa
+    if empresa:
+        emp_norm = re.sub(r'[^a-zA-Z0-9]', '', empresa).lower()
+        for emp_exist in memoria.get("empresas", []):
+            if re.sub(r'[^a-zA-Z0-9]', '', emp_exist).lower() == emp_norm:
+                return True, f"Empresa '{empresa}' ya recibió propuesta anteriormente."
+                
+    # 3. Chequeo por dominio web
+    if website:
+        dom = website.lower().replace('https://', '').replace('http://', '').replace('www.', '').split('/')[0]
+        if dom and dom in [d.lower() for d in memoria.get("dominios", [])]:
+            return True, f"Dominio '{dom}' ya fue auditado y contactado."
+            
+    return False, "Nuevo prospecto no contactado."
+
+def registrar_envio_exitoso(email, empresa="", website="", asunto="", oferta="MASTERPLAN_360"):
+    memoria = cargar_memoria_banana()
+    now_iso = datetime.now().isoformat()
+    
+    entry = {
+        "email": email,
+        "empresa": empresa,
+        "website": website,
+        "asunto": asunto,
+        "oferta": oferta,
+        "fecha_envio": now_iso
+    }
+    
+    memoria["enviados"].append(entry)
+    if email and email not in memoria["emails"]:
+        memoria["emails"].append(email)
+    if empresa and empresa not in memoria["empresas"]:
+        memoria["empresas"].append(empresa)
+    if website:
+        dom = website.lower().replace('https://', '').replace('http://', '').replace('www.', '').split('/')[0]
+        if dom and dom not in memoria["dominios"]:
+            memoria["dominios"].append(dom)
+            
+    guardar_memoria_banana(memoria)
+    print(f"[MEMORIA CAZADOR BANANA] Guardado en registro permanente: {email} | {empresa}")
 
 def load_secret(key_name, default=""):
     val = os.environ.get(key_name)
@@ -111,6 +180,14 @@ def ejecutar_simulacion():
     print(f" Destinatario: {TARGET_EMAIL}")
     print("=======================================================\n")
 
+    # 0. Chequeo de Memoria Persistente
+    ya_enviado, motivo_dup = ya_fue_contactado(TARGET_EMAIL, empresa="Country Puerto Varas", website="countrypuertovaras.cl")
+    if ya_enviado:
+        print("\n[MEMORIA CAZADOR BANANA] OMITIDO DE ENVIO:")
+        print(f"   - {motivo_dup}")
+        print("   - La memoria impidio reenviar el correo a una empresa ya contactada.\n")
+        return
+
     print("[IA LLAMA 3.1 70B] Generando propuesta B2B hiper-personalizada...")
     propuesta = generar_propuesta_360()
 
@@ -162,6 +239,7 @@ def ejecutar_simulacion():
     exito_email = enviar_correo_real_gmail(TARGET_EMAIL, asunto, cuerpo_html, cuerpo_texto)
     if exito_email:
         print(f"  [SUCCESS] CORREO FISICO REAL ENTREGADO CON EXITO EN LA BANDEJA DE {TARGET_EMAIL}!")
+        registrar_envio_exitoso(TARGET_EMAIL, empresa="Country Puerto Varas", website="countrypuertovaras.cl", asunto=asunto)
 
     # 2. Despachar a Webhook de n8n Cloud
     print(f"[N8N CLOUD] Despachando evento a {N8N_WEBHOOK_URL}...")
