@@ -162,6 +162,35 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API Route: Live Prospect Scanner (Real Chilean Companies & HTTP Verification)
+    if (req.method === 'POST' && req.url === '/api/scan-banana') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const zona = data.zona || 'Puerto Varas / Llanquihue';
+
+                const pyProc = spawn('py', ['-3', path.join(ROOT, 'scan_real_prospects.py'), zona]);
+                let out = '';
+                pyProc.stdout.on('data', d => out += d.toString());
+                pyProc.on('close', code => {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    try {
+                        const prospects = JSON.parse(out || '[]');
+                        res.end(JSON.stringify({ success: true, count: prospects.length, prospects }));
+                    } catch(e) {
+                        res.end(JSON.stringify({ success: false, error: 'Error parseando escáner en tiempo real' }));
+                    }
+                });
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: false, error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: Abrir Microsoft Edge
     if (req.method === 'POST' && req.url === '/api/open-edge') {
         openInEdge(`http://localhost:${PORT}/PHASER_OFFICE.html`);
