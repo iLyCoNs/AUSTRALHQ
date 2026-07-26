@@ -347,11 +347,10 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
     </div>
     <div class="login-field">
       <label>2. Clave / Token Personal de Acceso:</label>
-      <input type="password" id="ghToken" placeholder="Ingresa tu clave de acceso..." value="Q2102311ceo" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
+      <input type="password" id="ghToken" placeholder="Ingresa tu clave de acceso..." value="" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
     </div>
     <div id="loginErr" class="login-err">Clave incorrecta. Acceso restringido al personal autorizado.</div>
-    <button class="login-btn" onclick="submitLogin()" style="margin-bottom:8px;">AUTENTICAR Y ENTRAR AL HQ</button>
-    <button class="login-btn" onclick="window.quickLoginCEO()" style="background:linear-gradient(135deg, #fbbf24, #d97706); color:#000; font-weight:900;">🚀 ENTRAR COMO CEO JAIME (1-CLICK)</button>
+    <button class="login-btn" onclick="submitLogin()">AUTENTICAR Y ENTRAR AL HQ</button>
   </div>
 </div>
 
@@ -3508,26 +3507,11 @@ window._updateVJoyVisibility = function() {
 window.currentUserRole='guest';
 window.currentUserToken=null;
 
-// Claves únicas de autenticación por Ejecutivo Humano (Clave Principal CEO: Q2102311ceo)
+// Claves únicas de autenticación por Ejecutivo Humano
 const AUTH_KEYS = {
-  ceo:    ['Q2102311ceo', 'jaime2026', 'ceo_jaime_hq', 'ghp_austral_drone_2026', 'jaime', 'ceo', 'admin', '1234', 'austral', 'god', 'godmode'],
-  nicole: ['nicole2026', 'dir_nicole_hq', 'nicole'],
-  diego:  ['diego2026', 'sub_diego_hq', 'diego']
-};
-
-window.quickLoginCEO = function() {
-  const selEl = document.getElementById('userSelect');
-  if (selEl) selEl.value = 'ceo';
-  const tokEl = document.getElementById('ghToken');
-  
-  let customPasses = {};
-  try {
-    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
-  } catch(e) {}
-  
-  const currentPass = customPasses['ceo'] || 'Q2102311ceo';
-  if (tokEl) tokEl.value = currentPass;
-  submitLogin();
+  ceo:    ['Q2102311ceo'],
+  nicole: ['nicole2026'],
+  diego:  ['diego2026']
 };
 
 window.openChangePasswordModal = function() {
