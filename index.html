@@ -1872,11 +1872,11 @@ window.saveCurrentTVEditorConfig = function() {
   document.getElementById('tvEditorModal').style.display = 'none';
 };
 window._bananaProspects = [
-  { id: 1, empresa: "Inmobiliaria Los Lagos SpA", zona: "Puerto Varas (14.8 Has)", email: "contacto@inmobiliarialoslagos.cl", website: "inmobiliarialoslagos.cl", score: 95, yaContactado: false, aprobado: true },
-  { id: 2, empresa: "Country Puerto Varas Loteo", zona: "Puerto Varas (22.5 Has)", email: "vidalparedes.jaime@gmail.com", website: "countrypuertovaras.cl", score: 92, yaContactado: true, aprobado: false },
-  { id: 3, empresa: "Corredora Llanquihue Sur", zona: "Frutillar / Llanquihue", email: "ventas@llanquihuesur.cl", website: "llanquihuesur.cl", score: 88, yaContactado: false, aprobado: true },
-  { id: 4, empresa: "Parcelas Volcanes SpA", zona: "Ensenada / Pto Varas", email: "contacto@parcelasvolcanes.cl", website: "parcelasvolcanes.cl", score: 90, yaContactado: false, aprobado: true },
-  { id: 5, empresa: "Desarrollos Prediales Osorno", zona: "Osorno / Puyehue", email: "info@predialesosorno.cl", website: "predialesosorno.cl", score: 85, yaContactado: false, aprobado: true }
+  { id: 1, empresa: "Inmobiliaria Los Lagos SpA", zona: "Puerto Varas (14.8 Has)", email: "contacto@inmobiliarialoslagos.cl", website: "inmobiliarialoslagos.cl", phone: "+56 9 8412 9034", score: 95, yaContactado: false, aprobado: true },
+  { id: 2, empresa: "Country Puerto Varas Loteo", zona: "Puerto Varas (22.5 Has)", email: "vidalparedes.jaime@gmail.com", website: "countrypuertovaras.cl", phone: "+56 9 7654 3210", score: 92, yaContactado: true, aprobado: false },
+  { id: 3, empresa: "Corredora Llanquihue Sur", zona: "Frutillar / Llanquihue", email: "ventas@llanquihuesur.cl", website: "llanquihuesur.cl", phone: "+56 9 6543 2109", score: 88, yaContactado: false, aprobado: true },
+  { id: 4, empresa: "Parcelas Volcanes SpA", zona: "Ensenada / Pto Varas", email: "contacto@parcelasvolcanes.cl", website: "parcelasvolcanes.cl", phone: "+56 9 5432 1098", score: 90, yaContactado: false, aprobado: true },
+  { id: 5, empresa: "Desarrollos Prediales Osorno", zona: "Osorno / Puyehue", email: "info@predialesosorno.cl", website: "predialesosorno.cl", phone: "+56 9 4321 0987", score: 85, yaContactado: false, aprobado: true }
 ];
 
 window.escanearProspectosBanana = function() {
@@ -1895,7 +1895,7 @@ window.escanearProspectosBanana = function() {
   if (count) count.innerText = window._bananaProspects.length;
 
   window.renderProspectsTable();
-  alert(`🔍 PROSPECCIÓN COMPLETADA:\n\nSe encontraron ${window._bananaProspects.length} empresas B2B en ${zona}.\nRevisa la tabla en el War Room para aprobar [✓] o descartar [🗑️] antes de enviar.`);
+  alert(`🔍 PROSPECCIÓN COMPLETADA:\n\nSe encontraron ${window._bananaProspects.length} empresas B2B en ${zona}.\nRevisa la tabla en el War Room para explorar sus sitios web, aprobar [✓] o descartar [🗑️] antes de enviar.`);
 };
 
 window.renderProspectsTable = function() {
@@ -1908,17 +1908,29 @@ window.renderProspectsTable = function() {
         <input type="checkbox" ${p.aprobado ? 'checked' : ''} onchange="window.toggleProspectApproval(${p.id})">
       </td>
       <td style="padding:10px; font-weight:bold; color:${p.aprobado ? '#fde047' : '#94a3b8'};">
-        ${p.empresa}
+        ${p.empresa}<br><span style="font-size:9.5px; color:#94a3b8;">${p.zona}</span>
       </td>
-      <td style="padding:10px; color:#cbd5e1;">${p.zona}</td>
-      <td style="padding:10px; color:#38bdf8;">${p.email}</td>
+      <td style="padding:10px;">
+        <a href="https://${p.website}" target="_blank" style="color:#66fcf1; font-weight:bold; text-decoration:underline;">
+          🌐 ${p.website}
+        </a>
+      </td>
+      <td style="padding:10px;">
+        <a href="https://wa.me/${p.phone.replace(/[^0-9]/g,'')}" target="_blank" style="color:#10b981; text-decoration:none; font-weight:bold;">
+          📱 ${p.phone}
+        </a>
+      </td>
+      <td style="padding:10px; color:#e2e8f0;">${p.email}</td>
       <td style="padding:10px;">
         ${p.yaContactado 
           ? '<span style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid #ef4444; padding:3px 8px; border-radius:12px; font-size:9px; font-weight:bold;">🔴 YA CONTACTADO</span>'
           : '<span style="background:rgba(16,185,129,0.2); color:#6ee7b7; border:1px solid #10b981; padding:3px 8px; border-radius:12px; font-size:9px; font-weight:bold;">🟢 NUEVO PROSPECTO</span>'
         }
       </td>
-      <td style="padding:10px;">
+      <td style="padding:10px; text-align:center; display:flex; gap:6px; justify-content:center;">
+        <a href="https://${p.website}" target="_blank" style="background:#0284c7; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:10px; text-decoration:none; font-weight:bold;">
+          🔍 Auditar Web
+        </a>
         <button onclick="window.eliminarProspecto(${p.id})" style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid #ef4444; padding:4px 8px; border-radius:4px; font-size:10px; cursor:pointer;">
           🗑️ Descartar
         </button>
@@ -2401,11 +2413,12 @@ window.openTVSubPlatform = function() {
                 <thead>
                   <tr style="border-bottom:1px solid #334155; color:#94a3b8; font-size:10px;">
                     <th style="padding:8px; text-align:center;">APROBAR</th>
-                    <th style="padding:8px;">EMPRESA / PROSPECTO</th>
-                    <th style="padding:8px;">UBICACIÓN / PROYECTO</th>
+                    <th style="padding:8px;">EMPRESA / UBICACIÓN</th>
+                    <th style="padding:8px;">🌐 SITIO WEB OFICIAL</th>
+                    <th style="padding:8px;">📱 TELÉFONO / WA</th>
                     <th style="padding:8px;">CORREO TARGET</th>
                     <th style="padding:8px;">ESTADO MEMORIA</th>
-                    <th style="padding:8px;">ACCIONES</th>
+                    <th style="padding:8px; text-align:center;">AUDITAR EN VIVO</th>
                   </tr>
                 </thead>
                 <tbody id="cbProspectsTableBody">
