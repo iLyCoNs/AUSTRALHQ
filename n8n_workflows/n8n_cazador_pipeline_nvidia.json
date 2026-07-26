@@ -1,0 +1,180 @@
+{
+  "name": "AustralDrone — Pipeline Completo B2B v2 (NVIDIA Llama 3.1 70B)",
+  "nodes": [
+    {
+      "id": "node-webhook-entrada",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cazador-leads",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "name": "📥 Webhook — Filtro Analista → n8n",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "id": "node-split",
+      "parameters": {
+        "fieldToSplitOut": "body.top_leads",
+        "options": {}
+      },
+      "name": "🔀 Split Top Leads",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [320, 300]
+    },
+    {
+      "id": "node-nvidia-llm",
+      "parameters": {
+        "url": "https://integrate.api.nvidia.com/v1/chat/completions",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{ $env.NVIDIA_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"model\": \"meta/llama-3.1-70b-instruct\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"Eres el Analista B2B Senior de AustralDrone.CL, empresa de fotografía aérea drone 4K y MasterPlanes 360° para terrenos en el sur de Chile. Respondes ÚNICAMENTE en JSON válido, sin markdown, sin texto extra.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Analiza este prospecto B2B:\\n\\nNombre: {{ $json.nombre }}\\nTeléfono: {{ $json.telefono }}\\nUbicación: {{ $json.ubicacion }}\\nSuperficie: {{ $json.superficie }}\\nPrecio: {{ $json.precio }}\\nEstado MasterPlan: {{ $json.estado_masterplan }}\\nScore Previo: {{ $json.score }}/100\\nLink: {{ $json.link_perfil }}\\n\\nNuestro servicio: Video drone 4K + MasterPlan 360° para venta de terrenos >5 has en sur de Chile.\\nCliente ideal: Dueño directo SIN video drone, zona sur (Osorno, Pto Montt, Chiloé, Llanquihue).\\nDeal size: Básico $800K-2M CLP | Premium $2M-5M CLP | Loteo $5M-15M CLP\\n\\nResponde en este JSON exacto:\\n{\\\"es_prospecto_real\\\": true, \\\"score_final\\\": 85, \\\"nivel_interes_b2b\\\": \\\"CALIENTE\\\", \\\"zona_prioritaria\\\": true, \\\"deal_size_estimado\\\": \\\"Medio $1-5M\\\", \\\"urgencia_deteccion\\\": \\\"ALTA\\\", \\\"diagnostico_corto\\\": \\\"razón en 2 oraciones\\\", \\\"accion_recomendada\\\": \\\"qué hacer ahora\\\", \\\"script_apertura_wsp\\\": \\\"mensaje WhatsApp consultivo\\\", \\\"red_flag\\\": \\\"\\\"}\"\n    }\n  ],\n  \"max_tokens\": 400,\n  \"temperature\": 0.3\n}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "name": "🤖 NVIDIA Llama 3.1 70B — Análisis B2B",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [540, 300],
+      "notes": "NVIDIA API — OpenAI compatible. Requiere variable de entorno NVIDIA_API_KEY en n8n."
+    },
+    {
+      "id": "node-parse",
+      "parameters": {
+        "jsCode": "// Parsear respuesta de NVIDIA Llama 3.1\nconst nvidiaResponse = $input.item.json;\nlet content = '';\ntry {\n  content = nvidiaResponse.choices[0].message.content || '';\n} catch(e) {\n  content = JSON.stringify(nvidiaResponse);\n}\n\nlet analysis = {};\ntry {\n  // Limpiar markdown si viene envuelto\n  const cleaned = content\n    .replace(/```json/gi, '')\n    .replace(/```/g, '')\n    .trim();\n  analysis = JSON.parse(cleaned);\n} catch(e) {\n  analysis = {\n    es_prospecto_real: true,\n    score_final: $input.item.json.score || 50,\n    nivel_interes_b2b: 'TIBIO',\n    zona_prioritaria: false,\n    deal_size_estimado: 'Desconocido',\n    urgencia_deteccion: 'MEDIA',\n    diagnostico_corto: 'Análisis no disponible: ' + content.substring(0, 100),\n    accion_recomendada: 'Revisar manualmente el prospecto.',\n    script_apertura_wsp: '',\n    red_flag: 'Error parsing: ' + e.message\n  };\n}\n\n// Obtener datos originales del lead (vienen del Split node)\nconst originalJson = $input.item.json;\n\nreturn {\n  json: {\n    // Datos originales del lead\n    nombre: originalJson.nombre || '—',\n    telefono: originalJson.telefono || 'Ver perfil',\n    ubicacion: originalJson.ubicacion || '—',\n    superficie: originalJson.superficie || '—',\n    precio: originalJson.precio || 'No especificado',\n    estado_masterplan: originalJson.estado_masterplan || '—',\n    link_perfil: originalJson.link_perfil || '',\n    link_post: originalJson.link_post || '',\n    fuente: originalJson.fuente || 'Facebook',\n    score_original: originalJson.score || 0,\n    rank: originalJson.rank || 0,\n    // Análisis de Llama\n    ...analysis,\n    score_final: analysis.score_final || originalJson.score || 0\n  }\n};"
+      },
+      "name": "⚙️ Parse Llama Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [760, 300]
+    },
+    {
+      "id": "node-filter",
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.es_prospecto_real }}",
+              "value2": true
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.score_final }}",
+              "operation": "largerEqual",
+              "value2": 60
+            }
+          ]
+        },
+        "combineOperation": "all"
+      },
+      "name": "🔍 Filtro: Score ≥ 60 + Real?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [980, 300]
+    },
+    {
+      "id": "node-telegram",
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🚨 *PROSPECTO CALIFICADO — AustralDrone.CL*\n\n👤 *{{ $json.nombre }}*\n📞 `{{ $json.telefono }}`\n📍 {{ $json.ubicacion }}\n🌾 {{ $json.superficie }}\n💰 {{ $json.precio }}\n\n🎯 *Score Llama 70B: {{ $json.score_final }}/100*\n🔥 Interés: `{{ $json.nivel_interes_b2b }}`\n💼 Deal: {{ $json.deal_size_estimado }}\n⏰ Urgencia: {{ $json.urgencia_deteccion }}\n\n🧠 *Diagnóstico:*\n{{ $json.diagnostico_corto }}\n\n💬 *Script WhatsApp:*\n_{{ $json.script_apertura_wsp }}_\n\n✅ {{ $json.accion_recomendada }}\n\n🔗 [Perfil]({{ $json.link_perfil }}) | [Post]({{ $json.link_post }})\n\n⚠️ _Ley 19.496 — contacto consultivo manual_",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_web_page_preview": true
+        }
+      },
+      "name": "📱 Telegram CEO — Alerta Lead",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1200, 180]
+    },
+    {
+      "id": "node-callback-render",
+      "parameters": {
+        "url": "https://australhq.onrender.com/api/lead-result",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-api-key",
+              "value": "={{ $env.HQ_API_SECRET }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"agente\": \"FILTRO_ANALISTA_N8N\",\n  \"source\": \"n8n_pipeline\",\n  \"prospecto\": {{ JSON.stringify($json) }},\n  \"nombre\": \"{{ $json.nombre }}\",\n  \"telefono\": \"{{ $json.telefono }}\",\n  \"ubicacion\": \"{{ $json.ubicacion }}\",\n  \"score_final\": {{ $json.score_final }},\n  \"nivel_interes\": \"{{ $json.nivel_interes_b2b }}\",\n  \"diagnostico\": \"{{ $json.diagnostico_corto }}\",\n  \"accion\": \"{{ $json.accion_recomendada }}\",\n  \"script_wsp\": \"{{ $json.script_apertura_wsp }}\",\n  \"link_perfil\": \"{{ $json.link_perfil }}\",\n  \"link_post\": \"{{ $json.link_post }}\"\n}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "name": "🔁 Callback → australhq.onrender.com",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1200, 340]
+    },
+    {
+      "id": "node-descarte",
+      "parameters": {},
+      "name": "🗑️ Descarte Ley 19.628",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1200, 500]
+    }
+  ],
+  "connections": {
+    "📥 Webhook — Filtro Analista → n8n": {
+      "main": [[{"node": "🔀 Split Top Leads", "type": "main", "index": 0}]]
+    },
+    "🔀 Split Top Leads": {
+      "main": [[{"node": "🤖 NVIDIA Llama 3.1 70B — Análisis B2B", "type": "main", "index": 0}]]
+    },
+    "🤖 NVIDIA Llama 3.1 70B — Análisis B2B": {
+      "main": [[{"node": "⚙️ Parse Llama Response", "type": "main", "index": 0}]]
+    },
+    "⚙️ Parse Llama Response": {
+      "main": [[{"node": "🔍 Filtro: Score ≥ 60 + Real?", "type": "main", "index": 0}]]
+    },
+    "🔍 Filtro: Score ≥ 60 + Real?": {
+      "main": [
+        [
+          {"node": "📱 Telegram CEO — Alerta Lead", "type": "main", "index": 0},
+          {"node": "🔁 Callback → australhq.onrender.com", "type": "main", "index": 0}
+        ],
+        [
+          {"node": "🗑️ Descarte Ley 19.628", "type": "main", "index": 0}
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  }
+}

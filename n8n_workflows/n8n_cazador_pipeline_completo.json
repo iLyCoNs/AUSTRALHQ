@@ -1,0 +1,270 @@
+{
+  "name": "AustralDrone — Pipeline Completo B2B (Cazador → Filtro → CEO)",
+  "nodes": [
+    {
+      "id": "node-webhook-entrada",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cazador-leads",
+        "options": {}
+      },
+      "name": "📥 Webhook Entrada (Filtro Analista → n8n)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [120, 300],
+      "webhookId": "cazador-leads-pipeline",
+      "notes": "Recibe POST desde agente_filtro_leads.py con los top_leads calificados"
+    },
+    {
+      "id": "node-set-context",
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "fecha_proceso",
+              "value": "={{ $now.toISO() }}"
+            },
+            {
+              "name": "total_analizados",
+              "value": "={{ $json.body.total_analizados || 0 }}"
+            },
+            {
+              "name": "total_calificados",
+              "value": "={{ $json.body.total_calificados || 0 }}"
+            }
+          ]
+        }
+      },
+      "name": "📊 Set Context Variables",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [340, 300]
+    },
+    {
+      "id": "node-split-leads",
+      "parameters": {
+        "fieldToSplitOut": "body.top_leads",
+        "options": {}
+      },
+      "name": "🔀 Split Top Leads (uno por uno)",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [560, 300],
+      "notes": "Divide el array top_leads para procesar cada prospecto individualmente con Gemini"
+    },
+    {
+      "id": "node-gemini-analisis",
+      "parameters": {
+        "modelName": "models/gemini-1.5-pro",
+        "prompt": "=Eres el Analista B2B Senior de AustralDrone.CL, empresa de fotografía aérea drone 4K y MasterPlanes 360° para terrenos en el sur de Chile.\n\nAnaliza este prospecto B2B capturado por nuestro agente Cazador 360:\n\n📋 DATOS DEL PROSPECTO:\n- Nombre: {{ $json.nombre }}\n- Teléfono: {{ $json.telefono }}\n- Ubicación: {{ $json.ubicacion }}\n- Superficie: {{ $json.superficie }}\n- Precio: {{ $json.precio || 'No especificado' }}\n- Estado MasterPlan: {{ $json.estado_masterplan }}\n- Fuente: {{ $json.fuente || 'Facebook' }}\n- Score Preliminar: {{ $json.score }}/100\n- Link Perfil: {{ $json.link_perfil }}\n- Link Post: {{ $json.link_post }}\n\nCRITERIOS DE ANÁLISIS PARA AUSTRALDRONE.CL:\n1. Nuestro servicio: Video drone 4K + fotografía aérea + MasterPlan 360° para venta/arriendo de terrenos y parcelas\n2. Cliente ideal: Dueño directo de terreno SIN video drone ni MasterPlan, >5 hectáreas, zona sur de Chile\n3. Urgencia: ¿Hay señales de querer vender pronto? (precio rebajado, publicación reciente, descripción urgente)\n4. Deal size: MasterPlan básico ~$800K-2M CLP | Premium 4K ~$2M-5M CLP | Loteo completo ~$5M-15M CLP\n5. Zona objetivo PRIORITARIA: Osorno, Puerto Montt, Puerto Varas, Llanquihue, Chiloé, Calbuco, Frutillar\n\nResponde ÚNICAMENTE en este JSON (sin markdown, sin texto extra):\n{\n  \"es_prospecto_real\": true/false,\n  \"score_final\": número 0-100,\n  \"nivel_interes_b2b\": \"CALIENTE|TIBIO|FRÍO\",\n  \"zona_prioritaria\": true/false,\n  \"tiene_masterplan\": false,\n  \"deal_size_estimado\": \"Alto >$5M|Medio $1-5M|Bajo <$1M\",\n  \"urgencia_deteccion\": \"ALTA|MEDIA|BAJA\",\n  \"diagnostico_corto\": \"2-3 oraciones explicando por qué es un buen prospecto B2B para AustralDrone\",\n  \"accion_recomendada\": \"Texto de 1 oración: qué debe hacer el ejecutivo ahora\",\n  \"script_apertura_wsp\": \"Mensaje inicial de WhatsApp de máx 2 líneas para contactar este prospecto de forma consultiva y no spammer. Ley 19.496 compliant.\",\n  \"red_flag\": \"string vacío si no hay nada sospechoso, o descripción del problema si lo hay\"\n}"
+      },
+      "name": "🤖 Gemini 1.5 Pro — Análisis Profundo B2B",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [780, 300],
+      "notes": "Gemini analiza profundamente cada prospecto con criterios B2B de AustralDrone"
+    },
+    {
+      "id": "node-parse-gemini",
+      "parameters": {
+        "jsCode": "// Parsear respuesta JSON de Gemini\nconst rawResponse = $input.item.json.response || $input.item.json.text || '';\nlet analysis = {};\ntry {\n  // Limpiar markdown si existe\n  const cleaned = rawResponse\n    .replace(/```json/gi, '')\n    .replace(/```/g, '')\n    .trim();\n  analysis = JSON.parse(cleaned);\n} catch(e) {\n  // Si falla el parse, usar fallback\n  analysis = {\n    es_prospecto_real: false,\n    score_final: 30,\n    nivel_interes_b2b: 'FRÍO',\n    diagnostico_corto: 'No se pudo analizar correctamente.',\n    accion_recomendada: 'Revisar manualmente.',\n    script_apertura_wsp: '',\n    red_flag: 'Error de parsing: ' + rawResponse.substring(0, 100)\n  };\n}\n\n// Combinar datos originales del prospecto con análisis de Gemini\nconst originalData = $input.item.json;\nreturn {\n  json: {\n    ...originalData,\n    gemini_analysis: analysis,\n    score_final: analysis.score_final || originalData.score || 0,\n    es_prospecto_real: analysis.es_prospecto_real !== false,\n    nivel_interes_b2b: analysis.nivel_interes_b2b || 'FRÍO',\n    deal_size: analysis.deal_size_estimado || 'Desconocido',\n    urgencia: analysis.urgencia_deteccion || 'BAJA',\n    diagnostico: analysis.diagnostico_corto || '',\n    accion: analysis.accion_recomendada || '',\n    script_wsp: analysis.script_apertura_wsp || '',\n    zona_prioritaria: analysis.zona_prioritaria || false,\n    red_flag: analysis.red_flag || ''\n  }\n};"
+      },
+      "name": "⚙️ Parse + Merge Gemini Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1000, 300]
+    },
+    {
+      "id": "node-filtro-score",
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.es_prospecto_real }}",
+              "value2": true
+            }
+          ],
+          "number": [
+            {
+              "value1": "={{ $json.score_final }}",
+              "operation": "largerEqual",
+              "value2": 60
+            }
+          ]
+        },
+        "combineOperation": "all"
+      },
+      "name": "🔍 Filtro: Score ≥ 60 Y Prospecto Real?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1220, 300],
+      "notes": "Solo pasan los prospectos reales con score >= 60"
+    },
+    {
+      "id": "node-telegram-alerta",
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID || 'TU_CHAT_ID_AQUI' }}",
+        "text": "=🚨 *PROSPECTO CALIFICADO — AustralDrone.CL B2B*\n\n👤 *{{ $json.nombre }}*\n📞 Tel: `{{ $json.telefono }}`\n📍 Zona: {{ $json.ubicacion }}\n🌾 Superficie: {{ $json.superficie }}\n💰 Precio: {{ $json.precio || 'No especificado' }}\n\n📊 *Score Gemini: {{ $json.score_final }}/100*\n🔥 Interés: {{ $json.nivel_interes_b2b }}\n💼 Deal Size: {{ $json.deal_size }}\n⏰ Urgencia: {{ $json.urgencia }}\n\n🧠 *Diagnóstico IA:*\n{{ $json.diagnostico }}\n\n💬 *Script WhatsApp sugerido:*\n_{{ $json.script_wsp }}_\n\n✅ *Acción:* {{ $json.accion }}\n\n🔗 [Ver Perfil]({{ $json.link_perfil }}) | [Ver Post]({{ $json.link_post }})\n\n⚠️ _Contacto consultivo manual. Ley 19.496 compliant._",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "disable_web_page_preview": true
+        }
+      },
+      "name": "📱 Telegram — Alerta CEO",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1440, 200],
+      "notes": "Configura TELEGRAM_BOT_TOKEN y TELEGRAM_CHAT_ID en variables de entorno de n8n"
+    },
+    {
+      "id": "node-callback-render",
+      "parameters": {
+        "url": "https://australhq.onrender.com/api/lead-result",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "agente",
+              "value": "FILTRO_ANALISTA_N8N"
+            },
+            {
+              "name": "prospecto",
+              "value": "={{ JSON.stringify($json) }}"
+            },
+            {
+              "name": "score_final",
+              "value": "={{ $json.score_final }}"
+            },
+            {
+              "name": "nivel_interes",
+              "value": "={{ $json.nivel_interes_b2b }}"
+            },
+            {
+              "name": "nombre",
+              "value": "={{ $json.nombre }}"
+            },
+            {
+              "name": "telefono",
+              "value": "={{ $json.telefono }}"
+            },
+            {
+              "name": "ubicacion",
+              "value": "={{ $json.ubicacion }}"
+            },
+            {
+              "name": "diagnostico",
+              "value": "={{ $json.diagnostico }}"
+            },
+            {
+              "name": "accion",
+              "value": "={{ $json.accion }}"
+            },
+            {
+              "name": "script_wsp",
+              "value": "={{ $json.script_wsp }}"
+            },
+            {
+              "name": "link_perfil",
+              "value": "={{ $json.link_perfil }}"
+            },
+            {
+              "name": "link_post",
+              "value": "={{ $json.link_post }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "🔁 Callback → australhq.onrender.com/api/lead-result",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1440, 340],
+      "notes": "Notifica al servidor Render para que haga broadcast por WebSocket a la Oficina Virtual"
+    },
+    {
+      "id": "node-descarte",
+      "parameters": {},
+      "name": "🗑️ Descarte (Score < 60 / No Prospecto Real)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1440, 480],
+      "notes": "Ley 19.628: supresión automática de datos no calificados"
+    },
+    {
+      "id": "node-resumen-final",
+      "parameters": {
+        "jsCode": "// Este nodo se ejecuta cuando llegan TODOS los items del loop\n// Genera un resumen del batch procesado\nconst items = $input.all();\nconst calificados = items.filter(i => i.json.es_prospecto_real && i.json.score_final >= 60);\nconst top3 = calificados\n  .sort((a, b) => (b.json.score_final || 0) - (a.json.score_final || 0))\n  .slice(0, 3);\n\nreturn [{\n  json: {\n    resumen: {\n      total_procesados: items.length,\n      total_calificados: calificados.length,\n      tasa_calificacion: `${Math.round(calificados.length / items.length * 100)}%`,\n      top_3_prospectos: top3.map(i => ({\n        nombre: i.json.nombre,\n        score: i.json.score_final,\n        ubicacion: i.json.ubicacion,\n        nivel: i.json.nivel_interes_b2b,\n        accion: i.json.accion\n      }))\n    }\n  }\n}];"
+      },
+      "name": "📈 Resumen Final del Batch",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1660, 300]
+    }
+  ],
+  "connections": {
+    "📥 Webhook Entrada (Filtro Analista → n8n)": {
+      "main": [[{"node": "📊 Set Context Variables", "type": "main", "index": 0}]]
+    },
+    "📊 Set Context Variables": {
+      "main": [[{"node": "🔀 Split Top Leads (uno por uno)", "type": "main", "index": 0}]]
+    },
+    "🔀 Split Top Leads (uno por uno)": {
+      "main": [[{"node": "🤖 Gemini 1.5 Pro — Análisis Profundo B2B", "type": "main", "index": 0}]]
+    },
+    "🤖 Gemini 1.5 Pro — Análisis Profundo B2B": {
+      "main": [[{"node": "⚙️ Parse + Merge Gemini Analysis", "type": "main", "index": 0}]]
+    },
+    "⚙️ Parse + Merge Gemini Analysis": {
+      "main": [[{"node": "🔍 Filtro: Score ≥ 60 Y Prospecto Real?", "type": "main", "index": 0}]]
+    },
+    "🔍 Filtro: Score ≥ 60 Y Prospecto Real?": {
+      "main": [
+        [
+          {"node": "📱 Telegram — Alerta CEO", "type": "main", "index": 0},
+          {"node": "🔁 Callback → australhq.onrender.com/api/lead-result", "type": "main", "index": 0}
+        ],
+        [
+          {"node": "🗑️ Descarte (Score < 60 / No Prospecto Real)", "type": "main", "index": 0}
+        ]
+      ]
+    },
+    "📱 Telegram — Alerta CEO": {
+      "main": [[{"node": "📈 Resumen Final del Batch", "type": "main", "index": 0}]]
+    },
+    "🔁 Callback → australhq.onrender.com/api/lead-result": {
+      "main": [[{"node": "📈 Resumen Final del Batch", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "instanceId": "australdrone-n8n-pipeline-v2"
+  },
+  "_australdrone_notes": {
+    "version": "2.0",
+    "descripcion": "Pipeline completo B2B: Cazador 360 → agente_filtro_leads.py → n8n webhook → Gemini análisis → Telegram CEO + WebSocket Oficina",
+    "configuracion_requerida": [
+      "Agregar credencial Google Gemini API en n8n",
+      "Agregar credencial Telegram Bot Token en n8n",
+      "Configurar variable TELEGRAM_CHAT_ID con el chat_id del CEO",
+      "El webhook URL sera: https://TU-N8N-CLOUD.app.n8n.cloud/webhook/cazador-leads",
+      "En agente_filtro_leads.py: actualizar N8N_WEBHOOK_URL con la URL real del webhook"
+    ],
+    "flujo": "agente_filtro_leads.py → POST /webhook/cazador-leads → Gemini analiza → IF score>=60 → Telegram + POST australhq.onrender.com/api/lead-result → WS broadcast → Oficina Virtual muestra TOP leads al CEO"
+  }
+}

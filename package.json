@@ -1,0 +1,15 @@
+{
+  "name": "australdrone-hq",
+  "version": "1.0.0",
+  "description": "AustralDrone HQ Real-Time Multiplayer Office",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.21.1"
+  },
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

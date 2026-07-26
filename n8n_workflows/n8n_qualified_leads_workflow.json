@@ -1,0 +1,126 @@
+{
+  "name": "AustralDrone - Growth Hacking Lead Qualifier (Ley 19.628 Compliant)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "meta-comments-lead",
+        "options": {}
+      },
+      "name": "Webhook Primario (Meta Ad Scraper)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "meta-comments-lead-webhook"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "body.comentarios",
+        "options": {}
+      },
+      "name": "Item List Splitter",
+      "type": "n8n-nodes-base.itemLists",
+      "typeVersion": 1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-pro",
+        "prompt": "=Evalúa el siguiente comentario de un anuncio de terrenos/parcelas en Chile:\n\nUsuario: {{ $json.usuario }}\nComentario: {{ $json.comentario }}\n\nCriterios de Calificación (Ley 19.628 & 19.496):\n1. INTENCIÓN REAL DE COMPRA: El usuario pregunta precios, financiamiento, agua/luz, visitas o deja su teléfono.\n2. SPAM / IRRELEVANTE: Comentarios genéricos, emoticones, etiquetas a amigos sin pregunta técnica.\n\nResponde ÚNICAMENTE en este JSON:\n{\n  \"es_intencion_real\": true/false,\n  \"nivel_interes\": \"ALTO/MEDIO/BAJO\",
+  \"resumen_necesidad\": \"...\",\n  \"telefono_detectado\": \"...\",\n  \"accion_recomendada\": \"Contacto consultivo manual por operador humano (No Spam)\"\n}"
+      },
+      "name": "Filtro Semántico Gemini Pro (IA)",
+      "type": "n8n-nodes-base.googleGemini",
+      "typeVersion": 1,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ JSON.parse($json.response).es_intencion_real }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Filtro Intención Real = True?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [920, 300]
+    },
+    {
+      "parameters": {
+        "message": "=🚨 *ALERTA DE PROSPECTO CALIFICADO B2C/B2B (AustralDrone.CL)*\n\n👤 *Usuario:* {{ $node['Item List Splitter'].json.usuario }}\n💬 *Comentario:* \"{{ $node['Item List Splitter'].json.comentario }}\"\n📍 *Interés:* {{ JSON.parse($json.response).nivel_interes }}\n📝 *Diagnóstico IA:* {{ JSON.parse($json.response).resumen_necesidad }}\n📞 *Teléfono:* {{ JSON.parse($json.response).telefono_detectado || 'Ver Perfil' }}\n🔗 *Perfil:* {{ $node['Item List Splitter'].json.perfil_url }}\n\n⚠️ *Aviso Legal:* Operador humano debe realizar contacto consultivo manual respetando Ley N° 19.496."
+      },
+      "name": "Notificación Telegram / Slack (Alerta Prospecto)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1150, 200]
+    },
+    {
+      "parameters": {
+        "mode": "jsonToCsv",
+        "options": {}
+      },
+      "name": "Descarte / Basurero (Ley 19.628 - Supresión Datos)",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1150, 420]
+    }
+  ],
+  "connections": {
+    "Webhook Primario (Meta Ad Scraper)": {
+      "main": [
+        [
+          {
+            "node": "Item List Splitter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Item List Splitter": {
+      "main": [
+        [
+          {
+            "node": "Filtro Semántico Gemini Pro (IA)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Semántico Gemini Pro (IA)": {
+      "main": [
+        [
+          {
+            "node": "Filtro Intención Real = True?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Intención Real = True?": {
+      "main": [
+        [
+          {
+            "node": "Notificación Telegram / Slack (Alerta Prospecto)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Descarte / Basurero (Ley 19.628 - Supresión Datos)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

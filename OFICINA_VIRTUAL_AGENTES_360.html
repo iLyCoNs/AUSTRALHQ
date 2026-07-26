@@ -1,0 +1,2111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AustralDrone.CL — Oficina RPG 16-Bit | CEO Webhook Live</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Outfit:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#06080f;--panel:#0d1220;--neon:#66fcf1;--pur:#a855f7;--yel:#fbbf24;--grn:#10b981;--red:#ef4444;--orn:#f97316;}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Outfit',sans-serif;user-select:none;}
+body{background:radial-gradient(ellipse at 40% 10%,#0a1628 0%,#06080f 100%);color:#fff;min-height:100vh;padding:8px;display:flex;flex-direction:column;align-items:center;}
+body::after{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(transparent 0,transparent 2px,rgba(0,0,0,.07) 2px,rgba(0,0,0,.07) 3px);pointer-events:none;z-index:9999;}
+
+/* HEADER */
+header{width:100%;max-width:1420px;background:var(--panel);border:3px solid #111;border-bottom:3px solid var(--neon);box-shadow:0 0 40px rgba(102,252,241,.1),5px 5px 0 #000;padding:10px 18px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-radius:4px;}
+.logo{display:flex;align-items:center;gap:12px;}
+.logo-ico{width:48px;height:48px;background:linear-gradient(135deg,var(--neon),var(--pur));border:3px solid #000;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:24px;animation:glow 3s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:3px 3px 0 #000,0 0 12px rgba(102,252,241,.3);}50%{box-shadow:3px 3px 0 #000,0 0 30px rgba(102,252,241,.7);}}
+.logo h1{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--neon);text-shadow:2px 2px 0 #000,0 0 12px rgba(102,252,241,.5);margin-bottom:3px;}
+.logo p{font-size:11px;color:#475569;}
+.wh{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.wb{font-family:'Press Start 2P',monospace;font-size:6px;padding:8px 10px;border:3px solid #000;box-shadow:3px 3px 0 #000;cursor:pointer;border-radius:2px;transition:all .08s;white-space:nowrap;}
+.wb:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000;}
+.wb:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000;}
+.wy{background:var(--yel);color:#000;}.wg{background:var(--grn);color:#000;}.wp{background:var(--pur);color:#fff;}.wr{background:var(--red);color:#fff;}.wo{background:var(--orn);color:#fff;}
+
+/* ROSTER */
+.roster{width:100%;max-width:1420px;background:var(--panel);border:3px solid #111;box-shadow:4px 4px 0 #000;padding:8px 14px;margin-bottom:8px;border-radius:4px;display:flex;align-items:center;gap:6px;overflow-x:auto;}
+.rl{font-family:'Press Start 2P',monospace;font-size:6.5px;color:var(--neon);white-space:nowrap;margin-right:4px;}
+.rcard{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:5px 7px;border:2px solid transparent;border-radius:3px;min-width:68px;background:rgba(255,255,255,.02);transition:all .12s;}
+.rcard:hover{border-color:var(--neon);background:rgba(102,252,241,.04);}
+.rcard.active{border-color:var(--yel);background:rgba(251,191,36,.07);}
+.rcanvas{width:44px;height:56px;border:2px solid #111;border-radius:2px;display:block;image-rendering:pixelated;}
+.rname{font-family:'Press Start 2P',monospace;font-size:4px;color:#cbd5e1;text-align:center;line-height:1.5;}
+.rdot{width:7px;height:7px;border-radius:50%;border:2px solid #000;}
+.d-idle{background:var(--grn);box-shadow:0 0 5px var(--grn);}
+.d-work{background:var(--yel);box-shadow:0 0 5px var(--yel);animation:blink .6s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.2;}}
+
+/* MAIN */
+.gwrap{width:100%;max-width:1420px;background:var(--panel);border:3px solid #111;box-shadow:8px 8px 0 #000,0 0 50px rgba(102,252,241,.05);border-radius:4px;overflow:hidden;margin-bottom:10px;}
+.hud{background:#030508;padding:6px 16px;border-bottom:3px solid #111;display:flex;justify-content:space-between;align-items:center;font-family:'Press Start 2P',monospace;font-size:6.5px;color:var(--neon);}
+.cwrap{position:relative;width:100%;height:590px;}
+#gc{width:100%;height:100%;display:block;cursor:crosshair;image-rendering:pixelated;}
+
+/* SPEECH BUBBLES */
+.bub{position:absolute;background:#fff;color:#111;border:3px solid #111;padding:6px 9px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:bold;line-height:1.4;max-width:220px;box-shadow:3px 3px 0 rgba(0,0,0,.8);pointer-events:none;opacity:0;transition:opacity .12s,transform .12s;z-index:500;transform:translate(-50%,-100%);}
+.bub::after{content:'';position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);border-width:9px 7px 0;border-style:solid;border-color:#111 transparent transparent;}
+.bub::before{content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);border-width:6px 5px 0;border-style:solid;border-color:#fff transparent transparent;z-index:1;}
+.bub.on{opacity:1;transform:translate(-50%,-115%);}
+
+/* BOTTOM */
+.btm{width:100%;max-width:1420px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.card{background:var(--panel);border:3px solid #111;box-shadow:5px 5px 0 #000;padding:13px;border-radius:4px;}
+.card h3{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--neon);margin-bottom:9px;padding-bottom:6px;border-bottom:2px solid #111;}
+.ai{display:flex;align-items:flex-start;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:10.5px;color:#475569;line-height:1.5;}
+.ai:last-child{border-bottom:none;}
+.badge{font-family:'Press Start 2P',monospace;font-size:4px;padding:2px 4px;border:2px solid #111;border-radius:2px;flex-shrink:0;margin-top:2px;}
+.bg{background:var(--grn);color:#000;}.bc{background:var(--neon);color:#000;}.by{background:var(--yel);color:#000;}.bp{background:var(--pur);color:#fff;}.bo{background:var(--orn);color:#fff;}
+.cons{background:#030508;border:2px solid #111;padding:8px;font-family:'JetBrains Mono',monospace;font-size:9.5px;height:155px;overflow-y:auto;color:#475569;line-height:1.6;}
+.cons::-webkit-scrollbar{width:3px;}.cons::-webkit-scrollbar-thumb{background:var(--neon);}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px;}
+.sr:last-child{border-bottom:none;}
+.sv{font-family:'Press Start 2P',monospace;font-size:7px;color:var(--yel);}
+
+/* ═══ PANEL LATERAL FIJO — Log General Oficina ═══ */
+#side-panel{
+  position:fixed;right:0;top:0;width:300px;height:100vh;
+  background:rgba(6,8,15,.97);border-left:3px solid var(--neon);
+  box-shadow:-8px 0 40px rgba(102,252,241,.1);z-index:3000;
+  display:flex;flex-direction:column;transform:translateX(300px);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+#side-panel.open{transform:translateX(0);}
+#side-panel-toggle{
+  position:fixed;right:0;top:50%;transform:translateY(-50%);
+  background:var(--neon);color:#000;border:3px solid #000;
+  font-family:'Press Start 2P',monospace;font-size:7px;
+  padding:10px 6px;writing-mode:vertical-rl;cursor:pointer;
+  box-shadow:-4px 0 0 #000;z-index:3001;border-radius:4px 0 0 4px;
+  transition:right .3s;letter-spacing:2px;
+}
+#side-panel-toggle.open{right:300px;}
+.sp-header{
+  background:#030508;border-bottom:3px solid #111;
+  padding:10px 12px;display:flex;justify-content:space-between;align-items:center;
+}
+.sp-title{font-family:'Press Start 2P',monospace;font-size:6px;color:var(--neon);}
+.sp-badge{font-family:'Press Start 2P',monospace;font-size:5px;padding:2px 6px;background:var(--grn);color:#000;border:2px solid #111;border-radius:2px;}
+.sp-tabs{display:flex;border-bottom:2px solid #111;}
+.sp-tab{
+  flex:1;font-family:'Press Start 2P',monospace;font-size:5px;
+  padding:7px;cursor:pointer;text-align:center;color:#475569;
+  border-bottom:3px solid transparent;transition:all .1s;
+}
+.sp-tab.active{color:var(--neon);border-bottom-color:var(--neon);background:rgba(102,252,241,.04);}
+.sp-content{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:4px;}
+.sp-content::-webkit-scrollbar{width:3px;}
+.sp-content::-webkit-scrollbar-thumb{background:var(--neon);}
+.sp-msg{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:5px 7px;border-left:3px solid;border-radius:0 3px 3px 0;
+  line-height:1.5;color:#94a3b8;animation:fadeInMsg .2s ease;
+}
+@keyframes fadeInMsg{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:none;}}
+.sp-msg.ceo{border-color:var(--yel);background:rgba(251,191,36,.04);}
+.sp-msg.agent{border-color:var(--neon);background:rgba(102,252,241,.04);}
+.sp-msg.system{border-color:var(--pur);background:rgba(168,85,247,.04);}
+.sp-msg.lead{border-color:var(--grn);background:rgba(16,185,129,.07);}
+.sp-msg b{display:block;font-size:8px;margin-bottom:2px;}
+.sp-msg .ts{font-size:7px;color:#334155;}
+/* Lead cards en panel */
+.sp-lead-card{
+  background:#030508;border:2px solid var(--grn);
+  border-radius:4px;padding:8px;margin:4px 0;
+  box-shadow:0 0 10px rgba(16,185,129,.15);
+}
+.sp-lead-card .rank{
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  color:var(--yel);margin-bottom:4px;
+}
+.sp-lead-card .lead-name{font-weight:bold;color:#e2e8f0;font-size:10px;}
+.sp-lead-card .lead-score{
+  font-family:'Press Start 2P',monospace;font-size:6px;
+  color:var(--grn);float:right;
+}
+.sp-lead-card .lead-info{color:#64748b;font-size:9px;line-height:1.5;margin-top:3px;}
+.sp-lead-card .lead-actions{display:flex;gap:4px;margin-top:6px;}
+.sp-lead-card .lead-btn{
+  flex:1;font-family:'Press Start 2P',monospace;font-size:4px;
+  padding:4px;border:2px solid #111;cursor:pointer;
+  text-align:center;border-radius:2px;
+}
+.sp-lead-card .lead-btn.wsp{background:var(--grn);color:#000;}
+.sp-lead-card .lead-btn.profile{background:var(--neon);color:#000;}
+/* Input bar panel */
+.sp-input-area{
+  border-top:2px solid #111;padding:8px;
+  display:flex;gap:5px;align-items:center;
+}
+.sp-select{
+  background:#030508;border:2px solid var(--neon);color:var(--neon);
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  padding:5px;border-radius:2px;width:90px;flex-shrink:0;
+}
+.sp-input{
+  flex:1;background:#030508;border:2px solid #1e293b;
+  color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:5px 7px;border-radius:2px;outline:none;
+  transition:border-color .15s;
+}
+.sp-input:focus{border-color:var(--neon);}
+.sp-send{
+  background:var(--neon);color:#000;border:2px solid #111;
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  padding:5px 7px;cursor:pointer;border-radius:2px;
+  box-shadow:2px 2px 0 #000;flex-shrink:0;
+}
+.sp-send:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 #000;}
+
+/* ═══ MODAL MEJORADO con Chat CEO↔Agente ═══ */
+.overlay{position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:4000;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.on{opacity:1;pointer-events:auto;}
+.modal{background:var(--panel);border:4px solid var(--neon);box-shadow:14px 14px 0 #000,0 0 60px rgba(102,252,241,.25);width:92%;max-width:780px;border-radius:4px;overflow:hidden;}
+.mbar{background:#030508;border-bottom:3px solid #111;padding:8px 15px;font-family:'Press Start 2P',monospace;font-size:6.5px;color:var(--neon);display:flex;justify-content:space-between;align-items:center;}
+.mbody{padding:14px 18px;}
+.mhead{display:flex;align-items:center;gap:16px;margin-bottom:10px;}
+.mcanv{width:96px;height:116px;border:3px solid #111;border-radius:3px;background:#0a1220;box-shadow:4px 4px 0 #000;flex-shrink:0;image-rendering:pixelated;}
+.mhead h2{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--yel);text-shadow:2px 2px 0 #000;margin-bottom:5px;}
+.mrole{color:var(--neon);font-size:11px;margin-bottom:3px;}
+.mfile{font-family:'JetBrains Mono',monospace;font-size:9px;color:#334155;}
+.mreal-log{
+  background:#030508;border:2px solid #1e293b;border-left:3px solid var(--orn);
+  padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:8.5px;
+  color:#64748b;max-height:48px;overflow-y:auto;line-height:1.5;border-radius:2px;
+  margin-bottom:8px;
+}
+.mreal-log::-webkit-scrollbar{width:2px;}
+.mreal-log::-webkit-scrollbar-thumb{background:var(--orn);}
+.pbox{background:#030508;border:2px solid #111;padding:9px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#94a3b8;margin:6px 0;max-height:55px;overflow-y:auto;line-height:1.6;border-radius:2px;}
+/* Chat CEO↔Agente en modal */
+.mchat-section{margin-top:8px;border-top:2px solid #111;padding-top:8px;}
+.mchat-title{font-family:'Press Start 2P',monospace;font-size:5.5px;color:var(--yel);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.mchat-title span{color:#334155;font-size:4.5px;}
+.mchat-history{
+  background:#030508;border:2px solid #111;
+  height:120px;overflow-y:auto;padding:6px;
+  border-radius:2px;display:flex;flex-direction:column;gap:4px;
+}
+.mchat-history::-webkit-scrollbar{width:2px;}
+.mchat-history::-webkit-scrollbar-thumb{background:var(--neon);}
+.mchat-msg{padding:4px 7px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:9.5px;line-height:1.5;max-width:90%;animation:fadeInMsg .15s ease;}
+.mchat-msg.ceo{background:rgba(251,191,36,.08);border-left:3px solid var(--yel);color:#fbbf24;align-self:flex-end;text-align:right;}
+.mchat-msg.agent{background:rgba(102,252,241,.06);border-left:3px solid var(--neon);color:#94a3b8;}
+.mchat-msg b{font-size:8px;display:block;margin-bottom:1px;}
+.mchat-input-row{display:flex;gap:6px;margin-top:6px;}
+.mchat-input{
+  flex:1;background:#030508;border:2px solid #1e293b;
+  color:#e2e8f0;font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:6px 8px;border-radius:2px;outline:none;
+  transition:border-color .15s;
+}
+.mchat-input:focus{border-color:var(--yel);}
+.mchat-send{
+  background:var(--yel);color:#000;border:3px solid #111;
+  font-family:'Press Start 2P',monospace;font-size:5px;
+  padding:6px 10px;cursor:pointer;border-radius:2px;
+  box-shadow:2px 2px 0 #000;
+}
+.mchat-send:disabled{opacity:.5;cursor:not-allowed;}
+.mbtns{display:flex;gap:7px;margin-top:10px;}
+.mbtn{flex:1;background:var(--neon);color:#000;border:3px solid #111;font-family:'Press Start 2P',monospace;font-size:6px;padding:10px;cursor:pointer;box-shadow:3px 3px 0 #000;text-align:center;text-decoration:none;display:block;border-radius:2px;transition:all .08s;}
+.mbtn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 #000;}
+.mbtn-r{background:var(--red);color:#fff;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-ico">🛸</div>
+    <div>
+      <h1>AUSTRALDRONE.CL — OFICINA VIVA 16-BIT RPG</h1>
+      <p>Ecosistema Growth Hacking B2B/B2C &nbsp;|&nbsp; 7 Agentes + CEO Jaime + Dir. Nicole</p>
+    </div>
+  </div>
+  <div class="wh">
+    <button class="wb wo" style="background:#f59e0b;color:#000;" onclick="openBitacoraModal()"><i class="fa-solid fa-folder-tree"></i> 🗄️ CAJONERA DE BITÁCORA</button>
+    <button class="wb wg" style="background:#10b981;color:#fff;" onclick="window.open('/api/download-master-csv')"><i class="fa-solid fa-file-excel"></i> 📥 DESCARGAR EXCEL MAESTRO</button>
+    <button class="wb wy" onclick="ev_loteo()"><i class="fa-solid fa-map"></i> NUEVO LOTEO &gt;5K M²</button>
+    <button class="wb wg" onclick="ev_legal()"><i class="fa-solid fa-scale-balanced"></i> SAG/LGUC</button>
+    <button class="wb wp" onclick="ev_troya()"><i class="fa-solid fa-horse"></i> CABALLO TROYA</button>
+    <button class="wb wo" onclick="ev_report()"><i class="fa-solid fa-chart-line"></i> REPORTE A JEFES</button>
+    <button class="wb wr" onclick="ev_party()"><i class="fa-solid fa-trophy"></i> CONVERSIÓN WSP 🎉</button>
+  </div>
+</header>
+
+<div class="roster">
+  <span class="rl">▶ EQUIPO:</span>
+  <div id="roster" style="display:flex;gap:5px;"></div>
+</div>
+
+<div class="gwrap">
+  <div class="hud">
+    <span><i class="fa-solid fa-gamepad"></i> CLIC → FICHA | PINCH 2 FINGERS → ZOOM | ARRASTRAR → PAN</span>
+    <span>
+      <button onclick="zoomCanvas(1.2)" style="background:var(--neon);color:#000;border:1px solid #000;padding:2px 6px;cursor:pointer;font-family:'Press Start 2P';font-size:5px;">🔍 +</button>
+      <button onclick="zoomCanvas(0.8)" style="background:var(--yel);color:#000;border:1px solid #000;padding:2px 6px;cursor:pointer;font-family:'Press Start 2P';font-size:5px;">🔍 -</button>
+      <button onclick="resetZoom()" style="background:#334155;color:#fff;border:1px solid #000;padding:2px 6px;cursor:pointer;font-family:'Press Start 2P';font-size:5px;">🔄 100%</button>
+      &nbsp;|&nbsp; LEADS: <span id="hL" style="color:var(--grn)">232</span> &nbsp;|&nbsp; WH: <span id="hW" style="color:var(--yel)">0</span> &nbsp;|&nbsp; REPORTES: <span id="hR" style="color:var(--orn)">0</span>
+    </span>
+  </div>
+  <div class="cwrap">
+    <canvas id="gc" width="1420" height="590"></canvas>
+    <!-- Bubbles for 7 agents + 2 bosses = 9 -->
+    <div class="bub" id="b0"></div><div class="bub" id="b1"></div><div class="bub" id="b2"></div>
+    <div class="bub" id="b3"></div><div class="bub" id="b4"></div><div class="bub" id="b5"></div>
+    <div class="bub" id="b6"></div><div class="bub" id="b7"></div><div class="bub" id="b8"></div>
+  </div>
+</div>
+
+<div class="btm">
+  <div class="card">
+    <h3><i class="fa-solid fa-sitemap"></i> AGENTES PYTHON ACTIVOS</h3>
+    <div class="ai"><span class="badge bg">ON</span><div><b style="color:#e2e8f0">cazador_360_vendedores.py</b><br>17 grupos FB · Llama 3.1 70B · Comet</div></div>
+    <div class="ai"><span class="badge bg">ON</span><div><b style="color:#e2e8f0">yapo_scanner.py</b><br>Yapo.cl Los Lagos pág 1→5 · subprocess</div></div>
+    <div class="ai"><span class="badge bc">CORE</span><div><b style="color:#e2e8f0">meta_ad_hunter.py</b><br>Meta Ad Library API + Dark Post Playwright</div></div>
+    <div class="ai"><span class="badge bc">CORE</span><div><b style="color:#e2e8f0">comment_scraper.py</b><br>Dark Post comments → n8n Webhook</div></div>
+    <div class="ai"><span class="badge by">B2B</span><div><b style="color:#e2e8f0">agente_14_caballo_troya.py</b><br>Propuestas Llama 3.1 + WhatsApp 1-Click</div></div>
+    <div class="ai"><span class="badge bp">n8n</span><div><b style="color:#e2e8f0">n8n_qualified_leads_workflow.json</b><br>Gemini Pro → Ley 19.628 → Telegram</div></div>
+  </div>
+  <div class="card">
+    <h3><i class="fa-solid fa-terminal"></i> BITÁCORA EN VIVO</h3>
+    <div class="cons" id="logBox">
+      <div><span style="color:var(--neon)">[SISTEMA]</span> Oficina RPG 16-bit cargada. 9 personajes activos.</div>
+      <div><span style="color:var(--orn)">[CEO JAIME]</span> Aguardando reportes del equipo de agentes.</div>
+      <div><span style="color:var(--pur)">[DIR. NICOLE]</span> Dashboard de marketing IA activado.</div>
+      <div><span style="color:var(--grn)">[YAPO]</span> Escaneando yapo.cl/los-lagos pág 1→5...</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3><i class="fa-solid fa-chart-line"></i> KPIs ECOSISTEMA</h3>
+    <div class="sr"><span style="color:#475569">📊 Prospectos CSV</span><span class="sv">232</span></div>
+    <div class="sr"><span style="color:#475569">🏡 Grupos FB</span><span class="sv">17</span></div>
+    <div class="sr"><span style="color:#475569">🔍 Páginas Yapo</span><span class="sv">5</span></div>
+    <div class="sr"><span style="color:#475569">🤖 Llama 3.1 70B</span><span class="sv" style="color:var(--grn)">ON</span></div>
+    <div class="sr"><span style="color:#475569">⚖️ Ley 19.628</span><span class="sv" style="color:var(--grn)">✓ OK</span></div>
+    <div class="sr"><span style="color:#475569">📡 Webhooks</span><span class="sv" id="kW">0</span></div>
+  </div>
+</div>
+
+<div class="overlay" id="modal">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="mbar">
+      <span>▶ FICHA DE AGENTE — AUSTRALDRONE.CL</span>
+      <button onclick="closeModal()" style="background:var(--red);color:#fff;border:2px solid #111;font-family:'Press Start 2P',monospace;font-size:5.5px;padding:4px 8px;cursor:pointer;">✕ CERRAR</button>
+    </div>
+    <div class="mbody">
+      <div class="mhead">
+        <canvas class="mcanv" id="mcanv" width="96" height="116"></canvas>
+        <div>
+          <h2 id="mN">—</h2>
+          <p class="mrole" id="mR">—</p>
+          <p class="mfile" id="mF">—</p>
+        </div>
+      </div>
+      <!-- Log de actividad REAL del agente -->
+      <div style="font-family:'Press Start 2P',monospace;font-size:5px;color:var(--orn);margin-bottom:3px;">⚡ ACTIVIDAD REAL:</div>
+      <div class="mreal-log" id="mRealLog">Sin actividad reciente. Ejecuta el agente para ver logs en vivo.</div>
+      <div style="font-size:12px;line-height:1.7;color:#475569">
+        <p><b style="color:#e2e8f0">🎭 Perfil:</b> <span id="mD"></span></p>
+        <p style="margin-top:4px"><b style="color:#e2e8f0">⚡ Estado:</b> <span id="mS" style="color:var(--yel);font-weight:bold"></span></p>
+        <p style="margin-top:5px"><b style="color:#e2e8f0">🧠 Prompt IA:</b></p>
+        <div class="pbox" id="mP"></div>
+      </div>
+      <!-- Chat CEO ↔ Agente (historial personal) -->
+      <div class="mchat-section">
+        <div class="mchat-title">💬 CHAT CEO ↔ AGENTE <span>(historial personal — guardado en sesión)</span></div>
+        <div class="mchat-history" id="mChatHistory"></div>
+        <div class="mchat-input-row">
+          <input class="mchat-input" id="mChatInput" type="text" placeholder="Pregúntale al agente... (Enter para enviar)" maxlength="200">
+          <button class="mchat-send" id="mChatSend" onclick="sendModalChat()">ENVIAR</button>
+        </div>
+      </div>
+      <div class="mbtns" id="mB"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PANEL LATERAL FIJO — Log General Oficina + Chat Global ═══ -->
+<button id="side-panel-toggle" onclick="toggleSidePanel()">📡 HQ LOG</button>
+<div id="side-panel">
+  <div class="sp-header">
+    <span class="sp-title">📡 HQ LIVE LOG</span>
+    <span class="sp-badge" id="sp-lead-count">0 LEADS</span>
+  </div>
+  <div class="sp-tabs">
+    <div class="sp-tab active" id="tab-log" onclick="switchTab('log')">🖥️ OFICINA</div>
+    <div class="sp-tab" id="tab-leads" onclick="switchTab('leads')">🎯 TOP LEADS</div>
+    <div class="sp-tab" id="tab-chat" onclick="switchTab('chat')">💬 CHAT</div>
+  </div>
+  <!-- Tab: Log general -->
+  <div class="sp-content" id="sp-log-content"></div>
+  <!-- Tab: TOP Leads calificados -->
+  <div class="sp-content" id="sp-leads-content" style="display:none;"></div>
+  <!-- Tab: Chat global CEO con cualquier agente -->
+  <div class="sp-content" id="sp-chat-content" style="display:none;flex-direction:column;gap:6px;"></div>
+  <div class="sp-input-area">
+    <select class="sp-select" id="sp-agent-select">
+      <option value="cazador360">🔭 Cazador</option>
+      <option value="cazadorventas">📱 FB Hunter</option>
+      <option value="yapo">🔍 Yapo</option>
+      <option value="troya">🐴 Troya</option>
+      <option value="scraper">⚖️ Legal</option>
+      <option value="tech">🖥️ Tech</option>
+    </select>
+    <input class="sp-input" id="sp-chat-input" type="text" placeholder="Mensaje al agente..." maxlength="200">
+    <button class="sp-send" onclick="sendPanelChat()">▶</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+const GC = document.getElementById('gc');
+const G = GC.getContext('2d');
+const W = GC.width, H = GC.height;
+let tick=0, selId=0, whCount=0, repCount=0, parts=[];
+
+// ══════════════════════════════════════════════
+//  PIXEL ART ENGINE — S=3 means 3 canvas px per logical px
+// ══════════════════════════════════════════════
+const S = 3; // pixel scale
+
+// Current draw context (swappable for mini-canvas)
+let CTX = G;
+
+// Draw a solid rect in logical pixel units
+function P(x,y,w,h,c){ CTX.fillStyle=c; CTX.fillRect(x*S,y*S,w*S,h*S); }
+
+// Draw with crisp 1-pixel black outline
+function O(x,y,w,h,fill,out='#111'){
+    CTX.fillStyle=out;
+    CTX.fillRect((x-1)*S,(y-1)*S,(w+2)*S,(h+2)*S);
+    CTX.fillStyle=fill;
+    CTX.fillRect(x*S,y*S,w*S,h*S);
+}
+
+// Draw eyes (2 black pixels with white highlights)
+function EYES(lx,ly){ // lx=left eye logical x, ly=eye logical y
+    P(lx,ly,2,2,'#111'); P(lx,ly,1,1,'#fff');   // left eye + glint
+    P(lx+4,ly,2,2,'#111'); P(lx+4,ly,1,1,'#fff'); // right eye + glint
+}
+
+// Draw outline line (1px wide)
+function LINE(x1,y1,x2,y2,c){
+    CTX.strokeStyle=c; CTX.lineWidth=S;
+    CTX.beginPath(); CTX.moveTo(x1*S+S/2,y1*S+S/2); CTX.lineTo(x2*S+S/2,y2*S+S/2); CTX.stroke();
+}
+
+// Walk frame helpers — returns [leftLegY, rightLegY, leftArmY, rightArmY]
+function walkFrame(t, state){
+    if(state==='WALK'){
+        const f=Math.floor(t/5)%4;
+        const o=[3,-3,2,-2];
+        return [o[f],-o[f],-o[f],o[f]];
+    }
+    const b=Math.sin(t*0.08)*0.5;
+    return [0,0,b,-b];
+}
+
+// Idle bob (breathing)
+function bob(t,id){ return Math.sin(t*0.07+id*1.3)*0.7; }
+
+// ══════════════════════════════════════════════
+//  SPRITE DEFINITIONS — all chibi 3-head style
+//  Origin = feet center (0,0), drawing upward
+//  Total logical height ~24px = 72 canvas px
+// ══════════════════════════════════════════════
+
+/* ─── 0: CAZADOR FB — Tech Guy in Hoodie ─── */
+function drawCazador(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    // SHADOW
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0*S,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // SHOES
+    O(-5,ll-1,4,2,'#1c1c1c'); O(1,lr-1,4,2,'#e2e8f0');
+    // LEGS (dark jeans)
+    O(-5,ll-7,4,7,'#1e3a5f'); O(1,lr-7,4,7,'#1e3a5f');
+    // BODY — hoodie blue
+    CTX.translate(0,-b*S);
+    O(-6,-14,12,8,'#1d4ed8'); // body
+    O(-5,-14,10,3,'#1e40af'); // pocket
+    P(-6,-9,2,3,'#1e40af'); P(4,-9,2,3,'#1e40af'); // side seams
+    // LEFT ARM + HAND
+    O(-9,-12+al,3,8,'#1d4ed8'); O(-9,-5+al,3,3,'#fde68a');
+    // RIGHT ARM — holds phone
+    O(6,-12-ar,3,8,'#1d4ed8'); O(6,-5-ar,3,3,'#fde68a');
+    O(8,-9-ar,5,8,'#0f172a'); // phone
+    P(9,-8-ar,3,5,'#22d3ee'); // screen
+    // NECK + HEAD
+    O(-3,-17,6,4,'#fde68a');
+    O(-7,-27,14,11,'#fde68a'); // face
+    O(-7,-27,14,4,'#1e3a5f'); // hoodie hood top
+    // HAIR
+    P(-6,-25,12,3,'#1c1c1c');
+    P(-6,-23,2,2,'#1c1c1c'); P(4,-23,2,2,'#1c1c1c');
+    // FACE FEATURES
+    EYES(-5,-22);
+    P(-3,-19,6,1,'#111'); // eyebrows (strong)
+    P(-3,-17,6,1,'#c2410c'); // mouth
+    // HEADPHONES
+    O(-8,-26,3,6,'#374151'); O(5,-26,3,6,'#374151'); // cups
+    P(-7,-27,12,2,'#111'); // band
+    P(-7,-26,2,2,'#10b981'); P(5,-26,2,2,'#10b981'); // LED
+    CTX.translate(0,b*S);
+}
+
+/* ─── 1: YAPO SCANNER — Smart Monkey ─── */
+function drawYapo(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // SHOES
+    O(-5,ll-1,4,2,'#92400e'); O(1,lr-1,4,2,'#92400e');
+    // LEGS — yellow tracksuit
+    O(-5,ll-7,4,7,'#d97706'); O(1,lr-7,4,7,'#d97706');
+    CTX.translate(0,-b*S);
+    // BODY
+    O(-6,-14,12,8,'#fbbf24');
+    P(-3,-12,6,4,'#f59e0b'); // stripe
+    // LEFT ARM — holds magnify glass
+    O(-9,-12+al,3,8,'#d97706'); O(-9,-5+al,4,4,'#92400e');
+    // Magnifying glass prop
+    O(-13,-8+al,5,5,'rgba(200,230,255,0.3)');
+    CTX.strokeStyle='#374151';CTX.lineWidth=S*1.5;
+    CTX.beginPath();CTX.arc(-10.5*S,(-6+al)*S,4*S,0,Math.PI*2);CTX.stroke();
+    CTX.strokeStyle='#1c1c1c';CTX.lineWidth=S;
+    CTX.beginPath();CTX.moveTo(-7*S,(-3+al)*S);CTX.lineTo(-5*S,(-1+al)*S);CTX.stroke();
+    // RIGHT ARM
+    O(6,-12-ar,3,8,'#d97706'); O(6,-5-ar,4,4,'#92400e');
+    // NECK
+    O(-3,-17,6,4,'#d97706');
+    // MONKEY HEAD — wider, rounder
+    O(-8,-29,16,13,'#d97706');
+    // Ears
+    O(-9,-25,3,5,'#d97706'); O(6,-25,3,5,'#d97706');
+    P(-8,-24,2,3,'#ef4444'); P(6,-24,2,3,'#ef4444'); // inner ears
+    // Lighter muzzle
+    O(-5,-22,10,5,'#f59e0b');
+    // EYES — round with spectacles
+    CTX.strokeStyle='#374151';CTX.lineWidth=S;
+    CTX.strokeRect(-7*S,-26*S,5*S,4*S); CTX.strokeRect(2*S,-26*S,5*S,4*S);
+    P(-6,-25,3,2,'#111'); P(3,-25,3,2,'#111'); // pupils
+    P(-6,-25,1,1,'#fff'); P(3,-25,1,1,'#fff'); // glints
+    P(-2,-23,4,1,'#374151'); // glasses bridge
+    // Nose + Mouth
+    P(-2,-20,4,3,'#92400e');
+    P(-1,-20,2,2,'#1c1c1c');
+    P(-4,-17,8,2,'#111'); // grin
+    P(-3,-17,2,2,'#fff'); P(1,-17,2,2,'#fff'); // teeth
+    // YAPO badge
+    CTX.fillStyle='#92400e';CTX.font=`bold ${S*2}px monospace`;CTX.textAlign='center';
+    CTX.fillText('YAPO',0,-9*S);CTX.textAlign='left';
+    CTX.translate(0,b*S);
+}
+
+/* ─── 2: META HUNTER — Cyborg Astronaut ─── */
+function drawAstro(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,12*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // BOOTS
+    O(-6,ll-1,5,2,'#94a3b8'); O(1,lr-1,5,2,'#94a3b8');
+    // SUIT LEGS
+    O(-5,ll-8,4,8,'#e2e8f0'); O(1,lr-8,4,8,'#e2e8f0');
+    O(-5,ll-9,4,2,'#cbd5e1'); O(1,lr-9,4,2,'#cbd5e1'); // knee joints
+    CTX.translate(0,-b*S);
+    // BODY SUIT
+    O(-7,-17,14,9,'#e2e8f0');
+    O(-5,-16,10,7,'#cbd5e1'); // chest
+    O(-5,-15,10,5,'#ef4444'); // patch red
+    CTX.fillStyle='#fff';CTX.font=`bold ${S*1.5}px monospace`;CTX.textAlign='center';
+    CTX.fillText('META',0,-12*S);CTX.textAlign='left';
+    O(6,-17,4,9,'#94a3b8'); // backpack
+    // ARMS
+    O(-11,-15+al,4,8,'#e2e8f0'); O(-11,-8+al,4,4,'#fff'); // left
+    O(7,-15-ar,4,8,'#e2e8f0'); // right
+    // Tablet in right hand
+    O(10,-17-ar,9,13,'#1c1c1c');
+    P(11,-16-ar,7,9,'#0ea5e9');
+    P(12,-15-ar,5,2,'rgba(255,255,255,.8)');
+    P(12,-12-ar,4,2,'rgba(255,255,255,.6)');
+    P(12,-9-ar,5,2,'rgba(255,255,255,.8)');
+    // HELMET
+    O(-8,-32,16,16,'#f8fafc');
+    O(-6,-30,12,11,'#f59e0b'); // golden visor
+    P(-4,-28,5,2,'rgba(255,255,255,.7)'); // visor glint
+    O(-8,-19,16,4,'#94a3b8'); // neck ring
+    P(-6,-16,3,3,'#cbd5e1'); P(3,-16,3,3,'#cbd5e1'); // vents
+    // Cybernetic eye on right (cyborg detail)
+    P(3,-25,3,3,'#ef4444');
+    P(4,-24,1,1,'#fff');
+    CTX.translate(0,b*S);
+}
+
+/* ─── 3: COMMENT SCRAPER — Futuristic Robot ─── */
+function drawRobot(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    const led=Math.sin(t*0.25)>0;
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // ROBOT FEET
+    O(-5,ll-1,5,2,'#334155'); O(1,lr-1,5,2,'#334155');
+    // LEGS
+    O(-5,ll-8,4,8,'#475569'); O(1,lr-8,4,8,'#475569');
+    O(-5,ll-9,4,2,'#64748b'); O(1,lr-9,4,2,'#64748b'); // knee
+    CTX.translate(0,-b*S);
+    // ROBOT BODY
+    O(-7,-17,14,9,'#334155');
+    O(-5,-16,10,7,'#1e293b'); // chest panel
+    // LED indicators
+    const c1=led?'#10b981':'#065f46', c2=led?'#22d3ee':'#164e63', c3=led?'#f59e0b':'#78350f';
+    P(-4,-13,2,2,c1); P(-1,-13,2,2,c2); P(2,-13,2,2,c3);
+    // n8n label
+    CTX.fillStyle='rgba(102,252,241,.5)';CTX.font=`bold ${S*1.5}px monospace`;CTX.textAlign='center';
+    CTX.fillText('n8n',0,-9*S);CTX.textAlign='left';
+    // ARMS
+    O(-11,-15+al,4,9,'#475569'); O(-11,-7+al,5,4,'#334155'); // left
+    // Plug in left hand
+    O(-13,-5+al,3,3,'#fbbf24'); P(-12,-6+al,2,2,'#111');
+    O(7,-15-ar,4,9,'#475569'); O(7,-7-ar,5,4,'#334155'); // right
+    // Laptop in right hand
+    O(10,-14-ar,10,8,'#1c1c1c');
+    P(11,-13-ar,8,6,'#22d3ee'); P(11,-13-ar,8,6,`rgba(34,211,238,${.2+.4*Math.sin(t*.12)})`);
+    // ROBOT HEAD — boxy
+    O(-7,-30,14,14,'#475569');
+    O(-5,-28,10,10,'#334155'); // face plate
+    // ANTENNA
+    O(-1,-34,2,6,'#94a3b8');
+    P(-1,-35,2,2,led?'#ef4444':'#7f1d1d');
+    // VISOR LED strip
+    O(-5,-26,10,4,'#0f172a');
+    P(-4,-25,8,3,'#22d3ee');
+    P(-4,-25,8,3,`rgba(34,211,238,${.3+.6*Math.sin(t*.15)})`);
+    // Eye pixels
+    P(-3,-24,2,2,'#fff'); P(1,-24,2,2,'#fff');
+    P(-2,-23,1,1,'#111'); P(2,-23,1,1,'#111');
+    // Grille
+    for(let i=0;i<3;i++) P(-4,-20+i*2,8,1,'#111');
+    // Side bolts
+    P(-7,-28,2,2,'#94a3b8'); P(5,-28,2,2,'#94a3b8');
+    P(-7,-23,2,2,'#94a3b8'); P(5,-23,2,2,'#94a3b8');
+    CTX.translate(0,b*S);
+}
+
+/* ─── 4: CABALLO DE TROYA — Spy in trench coat ─── */
+function drawTroya(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // SHOES
+    O(-5,ll-1,4,2,'#111'); O(1,lr-1,4,2,'#111');
+    // TRENCH COAT LEGS
+    O(-5,ll-8,4,8,'#14532d'); O(1,lr-8,4,8,'#14532d');
+    CTX.translate(0,-b*S);
+    // COAT BODY
+    O(-7,-17,14,9,'#14532d');
+    O(-4,-17,8,9,'#166534'); // lapels
+    // Gold buttons
+    P(-2,-16,2,2,'#fbbf24'); P(-2,-13,2,2,'#fbbf24'); P(-2,-10,2,2,'#fbbf24');
+    // Badge
+    P(-6,-14,4,4,'#fbbf24');
+    // LEFT ARM — scroll
+    O(-11,-15+al,4,9,'#14532d'); O(-11,-7+al,4,4,'#fde68a');
+    O(-15,-13+al,5,13,'#fef3c7'); // scroll
+    P(-15,-13+al,5,2,'#d97706'); P(-15,-2+al,5,2,'#d97706');
+    CTX.fillStyle='#92400e';CTX.font=`bold ${S*1.2}px monospace`;CTX.textAlign='center';
+    CTX.fillText('PROP',-12.5*S,(-8+al)*S);CTX.textAlign='left';
+    // RIGHT ARM — WhatsApp phone
+    O(7,-15-ar,4,9,'#14532d'); O(7,-7-ar,4,4,'#fde68a');
+    O(10,-14-ar,6,10,'#111'); // phone
+    P(11,-13-ar,4,7,'#10b981'); // green WA screen
+    P(11,-11-ar,4,1,'rgba(255,255,255,.6)'); // WA icon hint
+    // NECK + HEAD
+    O(-3,-20,6,4,'#fde68a');
+    O(-7,-31,14,12,'#fde68a');
+    // HAIR slick dark
+    O(-7,-31,14,5,'#1c1c1c');
+    P(-6,-28,3,4,'#1c1c1c'); P(3,-28,3,4,'#1c1c1c'); // sideburns
+    // TACTICAL SUNGLASSES
+    O(-6,-24,5,3,'#111'); O(1,-24,5,3,'#111');
+    P(-1,-24,2,3,'#374151'); // bridge
+    P(-7,-24,2,3,'#374151'); P(6,-24,2,3,'#374151'); // temples
+    // SMIRK
+    P(-3,-20,6,1,'#c2410c'); P(1,-21,3,1,'#c2410c');
+    // STUBBLE
+    P(-5,-21,10,2,'rgba(0,0,0,.15)');
+    CTX.translate(0,b*S);
+}
+
+/* ─── 5: N8N ENGINE — Purple Wizard Orchestrator ─── */
+function drawN8N(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    const glow=0.5+0.5*Math.sin(t*.06);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // ROBE FEET
+    O(-5,ll-1,4,2,'#2e1065'); O(1,lr-1,4,2,'#2e1065');
+    O(-5,ll-8,4,8,'#4c1d95'); O(1,lr-8,4,8,'#4c1d95');
+    CTX.translate(0,-b*S);
+    // ROBE BODY
+    O(-7,-17,14,9,'#5b21b6');
+    O(-5,-16,10,7,'#4c1d95');
+    O(-4,-17,8,5,'#7c3aed'); // collar
+    // Circuit decoration
+    CTX.strokeStyle=`rgba(168,85,247,${glow})`;CTX.lineWidth=S;
+    CTX.beginPath();CTX.moveTo(-5*S,-14*S);CTX.lineTo(-2*S,-14*S);CTX.lineTo(-2*S,-10*S);CTX.lineTo(2*S,-10*S);CTX.stroke();
+    // n8n webhook symbol
+    P(-3,-13,6,1,'#a855f7'); P(-2,-15,4,1,'#a855f7'); P(-2,-11,4,1,'#a855f7');
+    // LEFT ARM — energy orb
+    O(-11,-15+al,4,9,'#5b21b6'); O(-11,-7+al,4,4,'#fde68a');
+    CTX.fillStyle=`rgba(168,85,247,${glow})`;CTX.beginPath();CTX.arc(-13*S,(-3+al)*S,4*S,0,Math.PI*2);CTX.fill();
+    CTX.fillStyle='#c4b5fd';CTX.beginPath();CTX.arc(-13*S,(-3+al)*S,2*S,0,Math.PI*2);CTX.fill();
+    // RIGHT ARM — tablet
+    O(7,-15-ar,4,9,'#5b21b6'); O(7,-7-ar,4,4,'#fde68a');
+    O(10,-15-ar,8,8,'#1c1c1c');
+    P(11,-14-ar,6,6,`rgba(168,85,247,${glow})`);
+    CTX.fillStyle='#fff';CTX.font=`bold ${S*1.3}px monospace`;CTX.textAlign='center';
+    CTX.fillText('n8n',14*S,(-10-ar)*S);CTX.textAlign='left';
+    // NECK + HEAD
+    O(-3,-20,6,4,'#fde68a');
+    O(-7,-31,14,12,'#fde68a');
+    // HAIR
+    P(-7,-31,14,5,'#1c1c1c');
+    P(-6,-28,3,4,'#1c1c1c'); P(3,-28,3,4,'#1c1c1c');
+    // EYES — glowing purple
+    P(-6,-25,4,3,'#fff'); P(2,-25,4,3,'#fff'); // whites
+    P(-5,-24,3,2,`rgba(168,85,247,${.7+.3*glow})`); P(3,-24,3,2,`rgba(168,85,247,${.7+.3*glow})`);
+    P(-5,-24,1,1,'#fff'); P(3,-24,1,1,'#fff');
+    P(-7,-28,9,2,'#1c1c1c'); P(1,-28,9,2,'#1c1c1c'); // brows
+    P(-3,-20,6,1,'#c2410c'); P(1,-21,3,1,'#c2410c'); // mouth
+    // WIZARD HAT
+    O(-7,-31,14,3,'#3b0764'); // brim
+    O(-5,-38,10,8,'#3b0764'); // cone low
+    O(-3,-44,6,7,'#4c1d95'); // cone mid
+    O(-1,-49,2,6,'#5b21b6'); // cone tip
+    P(-1,-50,2,2,'#fbbf24'); // star
+    P(0,-51,1,1,'#fff');
+    CTX.translate(0,b*S);
+}
+
+/* ─── 6: LEGAL ABOGADO — Sharp-suit Lawyer ─── */
+function drawLegal(t,state,id){
+    const [ll,lr,al,ar]=walkFrame(t,state);
+    const b=bob(t,id);
+    CTX.fillStyle='rgba(0,0,0,.35)';CTX.beginPath();CTX.ellipse(0,1*S,11*S,3*S,0,0,Math.PI*2);CTX.fill();
+    // SHOES
+    O(-5,ll-1,4,2,'#111'); O(1,lr-1,4,2,'#111');
+    // SUIT PANTS
+    O(-5,ll-8,4,8,'#1e1b4b'); O(1,lr-8,4,8,'#1e1b4b');
+    CTX.translate(0,-b*S);
+    // SUIT BODY
+    O(-7,-17,14,9,'#1e1b4b');
+    O(-5,-16,10,7,'#312e81');
+    // WHITE COLLAR + JABOT
+    O(-4,-17,8,5,'#fff');
+    P(-3,-16,6,3,'#e2e8f0');
+    // GOLD BADGE — scales of justice
+    P(-5,-13,4,4,'#fbbf24'); P(1,-13,4,4,'#fbbf24');
+    P(-3,-10,8,1,'#fbbf24');
+    // LEFT ARM — red CÓDIGO CIVIL book
+    O(-11,-15+al,4,9,'#1e1b4b'); O(-11,-7+al,4,4,'#fde68a');
+    O(-16,-16+al,8,14,'#dc2626');
+    P(-15,-15+al,6,12,'#b91c1c');
+    P(-15,-15+al,6,1,'#fbbf24'); P(-15,-3+al,6,1,'#fbbf24');
+    CTX.fillStyle='#fff';CTX.font=`bold ${S*1.1}px monospace`;CTX.textAlign='center';
+    CTX.fillText('CÓD.',-12*S,(-10+al)*S);
+    CTX.fillText('CIVIL',-12*S,(-7+al)*S);CTX.textAlign='left';
+    // RIGHT ARM — pointing/gesturing
+    O(7,-15-ar,4,9,'#1e1b4b'); O(7,-7-ar,4,4,'#fde68a');
+    P(10,-6-ar,2,2,'#fde68a'); P(12,-7-ar,2,2,'#fde68a'); P(14,-8-ar,2,2,'#fde68a'); // pointing finger
+    // NECK
+    O(-3,-20,6,4,'#fde68a');
+    // HEAD
+    O(-7,-31,14,12,'#fde68a');
+    // HAIR BUN (female/androgynous lawyer)
+    P(-7,-31,14,5,'#7c2d12');
+    P(-6,-28,3,3,'#7c2d12'); P(3,-28,3,3,'#7c2d12');
+    CTX.fillStyle='#7c2d12';CTX.beginPath();CTX.arc(0*S,-32*S,4*S,0,Math.PI*2);CTX.fill();
+    // ROUND GLASSES
+    CTX.strokeStyle='#111';CTX.lineWidth=S;
+    CTX.strokeRect(-6*S,-26*S,4*S,4*S); CTX.strokeRect(2*S,-26*S,4*S,4*S);
+    CTX.beginPath();CTX.moveTo(-2*S,-24*S);CTX.lineTo(2*S,-24*S);CTX.stroke();
+    P(-5,-25,2,2,'#111'); P(3,-25,2,2,'#111'); // pupils
+    P(-5,-25,1,1,'#fff'); P(3,-25,1,1,'#fff');
+    P(-7,-28,5,1,'#7c2d12'); P(2,-28,5,1,'#7c2d12'); // brows
+    P(-3,-20,6,1,'#c2410c');
+    // EARRINGS
+    CTX.fillStyle='#fbbf24';CTX.beginPath();CTX.arc(-8*S,-23*S,2*S,0,Math.PI*2);CTX.fill();
+    CTX.beginPath();CTX.arc(8*S,-23*S,2*S,0,Math.PI*2);CTX.fill();
+    CTX.translate(0,b*S);
+}
+
+/* ─── 7: CEO JAIME — Sitting executive ─── */
+function drawJaime(t, action){
+    // Sitting sprite — no legs animation, arms do typing/gesturing
+    const b=Math.sin(t*.05)*0.4; // slight breathing
+    const typing=action==='TYPE';
+    const al=typing?(Math.sin(t*.3)*2):0;
+    const ar=typing?(-Math.sin(t*.3)*2):0;
+    // No legs (behind desk) — just torso up
+    CTX.translate(0,-b*S);
+    // SUIT BODY (dark charcoal)
+    O(-7,-14,14,10,'#1c1c1c');
+    O(-5,-13,10,8,'#374151');
+    O(-4,-14,8,5,'#fff'); // white collar
+    P(-3,-13,6,3,'#e2e8f0');
+    P(-2,-14,2,8,'#dc2626'); // red tie
+    P(-1,-14,1,5,'#b91c1c');
+    // Gold cufflinks
+    P(-7,-10,2,2,'#fbbf24'); P(5,-10,2,2,'#fbbf24');
+    // LEFT ARM typing
+    O(-11,-12+al,4,7,'#1c1c1c'); O(-11,-6+al,4,4,'#fde68a');
+    // RIGHT ARM typing
+    O(7,-12-ar,4,7,'#1c1c1c'); O(7,-6-ar,4,4,'#fde68a');
+    // NECK + HEAD
+    O(-4,-18,8,5,'#fde68a');
+    O(-8,-30,16,13,'#fde68a');
+    // CEO HAIR — distinguished graying
+    O(-8,-30,16,5,'#374151');
+    P(-8,-27,16,2,'#94a3b8'); // silver streaks
+    P(-7,-27,3,4,'#374151'); P(4,-27,3,4,'#374151'); // sideburns
+    // FACE
+    EYES(-6,-24);
+    P(-3,-27,6,1,'#374151'); // strong brows
+    P(-4,-21,8,1,'#111'); // nose bridge
+    P(-3,-18,6,1,'#c2410c'); // mouth
+    P(-2,-19,2,1,'#c2410c'); // smile
+    // GLASSES optional — reading
+    CTX.strokeStyle='#94a3b8';CTX.lineWidth=S*.8;
+    CTX.strokeRect(-7*S,-25*S,5*S,3*S); CTX.strokeRect(2*S,-25*S,5*S,3*S);
+    // JAW — square, masculine
+    P(-8,-21,2,3,'#fde68a'); P(6,-21,2,3,'#fde68a'); // jaw sides
+    // LAPEL PIN (AustralDrone)
+    P(-5,-11,3,3,'#10b981');
+    P(-4,-10,1,1,'#fff');
+    CTX.translate(0,b*S);
+}
+
+/* ─── 8: DIR. NICOLE — Sitting marketing director ─── */
+function drawNicole(t, action){
+    const b=Math.sin(t*.05+1.2)*0.4;
+    const typing=action==='TYPE';
+    const al=typing?(Math.sin(t*.28)*2):0;
+    const ar=typing?(-Math.sin(t*.28)*2):0;
+    CTX.translate(0,-b*S);
+    // JACKET body (magenta/purple)
+    O(-7,-14,14,10,'#86198f');
+    O(-5,-13,10,8,'#a21caf');
+    O(-4,-14,8,5,'#fff'); // white blouse
+    P(-3,-13,6,3,'#f0f0f0');
+    // Gold necklace
+    CTX.strokeStyle='#fbbf24';CTX.lineWidth=S;
+    CTX.beginPath();CTX.arc(0*S,-10*S,5*S,Math.PI+.3,2*Math.PI-.3);CTX.stroke();
+    // LEFT ARM
+    O(-11,-12+al,4,7,'#86198f'); O(-11,-6+al,4,4,'#fde68a');
+    // RIGHT ARM — holding tablet/phone
+    O(7,-12-ar,4,7,'#86198f'); O(7,-6-ar,4,4,'#fde68a');
+    O(10,-14-ar,6,9,'#111');
+    P(11,-13-ar,4,7,'#e879f9');
+    P(11,-11-ar,4,1,'rgba(255,255,255,.6)');
+    // NECK
+    O(-4,-18,8,5,'#fde68a');
+    // HEAD
+    O(-8,-30,16,13,'#fde68a');
+    // HAIR — long, chestnut with highlights
+    O(-8,-30,16,5,'#7c2d12');
+    P(-9,-27,3,10,'#7c2d12'); P(6,-27,3,10,'#7c2d12'); // flowing sides
+    P(-8,-25,2,5,'#92400e'); P(6,-25,2,5,'#92400e');
+    P(-8,-28,4,2,'#d97706'); P(4,-28,4,2,'#d97706'); // highlights
+    // FACE
+    P(-6,-24,2,2,'#111'); P(2,-24,2,2,'#111'); // eyes with makeup
+    P(-7,-25,4,1,'rgba(147,51,234,.8)'); P(3,-25,4,1,'rgba(147,51,234,.8)'); // eyeshadow
+    P(-6,-24,1,1,'#fff'); P(2,-24,1,1,'#fff');
+    P(-7,-28,6,1,'#111'); P(2,-28,5,1,'#111'); // brows arched
+    P(-2,-21,4,2,'#111'); // nose
+    P(-3,-18,6,1,'#ec4899'); // lipstick
+    P(-2,-19,4,1,'#ec4899'); // smile
+    // EAR — drop earrings
+    CTX.fillStyle='#86198f';CTX.beginPath();CTX.arc(-9*S,-22*S,2*S,0,Math.PI*2);CTX.fill();
+    CTX.fillStyle='#86198f';CTX.beginPath();CTX.arc(9*S,-22*S,2*S,0,Math.PI*2);CTX.fill();
+    P(-10,-24,2,4,'#a855f7'); P(8,-24,2,4,'#a855f7'); // earring drops
+    CTX.translate(0,b*S);
+}
+
+// ══════════════════════════════════════════════
+//  AGENT DATA
+// ══════════════════════════════════════════════
+const AGENTS = [
+    {id:0,fn:drawCazador,name:'Cazador 360 Vendedores',short:'CAZADOR FB',role:'FB Groups Scraper — Llama 3.1 70B',color:'#fbbf24',
+     x:430,y:310,tx:430,ty:310,desk:{x:430,y:310},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Agente principal. Navega 17 grupos FB con Comet. Extrae macrolotes >5 Has, teléfonos OCR, links de perfil y post. Llama 3.1 70B async.',
+     prompt:'Scraper B2B de AustralDrone.CL. Detecta macrolotes sin MasterPlan 360° en Los Lagos. Extrae nombre, teléfono, superficie, precio. Califica con Llama 3.1 70B.',
+     file:'cazador_360_vendedores.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/cazador_360_vendedores.py',btn:'📂 PYTHON',
+     dialogues:['¡Macrolote 206 Has en Cochamó!','Grupo #7 — 14 posts calificados.','Comet cargando feed FB...','¡232 prospectos en CSV!','Llama 3.1 extrayendo OCR...']},
+    {id:1,fn:drawYapo,name:'Yapo Scanner Los Lagos',short:'YAPO.CL',role:'Yapo.cl Scraper — pág 1→5 >5 Has',color:'#f59e0b',
+     x:870,y:300,tx:870,ty:300,desk:{x:870,y:300},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Subprocess independiente scrapeando yapo.cl Los Lagos pág 1→5. Filtra >5 Has. Extrae título, precio, superficie, URL directa. Append al CSV.',
+     prompt:'Scraper de yapo.cl Los Lagos. Playwright headless pág 1→5 sort=f_added. Filtra superficie >50.000m² o >5 Ha. Append a VENDEDORES_MACROLOTES_MASTERPLAN_360.csv.',
+     file:'yapo_scanner.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/yapo_scanner.py',btn:'📂 PYTHON',
+     dialogues:['¡Yapo pág 3! 27 terrenos >5 Has.','Campo 120 Has Osorno encontrado.','Filtrando: >50.000m² ✓','48 nuevos terrenos al CSV.','Scrapeando los-lagos.1→5...']},
+    {id:2,fn:drawAstro,name:'Meta Ad Hunter',short:'META ADS',role:'Meta Ad Library API + Dark Posts',color:'#ef4444',
+     x:1190,y:200,tx:1190,ty:200,desk:{x:1190,y:200},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Consulta Meta Ad Library API. Obtiene ad_id. Playwright renderiza Dark Posts y resuelve permalink real del anuncio competidor.',
+     prompt:'Monitorea Meta Ad Library con términos inmobiliarios chilenos. Extrae ad_id, ad_text, snapshot URL. Playwright resuelve Dark Post URL real. Envía a comment_scraper.',
+     file:'core/meta_ad_hunter.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/core/meta_ad_hunter.py',btn:'📂 PYTHON',
+     dialogues:['¡Rival "Parcelas Alerce 2025" detectado!','Dark Post URL resuelto.','8 anuncios activos en Ad Library.','Enviando ad_id al scraper.','Campaña rival activa Puerto Varas!']},
+    {id:3,fn:drawRobot,name:'Comment Scraper n8n',short:'SCRAPER',role:'Dark Post Comments → n8n Webhook',color:'#66fcf1',
+     x:160,y:210,tx:160,ty:210,desk:{x:160,y:210},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Navega Dark Post, hace scroll, extrae comentarios públicos con intención de compra. POST JSON a n8n webhook. Backup local. Ley 19.628 compliance.',
+     prompt:'Extrae comentarios de Dark Posts. Filtra intención real de compra. HTTP POST payload a n8n /webhook/meta-comments-lead. Solo datos públicos (Ley 19.628).',
+     file:'core/comment_scraper.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/core/comment_scraper.py',btn:'📂 PYTHON',
+     dialogues:['¡25 comentarios extraídos!','POST → localhost:5678 ✓','Backup JSON guardado.','Ley 19.628: datos públicos ✓','Gemini Pro filtrando...']},
+    {id:4,fn:drawTroya,name:'Agente 14 — Caballo Troya',short:'TROYA B2B',role:'Propuestas Llama 3.1 70B + WSP',color:'#10b981',
+     x:490,y:450,tx:490,ty:450,desk:{x:490,y:450},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Top 25 leads del CSV. Llama 3.1 70B genera diagnóstico personalizado 4 frases. Panel HTML con WhatsApp 1-Click. Ley 19.496 compliance.',
+     prompt:'Asesor Comercial AustralDrone. Para [NOMBRE] con [SUPERFICIE] en [UBICACION]: diagnóstico consultivo 4 oraciones. MasterPlan 360 drone 4K. Tono amigable.',
+     file:'core/agente_14_caballo_troya.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/PANEL_CABALLO_DE_TROYA_B2B.html',btn:'📱 PANEL WSP',
+     link2:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/core/agente_14_caballo_troya.py',btn2:'📂 PYTHON',
+     dialogues:['¡Propuesta lista 145 Has Alerce!','Llama 3.1 generando diagnóstico...','WhatsApp 1-Click generado.','Ley 19.496: alerta operador ✓','El dueño abrió el WSP!']},
+    {id:5,fn:drawN8N,name:'n8n Gemini Pro Engine',short:'n8n ENGINE',role:'Webhooks + Gemini Pro Filter IA',color:'#a855f7',
+     x:160,y:450,tx:160,ty:450,desk:{x:160,y:450},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Workflow n8n: Webhook → Gemini Pro intent filter → Ley 19.628 check → Elimina no calificados → Telegram/Slack alerta humano.',
+     prompt:'n8n Workflow: Recibe JSON comentarios. Gemini Pro filtra intención de compra. Verifica Ley 19.628. Envía Telegram alert operador humano. NO spam automático.',
+     file:'n8n_workflows/n8n_qualified_leads_workflow.json',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/n8n_workflows/n8n_qualified_leads_workflow.json',btn:'📋 JSON n8n',
+     dialogues:['¡Webhook recibido!','Gemini Pro: intención detectada.','Ley 19.628 validada ✓','Alerta Telegram enviada.','Leads no calificados eliminados.']},
+    {id:6,fn:drawLegal,name:'Abogado Legal SAG/LGUC',short:'LEGAL',role:'SAG DL 3516 + Art.55 LGUC + Ley 19.628',color:'#a855f7',
+     x:160,y:120,tx:160,ty:120,desk:{x:160,y:120},state:'IDLE',action:'IDLE',actionTimer:0,
+     desc:'Normativa chilena: Ley 19.628 (datos públicos), Ley 19.496 (no spam), SAG DL 3516 (min 0.5 Has), Art. 55 LGUC (uso suelo).',
+     prompt:'Evalúa normativa predios rústicos chilenos. SAG DL 3516: min 0.5 Has. Art. 55 LGUC: uso urbano en rural. Ley 19.628: datos públicos. Ley 19.496: no spam.',
+     file:'core/comment_scraper.py',link:'file:///c:/Users/LyCoNs/Desktop/AGENTES%20IA/core/comment_scraper.py',btn:'⚖️ MÓDULO LEGAL',
+     dialogues:['SAG DL 3516: min 0.5 Has ✓','Ley 19.628: datos públicos ✓','Art. 55 LGUC revisado ✓','Ley 19.496: NO spam ✓','Ecosistema 100% legal ✓']}
+];
+
+// BOSS CHARACTERS (sitting, fixed positions)
+const BOSSES = [
+    {id:7,fn:drawJaime,name:'CEO Jaime',short:'CEO JAIME',role:'CEO AustralDrone.CL',color:'#fbbf24',
+     x:330,y:110,state:'IDLE',action:'TYPE',actionTimer:0,
+     desc:'CEO y fundador de AustralDrone.CL. Supervisa el ecosistema de agentes IA y toma decisiones estratégicas sobre prospectos calificados.',
+     prompt:'CEO visionario enfocado en escalar AustralDrone.CL via IA y automatización. Aprueba propuestas de inversión y MasterPlanes 360 para macrolotes >5 Has.',
+     dialogues:['¿Cuántos leads calificados hoy?','¡Excelente trabajo del equipo!','Quiero ver el reporte de Yapo.cl.','¿Nicole, cómo va el marketing?','¡Eso es un macrolote VIP!','Apruebo la propuesta para Alerce.']},
+    {id:8,fn:drawNicole,name:'Directora Nicole',short:'DIR. NICOLE',role:'Directora Marketing Digital & IA',color:'#ec4899',
+     x:1090,y:110,state:'IDLE',action:'TYPE',actionTimer:0,
+     desc:'Directora de Marketing Digital e IA de AustralDrone.CL. Diseña estrategias de Growth Hacking B2B y supervisa el performance de los agentes.',
+     prompt:'Directora de Marketing IA enfocada en Growth Hacking B2B. Analiza métricas de agentes, califica leads de Meta Ads y diseña las campañas de conversión via WhatsApp.',
+     dialogues:['¡El Meta Ad Hunter encontró 3 rivales!','Necesito más leads de Yapo.cl.','El Caballo de Troya convirtió un cliente.','Optimizando la estrategia de n8n.','¡Esas métricas son increíbles!','Dashboard actualizado con 232 leads.']}
+];
+
+const ALL_CHARS = [...AGENTS, ...BOSSES];
+
+const ZONES = {
+    MESA:  {x:710,y:295}, LEGAL: {x:160,y:130},
+    DRONES:{x:1200,y:130}, N8N:  {x:160,y:450},
+    CAFE:  {x:1200,y:450}, BOSS_J:{x:330,y:110}, BOSS_N:{x:1090,y:110}
+};
+
+// ══════════════════════════════════════════════
+//  ENVIRONMENT DRAWING
+// ══════════════════════════════════════════════
+function drawEnv(){
+    const glow=0.5+0.5*Math.sin(tick*.04);
+
+    // FLOOR — checkered tiles
+    for(let tx=0;tx<W;tx+=40){
+        for(let ty=0;ty<H;ty+=40){
+            G.fillStyle=(Math.floor(tx/40)+Math.floor(ty/40))%2===0?'#091018':'#0b1422';
+            G.fillRect(tx,ty,40,40);
+        }
+    }
+    // Grid
+    G.strokeStyle='rgba(102,252,241,.04)';G.lineWidth=1;
+    for(let x=0;x<W;x+=40){G.beginPath();G.moveTo(x,0);G.lineTo(x,H);G.stroke();}
+    for(let y=0;y<H;y+=40){G.beginPath();G.moveTo(0,y);G.lineTo(W,y);G.stroke();}
+
+    // TOP WALL
+    G.fillStyle='#111827';G.fillRect(0,0,W,72);
+    G.fillStyle='#1e293b';G.fillRect(0,60,W,12);
+    G.fillStyle='#66fcf1';G.fillRect(0,70,W,3);
+    // Windows
+    for(let wx=60;wx<W-60;wx+=720){
+        G.fillStyle='rgba(30,41,59,.6)';G.fillRect(wx,6,80,50);
+        G.strokeStyle='rgba(102,252,241,.2)';G.lineWidth=2;G.strokeRect(wx,6,80,50);
+        for(let bl=0;bl<5;bl++){G.fillStyle='rgba(102,252,241,.06)';G.fillRect(wx,6+bl*10,80,8);}
+    }
+
+    // ── 🖥️ TV WALL CIBERNÉTICO: MONITOR DE LEADS EN VIVO ──
+    const tvX = 420, tvY = 6, tvW = 580, tvH = 54;
+    G.fillStyle = '#050b14'; G.fillRect(tvX, tvY, tvW, tvH);
+    G.strokeStyle = `rgba(16,185,129,${.6 + glow * .4})`; G.lineWidth = 2; G.strokeRect(tvX, tvY, tvW, tvH);
+    // Bezel inner line
+    G.strokeStyle = 'rgba(102,252,241,.3)'; G.lineWidth = 1; G.strokeRect(tvX + 3, tvY + 3, tvW - 6, tvH - 6);
+    
+    // Header Bar
+    G.fillStyle = 'rgba(16,185,129,.2)'; G.fillRect(tvX + 4, tvY + 4, tvW - 8, 14);
+    G.fillStyle = '#10b981'; G.font = "6px 'Press Start 2P'"; G.fillText('🖥️ MONITOR LIVE LEADS B2B — AUSTRALDRONE.CL', tvX + 12, tvY + 14);
+    // Live Dot
+    G.fillStyle = glow > .5 ? '#10b981' : '#047857';
+    G.beginPath(); G.arc(tvX + tvW - 16, tvY + 11, 3.5, 0, Math.PI * 2); G.fill();
+
+    // Marquesina / Feed Ticker de Leads en Vivo
+    const displayLeads = window._latestTopLeads && window._latestTopLeads.length > 0 ? window._latestTopLeads : [
+        { nombre: 'Andrea Araya', superficie: '26 Has', ubicacion: 'Los Lagos', score: 90, telefono: '+56959264580' },
+        { nombre: 'Alejandro Aichele', superficie: '6 Has', ubicacion: 'Lago Ranco', score: 70, telefono: '971714769' },
+        { nombre: 'Luis A. Contreras', superficie: '5 Has', ubicacion: 'Cauquenes', score: 70, telefono: '979693242' }
+    ];
+    
+    const tickerSpeed = (tick * 0.8) % (displayLeads.length * 140);
+    G.save();
+    G.beginPath(); G.rect(tvX + 6, tvY + 20, tvW - 12, tvH - 24); G.clip();
+    displayLeads.forEach((ld, idx) => {
+        const itemY = tvY + 32 + idx * 16 - (tickerSpeed % (displayLeads.length * 16));
+        const finalY = itemY < tvY + 20 ? itemY + displayLeads.length * 16 : itemY;
+        if(finalY >= tvY + 18 && finalY <= tvY + tvH - 4) {
+            G.fillStyle = ld.score >= 80 ? '#66fcf1' : '#fbbf24';
+            G.font = "5.5px monospace";
+            const textStr = `🔥 [SCORE ${ld.score}/100] ${ld.nombre} | 🌾 ${ld.superficie || '—'} | 📍 ${ld.ubicacion || '—'} | 📞 ${ld.telefono || 'Ver perfil'}`;
+            G.fillText(textStr, tvX + 10, finalY);
+        }
+    });
+    G.restore();
+
+    // ── BOSS OFFICE: JAIME (top-left) ──
+    G.fillStyle=`rgba(251,191,36,${.07+glow*.03})`;G.fillRect(60,80,360,120);
+    G.strokeStyle=`rgba(251,191,36,${.5+glow*.4})`;G.lineWidth=3;G.strokeRect(60,80,360,120);
+    G.fillStyle='#fbbf24';G.font="7px 'Press Start 2P'";G.fillText('👔 CEO OFFICE — JAIME',65,73);
+    // Executive desk
+    G.fillStyle='#1e293b';G.fillRect(200,108,180,82);G.strokeStyle='#334155';G.lineWidth=2;G.strokeRect(200,108,180,82);
+    // Monitor on desk
+    G.fillStyle='#111';G.fillRect(220,112,80,50);
+    G.fillStyle=`rgba(251,191,36,${.3+glow*.5})`;G.fillRect(222,114,76,46);
+    G.fillStyle='rgba(0,0,0,.5)';G.font="5px monospace";
+    G.fillText('LEADS: 232',228,125);G.fillText('WH: '+whCount,228,133);G.fillText('CONV: 98%',228,141);G.fillText('STATUS: LIVE',228,149);
+    // Nameplate
+    G.fillStyle='#fbbf24';G.fillRect(220,180,100,8);
+    G.fillStyle='#111';G.font="5px 'Press Start 2P'";G.fillText('CEO JAIME',225,187);
+    // Coffee mug on desk
+    const steam=Math.sin(tick*.1)*2;
+    G.fillStyle='#7c2d12';G.fillRect(295,155,14,10);G.fillStyle='#fbbf24';G.fillRect(295,154,14,3);
+    G.strokeStyle='rgba(255,255,255,.3)';G.lineWidth=1.5;
+    G.beginPath();G.moveTo(302,152+steam);G.lineTo(304,148+steam);G.stroke();
+
+    // ── BOSS OFFICE: NICOLE (top-right) ──
+    G.fillStyle=`rgba(236,72,153,${.07+glow*.03})`;G.fillRect(1000,80,360,120);
+    G.strokeStyle=`rgba(236,72,153,${.5+glow*.4})`;G.lineWidth=3;G.strokeRect(1000,80,360,120);
+    G.fillStyle='#ec4899';G.font="7px 'Press Start 2P'";G.fillText('💄 MARKETING OFFICE — NICOLE',1005,73);
+    // Marketing desk
+    G.fillStyle='#1e293b';G.fillRect(1060,108,180,82);G.strokeStyle='#334155';G.lineWidth=2;G.strokeRect(1060,108,180,82);
+    // Two monitors
+    G.fillStyle='#111';G.fillRect(1065,112,75,45);G.fillStyle=`rgba(168,85,247,${.3+glow*.5})`;G.fillRect(1067,114,71,41);
+    G.fillStyle='rgba(0,0,0,.5)';G.font="5px monospace";
+    G.fillText('CTR: 4.8%',1072,125);G.fillText('CPL: $0.00',1072,133);G.fillText('CONV: ↑12%',1072,141);G.fillText('AGENTES: 7',1072,149);
+    G.fillStyle='#111';G.fillRect(1148,112,60,45);G.fillStyle=`rgba(236,72,153,${.3+glow*.5})`;G.fillRect(1150,114,56,41);
+    G.fillStyle='rgba(0,0,0,.5)';G.font="5px monospace";
+    G.fillText('FB GROUPS',1153,130);G.fillText('17 ACTIVOS',1153,140);G.fillText('META ADS',1153,150);
+    // Nameplate
+    G.fillStyle='#ec4899';G.fillRect(1080,180,110,8);
+    G.fillStyle='#111';G.font="5px 'Press Start 2P'";G.fillText('DIR. NICOLE',1085,187);
+
+    // ── LEGAL CORNER ──
+    G.fillStyle=`rgba(91,33,182,${.08+glow*.04})`;G.fillRect(60,200,250,140);
+    G.strokeStyle=`rgba(168,85,247,${.5+glow*.4})`;G.lineWidth=3;G.strokeRect(60,200,250,140);
+    G.fillStyle='#a855f7';G.font="7px 'Press Start 2P'";G.fillText('DEPT. LEGAL (SAG/LGUC)',62,193);
+    G.fillStyle='#1e293b';G.fillRect(68,215,230,110);G.strokeStyle='#000';G.lineWidth=2;G.strokeRect(68,215,230,110);
+    [['#dc2626','LEY 19.628'],['#f59e0b','DL 3516 SAG'],['#3b82f6','ART 55 LGUC'],['#059669','LEY 19.496']].forEach(([c,l],i)=>{
+        G.fillStyle=c;G.fillRect(78,222+i*22,30,16);
+        G.fillStyle='#fff';G.font="5px 'Press Start 2P'";G.fillText(l,114,233+i*22);
+    });
+
+    // ── STRATEGY TABLE ──
+    G.fillStyle=`rgba(16,185,129,${.07+glow*.04})`;G.fillRect(520,230,380,160);
+    G.strokeStyle=`rgba(102,252,241,${.4+glow*.5})`;G.lineWidth=3;G.strokeRect(520,230,380,160);
+    G.fillStyle='rgba(30,41,59,.7)';G.fillRect(525,235,370,150);
+    G.strokeStyle=`rgba(46,204,113,${.3+glow*.3})`;G.lineWidth=1;
+    G.beginPath();G.moveTo(520,310);G.lineTo(900,310);G.stroke();
+    G.beginPath();G.moveTo(710,230);G.lineTo(710,390);G.stroke();
+    [[530,240,170,65],[715,240,170,65],[530,315,170,65],[715,315,170,65]].forEach(([rx,ry,rw,rh])=>{
+        G.fillStyle=`rgba(16,185,129,${.05+glow*.04})`;G.fillRect(rx,ry,rw,rh);
+        G.strokeStyle=`rgba(16,185,129,${.4+glow*.3})`;G.lineWidth=1.5;G.strokeRect(rx,ry,rw,rh);
+    });
+    G.fillStyle='#66fcf1';G.font="7px 'Press Start 2P'";G.fillText('MESA ESTRATEGIA 360°',524,224);
+
+    // ── DRONE STATION ──
+    G.fillStyle=`rgba(127,29,29,${.07+glow*.03})`;G.fillRect(1000,200,370,140);
+    G.strokeStyle=`rgba(239,68,68,${.5+glow*.4})`;G.lineWidth=3;G.strokeRect(1000,200,370,140);
+    G.fillStyle='#ef4444';G.font="7px 'Press Start 2P'";G.fillText('TALLER DRONES 4K',1008,193);
+    G.fillStyle='#1e293b';G.fillRect(1010,210,350,115);G.strokeStyle='#000';G.lineWidth=2;G.strokeRect(1010,210,350,115);
+    const dy=Math.sin(tick*.08)*5;
+    G.fillStyle='#334155';G.fillRect(1100,230+dy,120,20);
+    const pr=tick*.4;
+    [1110,1210].forEach(px=>{
+        G.save();G.translate(px,228+dy);G.rotate(pr);
+        G.fillStyle='rgba(148,163,184,.9)';G.fillRect(-14,-3,28,6);G.rotate(Math.PI/2);G.fillRect(-14,-3,28,6);
+        G.restore();
+    });
+    G.fillStyle='#ef4444';G.fillRect(1148,240+dy,24,12);
+    G.fillStyle='#000';G.beginPath();G.arc(1160,246+dy,5,0,Math.PI*2);G.fill();
+    G.fillStyle='#1e40af';G.beginPath();G.arc(1160,246+dy,3,0,Math.PI*2);G.fill();
+
+    // ── N8N SERVER ROOM ──
+    G.fillStyle=`rgba(120,53,15,${.07+glow*.03})`;G.fillRect(60,400,250,145);
+    G.strokeStyle=`rgba(251,191,36,${.4+glow*.4})`;G.lineWidth=3;G.strokeRect(60,400,250,145);
+    G.fillStyle='#fbbf24';G.font="7px 'Press Start 2P'";G.fillText('SERVIDORES n8n',65,393);
+    for(let i=0;i<4;i++){
+        G.fillStyle='#1e293b';G.fillRect(70,410+i*28,130,22);G.strokeStyle='#000';G.lineWidth=1;G.strokeRect(70,410+i*28,130,22);
+        G.fillStyle='#374151';G.fillRect(74,414+i*28,35,14);
+        const l=(tick+i*8)%28<14?'#10b981':'#065f46';G.fillStyle=l;G.fillRect(204,415+i*28,10,10);
+        G.fillStyle='#fbbf24';G.font="4px monospace";G.fillText(`rack-${i+1} LIVE`,115,424+i*28);
+    }
+    G.fillStyle='#475569';G.font="5px 'Press Start 2P'";G.fillText('localhost:5678',70,543);
+
+    // ── CAFETERIA ──
+    G.fillStyle=`rgba(6,78,59,${.06+glow*.03})`;G.fillRect(1000,400,370,145);
+    G.strokeStyle=`rgba(16,185,129,${.4+glow*.3})`;G.lineWidth=2;G.strokeRect(1000,400,370,145);
+    G.fillStyle='#10b981';G.font="7px 'Press Start 2P'";G.fillText('CAFETERÍA & LOUNGE',1006,393);
+    [[1020,425],[1090,445],[1160,425],[1230,445],[1300,425]].forEach(([tx,ty])=>{
+        G.fillStyle='#1e293b';G.fillRect(tx,ty,34,24);G.strokeStyle='#334155';G.lineWidth=2;G.strokeRect(tx,ty,34,24);
+        G.fillStyle='#7c2d12';G.fillRect(tx+9,ty+7,16,12);
+        G.fillStyle='#fbbf24';G.fillRect(tx+9,ty+6,16,4);
+        G.strokeStyle='rgba(255,255,255,.3)';G.lineWidth=1.5;
+        const sv=Math.sin(tick*.07+tx)*2;
+        G.beginPath();G.moveTo(tx+17,ty+5+sv);G.lineTo(tx+19,ty+1+sv);G.stroke();
+    });
+    // Couch area
+    G.fillStyle='#1e293b';G.fillRect(1010,490,350,40);G.strokeStyle='#334155';G.lineWidth=2;G.strokeRect(1010,490,350,40);
+    G.fillStyle='#166534';G.fillRect(1014,494,342,32); // sofa cushions
+    G.fillStyle='#15803d';G.fillRect(1014,494,342,8);
+}
+
+// ══════════════════════════════════════════════
+//  AGENT RENDERING
+// ══════════════════════════════════════════════
+function renderAgent(a){
+    G.save();
+    G.translate(a.x, a.y);
+    // Selection ring
+    if(a.id===selId){
+        G.strokeStyle=a.color;G.lineWidth=2.5;
+        G.shadowColor=a.color;G.shadowBlur=16;
+        G.beginPath();G.arc(0,4,28,0,Math.PI*2);G.stroke();
+        G.shadowBlur=0;
+    }
+    CTX=G;
+    a.fn(tick, a.state, a.id);
+    // Name tag
+    G.fillStyle='rgba(0,0,0,.82)';G.fillRect(-38,24,76,14);
+    G.strokeStyle=a.color;G.lineWidth=1.5;G.strokeRect(-38,24,76,14);
+    G.fillStyle=a.color;G.font="bold 8px 'JetBrains Mono', monospace";G.textAlign='center';G.fillText(a.short,0,33);G.textAlign='left';
+    G.restore();
+}
+
+function renderBoss(b){
+    G.save();
+    G.translate(b.x, b.y);
+    // Selection ring
+    if(b.id===selId){
+        G.strokeStyle=b.color;G.lineWidth=2.5;
+        G.shadowColor=b.color;G.shadowBlur=16;
+        G.beginPath();G.arc(0,4,28,0,Math.PI*2);G.stroke();
+        G.shadowBlur=0;
+    }
+    // ─── CEO JAIME: usa sprite sheet si está cargado ───
+    if(b.id===7 && window._ceoSprite){
+        window._ceoSprite.update(performance.now());
+        window._ceoSprite.draw(G, 0, 0, 82); // 82px tall
+        // Anim label badge
+        G.fillStyle='rgba(0,0,0,.75)';
+        G.fillRect(-30,-90,60,10);
+        G.fillStyle='#fbbf24';
+        G.font="4px 'Press Start 2P'";
+        G.textAlign='center';
+        G.fillText(window._ceoSprite.animLabel, 0, -82);
+        G.textAlign='left';
+    } else {
+        CTX=G;
+        b.fn(tick, b.action);
+    }
+    // Nameplate
+    G.fillStyle='rgba(0,0,0,.85)';G.fillRect(-40,24,80,14);
+    G.strokeStyle=b.color;G.lineWidth=1.5;G.strokeRect(-40,24,80,14);
+    G.fillStyle=b.color;G.font="bold 8.5px 'JetBrains Mono', monospace";G.textAlign='center';G.fillText(b.short,0,33);G.textAlign='left';
+    G.restore();
+}
+
+// ══════════════════════════════════════════════
+//  PARTICLES
+// ══════════════════════════════════════════════
+function spawnP(x,y,color,n=12){
+    for(let i=0;i<n;i++) parts.push({x,y,vx:(Math.random()-.5)*7,vy:(Math.random()-.5)*6-1.5,life:1,dec:.02+Math.random()*.018,sz:2+Math.random()*4,c:color});
+}
+function drawP(){
+    parts=parts.filter(p=>p.life>0);
+    parts.forEach(p=>{
+        p.x+=p.vx;p.y+=p.vy;p.vy+=.12;p.life-=p.dec;
+        G.globalAlpha=p.life;G.fillStyle=p.c;G.fillRect(p.x-p.sz/2,p.y-p.sz/2,p.sz,p.sz);
+        G.globalAlpha=1;
+    });
+}
+
+// ══════════════════════════════════════════════
+//  MAIN LOOP
+// ══════════════════════════════════════════════
+function loop(){
+    tick++;
+    G.clearRect(0,0,W,H);
+    drawEnv();
+
+    // Update & render agents
+    AGENTS.forEach(a=>{
+        const dx=a.tx-a.x,dy=a.ty-a.y,dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist>2.5){a.x+=dx/dist*2.4;a.y+=dy/dist*2.4;a.state='WALK';if(tick%22===0&&Math.random()>.7)spawnP(a.x,a.y,a.color,3);}
+        else{a.x=a.tx;a.y=a.ty;a.state='IDLE';}
+        // Action timer — idle actions every ~6s
+        a.actionTimer--;
+        if(a.actionTimer<=0){a.action=(['IDLE','IDLE','DRINK','TYPE','WAVE'])[Math.floor(Math.random()*5)];a.actionTimer=180+Math.random()*200;}
+        renderAgent(a);
+        syncBubble(a);
+    });
+
+    // Render bosses (fixed)
+    BOSSES.forEach(b=>{
+        b.actionTimer--;
+        if(b.actionTimer<=0){b.action=Math.random()>.4?'TYPE':'IDLE';b.actionTimer=100+Math.random()*180;}
+        renderBoss(b);
+        syncBubble(b);
+    });
+
+    // ── Detección de Proximidad CEO ↔ Agentes (Tecla [E]) ──
+    const ceo = BOSSES[0]; // CEO Jaime
+    let nearAgent = null;
+    AGENTS.forEach(a=>{
+        const dist = Math.sqrt((ceo.x - a.x)**2 + (ceo.y - a.y)**2);
+        if(dist < 85){
+            nearAgent = a;
+            // Render prompt badge [E] sobre el agente
+            G.save();
+            G.translate(a.x, a.y - 65);
+            G.fillStyle = 'rgba(0,0,0,.85)';
+            G.fillRect(-45, -12, 90, 16);
+            G.strokeStyle = '#10b981';
+            G.lineWidth = 1.5;
+            G.strokeRect(-45, -12, 90, 16);
+            G.fillStyle = '#10b981';
+            G.font = "5px 'Press Start 2P'";
+            G.textAlign = 'center';
+            G.fillText('⌨️ PRESIONA [E]', 0, 0);
+            G.restore();
+        }
+    });
+    window._nearAgent = nearAgent;
+
+    // Auto-dialogue every ~4.5s
+    if(tick%270===0){
+        const all=Math.random()>.3?AGENTS:BOSSES;
+        const a=all[Math.floor(Math.random()*all.length)];
+        speak(a.id, a.dialogues[Math.floor(Math.random()*a.dialogues.length)]);
+    }
+    drawP();
+    requestAnimationFrame(loop);
+}
+
+// ══════════════════════════════════════════════
+//  BUBBLE + LOG
+// ══════════════════════════════════════════════
+const bubTimers={};
+function syncBubble(a){
+    const el=document.getElementById(`b${a.id}`);if(!el)return;
+    const r=GC.getBoundingClientRect();
+    el.style.left=`${a.x*(r.width/W)}px`;
+    el.style.top=`${(a.y-52)*(r.height/H)}px`;
+}
+function speak(id,msg,ms=4800){
+    const el=document.getElementById(`b${id}`);if(!el)return;
+    el.innerText=msg;el.classList.add('on');
+    clearTimeout(bubTimers[id]);
+    bubTimers[id]=setTimeout(()=>el.classList.remove('on'),ms);
+    const a=ALL_CHARS.find(c=>c.id===id);
+    log(a?a.name:'SISTEMA',msg,a?a.color:'#66fcf1');
+}
+function log(name,msg,color='#66fcf1'){
+    const box=document.getElementById('logBox');
+    const d=document.createElement('div');
+    const ts=new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    d.innerHTML=`<span style="color:${color};font-weight:bold">[${ts}] ${name}</span> — ${msg}`;
+    box.prepend(d);
+    while(box.children.length>60)box.removeChild(box.lastChild);
+}
+function incWH(){whCount++;document.getElementById('hW').innerText=whCount;document.getElementById('kW').innerText=whCount;}
+function incRep(){repCount++;document.getElementById('hR').innerText=repCount;}
+
+// ══════════════════════════════════════════════
+//  WEBHOOK EVENTS
+// ══════════════════════════════════════════════
+function ev_loteo(){
+    incWH();
+    AGENTS[0].tx=ZONES.MESA.x-60;AGENTS[0].ty=ZONES.MESA.y+30;
+    AGENTS[1].tx=ZONES.MESA.x+60;AGENTS[1].ty=ZONES.MESA.y+30;
+    speak(0,'¡WEBHOOK! Loteo 87 Has Alerce →Mesa Central.');
+    setTimeout(()=>{speak(1,'¡Yapo.cl confirma 87 Has!');spawnP(ZONES.MESA.x,ZONES.MESA.y,'#10b981',20);},2000);
+    // Boss reacts
+    setTimeout(()=>speak(7,'¡87 Has en Alerce! Desplieguen MasterPlan 360.'),3000);
+}
+function ev_legal(){
+    incWH();
+    AGENTS[6].tx=ZONES.LEGAL.x+60;AGENTS[6].ty=ZONES.LEGAL.y+40;
+    speak(6,'⚖️ CONSULTA LEGAL: Validando SAG DL 3516 y Art.55 LGUC.');
+    spawnP(ZONES.LEGAL.x+110,ZONES.LEGAL.y+60,'#a855f7',15);
+    setTimeout(()=>speak(8,'¡El Abogado verificó la normativa legal!'),2000);
+}
+function ev_troya(){
+    incWH();
+    AGENTS[4].tx=ZONES.MESA.x;AGENTS[4].ty=ZONES.MESA.y+50;
+    speak(4,'🐴 TROYA: Generando propuesta Llama 3.1 70B...');
+    setTimeout(()=>{speak(5,'⚡ n8n: Procesando con Gemini Pro...');},2200);
+    setTimeout(()=>{speak(4,'¡Propuesta lista! WSP 1-Click generado.');spawnP(ZONES.MESA.x,ZONES.MESA.y+50,'#10b981',18);},4200);
+    setTimeout(()=>speak(7,'¡Excelente! Aprobada la propuesta Caballo de Troya.'),5000);
+}
+function ev_report(){
+    incRep();incWH();
+    // All agents walk toward bosses
+    AGENTS[0].tx=ZONES.BOSS_J.x+80;AGENTS[0].ty=ZONES.BOSS_J.y+40;
+    AGENTS[1].tx=ZONES.BOSS_N.x-80;AGENTS[1].ty=ZONES.BOSS_N.y+40;
+    AGENTS[3].tx=ZONES.BOSS_J.x+50;AGENTS[3].ty=ZONES.BOSS_J.y+50;
+    AGENTS[5].tx=ZONES.BOSS_N.x-50;AGENTS[5].ty=ZONES.BOSS_N.y+50;
+    speak(0,'📊 Entregando reporte al CEO Jaime...');
+    speak(1,'📊 Reportando métricas a Dir. Nicole...');
+    setTimeout(()=>{speak(7,'¡Reportes recibidos! 232 leads calificados.');spawnP(ZONES.BOSS_J.x,ZONES.BOSS_J.y,'#fbbf24',20);},3000);
+    setTimeout(()=>{speak(8,'¡Excelentes métricas! CTR 4.8%. Siguiente fase.');spawnP(ZONES.BOSS_N.x,ZONES.BOSS_N.y,'#ec4899',20);},3500);
+}
+function ev_party(){
+    incWH();
+    const cols=['#fbbf24','#f59e0b','#ef4444','#66fcf1','#10b981','#a855f7','#a855f7','#fbbf24','#ec4899'];
+    ALL_CHARS.forEach((a,i)=>{
+        setTimeout(()=>{
+            if(i<7){a.tx=ZONES.MESA.x-180+i*62;a.ty=ZONES.MESA.y+80;}
+            speak(a.id,'🎉 '+(i===7?'¡CONVERSIÓN APROBADA CEO!':i===8?'¡Estrategia de marketing exitosa!':'¡CONVERSIÓN WSP EXITOSA!'));
+            spawnP(a.x,a.y,cols[i],16);
+        },i*280);
+    });
+    setTimeout(()=>{for(let i=0;i<8;i++)setTimeout(()=>spawnP(ZONES.MESA.x+(i-4)*50,ZONES.MESA.y,cols[i%cols.length],24),i*160);},800);
+}
+
+// ══════════════════════════════════════════════
+//  CANVAS CLICK
+// ══════════════════════════════════════════════
+GC.addEventListener('click',e=>{
+    const r=GC.getBoundingClientRect();
+    const cx=(e.clientX-r.left)*(W/r.width),cy=(e.clientY-r.top)*(H/r.height);
+    let hit=false;
+    ALL_CHARS.forEach(a=>{
+        if(Math.sqrt((cx-a.x)**2+(cy-a.y)**2)<32){
+            hit=true;selId=a.id;
+            document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('active'));
+            document.querySelector(`.rcard[data-id="${a.id}"]`)?.classList.add('active');
+            openModal(a);spawnP(a.x,a.y-20,a.color,10);
+        }
+    });
+    if(!hit&&selId<7){const a=AGENTS[selId];a.tx=cx;a.ty=cy;speak(a.id,'¡Me muevo!');}
+});
+
+// ══════════════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════════════
+let mAnim=null;
+function openModal(a){
+    document.getElementById('mN').innerText=a.name;
+    document.getElementById('mR').innerText=a.role;
+    document.getElementById('mF').innerText='📂 '+(a.file||'personaje.js');
+    document.getElementById('mD').innerText=a.desc;
+    document.getElementById('mS').innerText=a.state==='WALK'?'⚡ En movimiento':'✅ En posición';
+    document.getElementById('mP').innerText=a.prompt;
+    // Log de actividad REAL desde agentRealLogs
+    const realLogs = agentRealLogs[a.id] || [];
+    const rlEl = document.getElementById('mRealLog');
+    rlEl.innerText = realLogs.length > 0 ? realLogs.join('\n') : 'Sin actividad reciente. Ejecuta el agente para ver logs en vivo.';
+    // Cargar historial de chat personal CEO↔Agente
+    currentModalAgentId = String(a.id);
+    const history = modalChatHistory[currentModalAgentId] || [];
+    const chatEl = document.getElementById('mChatHistory');
+    chatEl.innerHTML = '';
+    history.forEach(msg => appendModalChatMsg(msg.role, msg.text, msg.sender, false));
+    chatEl.scrollTop = chatEl.scrollHeight;
+    // Animated sprite in modal
+    const mc=document.getElementById('mcanv');
+    const mx=mc.getContext('2d');
+    let mt=0;
+    clearInterval(mAnim);
+    mAnim=setInterval(()=>{
+        mt++;
+        mx.clearRect(0,0,96,116);
+        mx.save();mx.translate(48,92);
+        CTX=mx;
+        if(a.fn===drawJaime)a.fn(mt,'TYPE');
+        else if(a.fn===drawNicole)a.fn(mt,'TYPE');
+        else a.fn(mt,'IDLE',a.id||0);
+        CTX=G;
+        mx.restore();
+    },1000/30);
+    const btns=document.getElementById('mB');btns.innerHTML='';
+    
+    const isSearchAgent = a.id === 0 || a.id === 1 || a.id === 2 || a.id === 4;
+    const isFiltroAgent = a.name && a.name.toLowerCase().includes('filtro');
+
+    if (isSearchAgent) {
+        // Botón Ejecución Nube (Meta API)
+        const bCloud = document.createElement('button');
+        bCloud.className = 'mbtn';
+        bCloud.style.background = 'var(--neon)';
+        bCloud.style.color = '#000';
+        bCloud.innerHTML = '☁️ EJECUTAR EN NUBE (META API)';
+        bCloud.onclick = () => runAgentWithMode(a, 'meta');
+        btns.appendChild(bCloud);
+
+        // Botón Ejecución PC Local (Scraper)
+        const bPC = document.createElement('button');
+        bPC.className = 'mbtn';
+        bPC.style.background = '#f59e0b';
+        bPC.style.color = '#000';
+        bPC.innerHTML = '💻 EJECUTAR EN PC LOCAL (SCRAPER)';
+        bPC.onclick = () => runAgentWithMode(a, 'pc');
+        btns.appendChild(bPC);
+    } else if (isFiltroAgent) {
+        // Botón Ejecución Filtro/Analista
+        const bFilter = document.createElement('button');
+        bFilter.className = 'mbtn';
+        bFilter.style.background = 'var(--neon)';
+        bFilter.style.color = '#000';
+        bFilter.innerHTML = '🧠 INICIAR ANÁLISIS B2B & SCORING';
+        bFilter.onclick = () => runAgentWithMode(a, 'filter');
+        btns.appendChild(bFilter);
+    } else {
+        // Otros agentes (Abogada, Stanley Yapo, Creed Tech)
+        const bPC = document.createElement('button');
+        bPC.className = 'mbtn';
+        bPC.style.background = '#f59e0b';
+        bPC.style.color = '#000';
+        bPC.innerHTML = '💻 EJECUTAR EN PC LOCAL';
+        bPC.onclick = () => runAgentWithMode(a, 'pc');
+        btns.appendChild(bPC);
+    }
+
+    if(a.link){const b=document.createElement('a');b.className='mbtn';b.href=a.link;b.target='_blank';b.innerText=a.btn||'📂 REPORTE';btns.appendChild(b);}
+    const bc=document.createElement('button');bc.className='mbtn mbtn-r';bc.innerText='✕ CERRAR';bc.onclick=closeModal;btns.appendChild(bc);
+    // Focus en input de chat
+    setTimeout(()=>document.getElementById('mChatInput').focus(),100);
+    document.getElementById('modal').classList.add('on');
+}
+
+function runAgentWithMode(agent, mode) {
+    const agName = agent.name || 'Agente';
+    let targetMsg = '';
+    
+    if (mode === 'meta') {
+        targetMsg = `☁️ ¡A sus órdenes JEFE! Iniciando consulta del ${agName} en la Nube de Meta (Biblioteca de Anuncios / Ad Library API)...`;
+    } else if (mode === 'filter') {
+        targetMsg = `🧠 ¡Entendido JEFE! Iniciando análisis de leads calificados y enriquecimiento B2B con Llama 3.1 70B...`;
+    } else {
+        targetMsg = `💻 ¡Entendido JEFE! Transmitiendo orden de ejecución del ${agName} por WebSocket a la PC Trabajadora activa (Facebook Scraper)...`;
+    }
+    
+    appendModalChatMsg('agent', targetMsg, `🤖 ${agName}`);
+    spAddMsg('agent', agName.toUpperCase(), ` «${targetMsg}»`, agent.color || '#66fcf1');
+    if(agent.id !== undefined && agent.id !== null) speak(agent.id, targetMsg);
+
+    // Mandar trigger
+    if (mode === 'meta') {
+        fetch('/api/trigger-filter', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'meta' }) })
+        .catch(e => console.log('Meta trigger sent'));
+    } else if (mode === 'filter') {
+        fetch('/api/trigger-filter', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ mode: 'filter' }) })
+        .catch(e => console.log('Filter trigger sent'));
+    } else {
+        const agentApiId = Object.keys(agentIdMap).find(k=>String(agentIdMap[k])===String(agent.id))||'cazador360';
+        fetch('/api/run-agent', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ agent: agentApiId }) })
+        .catch(e => console.log('PC Worker trigger sent'));
+    }
+}
+function closeModal(){document.getElementById('modal').classList.remove('on');clearInterval(mAnim);currentModalAgentId=null;}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target===document.getElementById('modal'))closeModal();});
+// Enter key en chat modal
+document.getElementById('mChatInput')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendModalChat();}});
+// Enter key en panel lateral
+document.getElementById('sp-chat-input')?.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendPanelChat();}});
+
+// ══════════════════════════════════════════════
+//  ROSTER BUILD (agents + bosses)
+// ══════════════════════════════════════════════
+let rTick=0;
+const rAnims={};
+function buildRoster(){
+    const cont=document.getElementById('roster');
+    ALL_CHARS.forEach(a=>{
+        const card=document.createElement('div');
+        card.className='rcard'+(a.id===0?' active':'');
+        card.dataset.id=a.id;
+        card.onclick=()=>{
+            document.querySelectorAll('.rcard').forEach(c=>c.classList.remove('active'));
+            card.classList.add('active');selId=a.id;openModal(a);
+        };
+        const rc=document.createElement('canvas');
+        rc.className='rcanvas';rc.width=44;rc.height=56;rc.id=`rc${a.id}`;
+        const dot=document.createElement('div');
+        dot.className='rdot d-idle';dot.id=`dot${a.id}`;
+        const nm=document.createElement('div');
+        nm.className='rname';nm.innerText=a.short;
+        card.appendChild(rc);card.appendChild(dot);card.appendChild(nm);
+        cont.appendChild(card);
+    });
+    // Animate roster mini-canvases
+    function animRoster(){
+        rTick++;
+        ALL_CHARS.forEach(a=>{
+            const rc=document.getElementById(`rc${a.id}`);if(!rc)return;
+            const rx=rc.getContext('2d');
+            rx.clearRect(0,0,44,56);
+            rx.save();rx.translate(22,46);
+            CTX=rx;
+            if(a.fn===drawJaime)a.fn(rTick,'TYPE');
+            else if(a.fn===drawNicole)a.fn(rTick,'TYPE');
+            else a.fn(rTick,'IDLE',a.id||0);
+            CTX=G;
+            rx.restore();
+        });
+        requestAnimationFrame(animRoster);
+    }
+    animRoster();
+}
+
+function setDot(id,working){const d=document.getElementById(`dot${id}`);if(d)d.className='rdot '+(working?'d-work':'d-idle');}
+
+buildRoster();
+loop();
+setInterval(()=>{const b=BOSSES[Math.floor(Math.random()*2)];speak(b.id,b.dialogues[Math.floor(Math.random()*b.dialogues.length)]);},12000);
+
+// ══════════════════════════════════════════════
+//  ESTADO REAL DE AGENTES + CHAT PERSISTENTE
+// ══════════════════════════════════════════════
+const agentIdMap = {
+    'cazador360':0,'cazadorventas':1,'yapo':1,'troya':4,
+    'scraper':3,'legal':6,'tech':5,'filtro_analista':null
+};
+const agentRealLogs = {}; // agentId numérico → array de logs reales
+const modalChatHistory = {}; // agentId string → [{role,text,sender}]
+const panelChatHistory = []; // log general del panel
+let currentModalAgentId = null;
+let spLeadCount = 0;
+let currentTab = 'log';
+
+// ── Panel lateral toggle ──
+function toggleSidePanel(){
+    const panel = document.getElementById('side-panel');
+    const toggle = document.getElementById('side-panel-toggle');
+    panel.classList.toggle('open');
+    toggle.classList.toggle('open');
+}
+function switchTab(tab){
+    currentTab = tab;
+    document.querySelectorAll('.sp-tab').forEach(t=>t.classList.remove('active'));
+    document.getElementById(`tab-${tab}`).classList.add('active');
+    document.getElementById('sp-log-content').style.display = tab==='log' ? 'flex' : 'none';
+    document.getElementById('sp-leads-content').style.display = tab==='leads' ? 'flex' : 'none';
+    document.getElementById('sp-chat-content').style.display = tab==='chat' ? 'flex' : 'none';
+}
+
+// ── Agregar mensaje al panel lateral ──
+function spAddMsg(type, sender, text, color){
+    const el = document.createElement('div');
+    el.className = `sp-msg ${type}`;
+    const ts = new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    el.innerHTML = `<b style="color:${color||'#94a3b8'}">${sender}</b>${text}<span class="ts">${ts}</span>`;
+    const cont = document.getElementById('sp-log-content');
+    cont.prepend(el);
+    while(cont.children.length > 80) cont.removeChild(cont.lastChild);
+    // Si panel cerrado, mostrar badge pulsante en toggle
+    if(!document.getElementById('side-panel').classList.contains('open')){
+        document.getElementById('side-panel-toggle').style.background='var(--orn)';
+        clearTimeout(window._spBadgeTimer);
+        window._spBadgeTimer=setTimeout(()=>document.getElementById('side-panel-toggle').style.background='var(--neon)',3000);
+    }
+}
+
+// ── Mostrar card de lead en panel ──
+function spAddLeadCard(lead, rank){
+    spLeadCount++;
+    document.getElementById('sp-lead-count').innerText = `${spLeadCount} LEADS`;
+    const card = document.createElement('div');
+    card.className = 'sp-lead-card';
+    const scoreColor = lead.score_final>=80?'var(--grn)':lead.score_final>=60?'var(--yel)':'var(--orn)';
+    card.innerHTML = `
+        <div class="rank">#${rank||lead.rank||'?'} — <span class="lead-score" style="color:${scoreColor}">${lead.score_final||lead.score||0}/100</span></div>
+        <div class="lead-name">${lead.nombre||lead.name||'—'}</div>
+        <div class="lead-info">
+            📞 ${lead.telefono||'Ver perfil'}<br>
+            📍 ${lead.ubicacion||'—'}<br>
+            🌾 ${lead.superficie||'—'}<br>
+            🔥 ${lead.nivel_interes_b2b||lead.nivel||'—'}
+        </div>
+        ${lead.diagnostico?`<div style="margin-top:5px;font-size:8.5px;color:#64748b;border-top:1px solid #1e293b;padding-top:4px;">${lead.diagnostico}</div>`:''}
+        <div class="lead-actions">
+            ${lead.link_perfil?`<a class="lead-btn profile" href="${lead.link_perfil}" target="_blank">👤 PERFIL</a>`:''}
+            ${lead.link_post?`<a class="lead-btn wsp" href="${lead.link_post}" target="_blank">📋 POST</a>`:''}
+        </div>`;
+    const cont = document.getElementById('sp-leads-content');
+    cont.prepend(card);
+}
+
+// ── Chat panel lateral → agente ──
+async function sendPanelChat(){
+    const input = document.getElementById('sp-chat-input');
+    const agentId = document.getElementById('sp-agent-select').value;
+    const msg = input.value.trim();
+    if(!msg) return;
+    input.value='';
+    // Mostrar mensaje del CEO en panel chat
+    const ceoEl = document.createElement('div');
+    ceoEl.className='sp-msg ceo';
+    ceoEl.innerHTML=`<b style="color:var(--yel)">CEO JAIME → ${agentId.toUpperCase()}</b>${msg}<span class="ts">${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}</span>`;
+    document.getElementById('sp-chat-content').prepend(ceoEl);
+    // También al log general
+    spAddMsg('ceo','CEO JAIME',` → ${agentId}: "${msg}"`,BOSSES[0].color);
+    // Hablar en burbuja del CEO
+    speak(7,`💬 "${msg.substring(0,40)}..."`);
+    // Enviar al servidor
+    try{
+        const res = await fetch('/api/agent-chat',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({agent:agentId,prompt:msg,sender:'CEO JAIME'})
+        });
+        const data = await res.json();
+        const reply = data.reply||'...';
+        const agIdx = agentIdMap[agentId];
+        // Burbuja del agente
+        if(agIdx!==null&&agIdx!==undefined) speak(agIdx, reply);
+        // Mensaje en panel chat
+        const agEl = document.createElement('div');
+        agEl.className='sp-msg agent';
+        agEl.innerHTML=`<b style="color:var(--neon)">${agentId.toUpperCase()}</b>${reply}<span class="ts">${new Date().toLocaleTimeString('es-CL',{hour:'2-digit',minute:'2-digit'})}</span>`;
+        document.getElementById('sp-chat-content').prepend(agEl);
+        spAddMsg('agent',agentId.toUpperCase(),` «${reply}»`,AGENTS[agIdx>=0?agIdx:0]?.color||'#66fcf1');
+    }catch(e){
+        spAddMsg('system','ERROR',` Chat falló: ${e.message}`,'#ef4444');
+    }
+}
+
+// ── Chat modal (personal CEO ↔ Agente específico) ──
+function appendModalChatMsg(role, text, sender, scroll=true){
+    const chatEl = document.getElementById('mChatHistory');
+    const msg = document.createElement('div');
+    msg.className = `mchat-msg ${role}`;
+    msg.innerHTML = `<b>${sender}</b>${text}`;
+    chatEl.appendChild(msg);
+    if(scroll) chatEl.scrollTop = chatEl.scrollHeight;
+}
+async function sendModalChat(){
+    const input = document.getElementById('mChatInput');
+    const btn = document.getElementById('mChatSend');
+    const msg = input.value.trim();
+    if(!msg||!currentModalAgentId) return;
+    input.value='';
+    btn.disabled=true;
+    btn.innerText='...';
+    // Guardar en historial personal
+    if(!modalChatHistory[currentModalAgentId]) modalChatHistory[currentModalAgentId]=[];
+    const a = ALL_CHARS.find(c=>String(c.id)===currentModalAgentId);
+    const agentApiId = Object.keys(agentIdMap).find(k=>String(agentIdMap[k])===currentModalAgentId)||'cazador360';
+    modalChatHistory[currentModalAgentId].push({role:'ceo',text:msg,sender:'CEO JAIME'});
+    appendModalChatMsg('ceo',msg,'👔 CEO JAIME');
+    // También al log general
+    spAddMsg('ceo','CEO JAIME',` → ${a?.name||'Agente'}: "${msg}"`,BOSSES[0].color);
+    try{
+        const res = await fetch('/api/agent-chat',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({agent:agentApiId,prompt:msg,sender:'CEO JAIME'})
+        });
+        const data = await res.json();
+        const reply = data.reply||'...';
+        modalChatHistory[currentModalAgentId].push({role:'agent',text:reply,sender:a?.name||'Agente'});
+        appendModalChatMsg('agent',reply,`🤖 ${a?.name||'Agente'}`);
+        // Burbuja en canvas
+        speak(a?.id||0, reply);
+        // Log general
+        spAddMsg('agent',a?.name||'Agente',` «${reply}»`,a?.color||'#66fcf1');
+    }catch(e){
+        appendModalChatMsg('agent','Error de comunicación...','⚠️ ERROR');
+    }finally{
+        btn.disabled=false;
+        btn.innerText='ENVIAR';
+        input.focus();
+    }
+}
+
+// ══════════════════════════════════════════════
+//  WEBSOCKET — Conexión a HQ (localhost + cloud)
+// ══════════════════════════════════════════════
+function initHQWebSocket(){
+    const wsUrl = window.location.protocol==='https:'
+        ? `wss://${window.location.host}`
+        : `ws://${window.location.hostname}:8080`;
+    const ws = new WebSocket(wsUrl);
+    ws.onopen = () => {
+        spAddMsg('system','HQ WS','✅ Conectado al servidor WebSocket','#10b981');
+        log('WS HQ','✅ Conectado al servidor WebSocket local.','#10b981');
+    };
+    ws.onmessage = (e) => {
+        try{
+            const data = JSON.parse(e.data);
+            handleHQMessage(data);
+        }catch(err){}
+    };
+    ws.onclose = () => {
+        spAddMsg('system','HQ WS','⚠️ Desconectado. Reconectando en 5s...','#f59e0b');
+        setTimeout(initHQWebSocket, 5000);
+    };
+    ws.onerror = () => spAddMsg('system','HQ WS','❌ Error de conexión','#ef4444');
+}
+
+function handleHQMessage(data){
+    // Actualizar logs reales del agente
+    if(data.type==='agent_log'){
+        const agIdx = agentIdMap[data.agent];
+        if(agIdx!==null&&agIdx!==undefined){
+            if(!agentRealLogs[agIdx]) agentRealLogs[agIdx]=[];
+            agentRealLogs[agIdx].unshift(data.msg);
+            if(agentRealLogs[agIdx].length>10) agentRealLogs[agIdx].pop();
+            // Actualizar modal si está abierto en este agente
+            if(currentModalAgentId===String(agIdx)){
+                const rl=document.getElementById('mRealLog');
+                if(rl) rl.innerText=agentRealLogs[agIdx].join('\n');
+            }
+        }
+        // Mostrar en panel lateral
+        const a = AGENTS.find(ag=>ag.id===agentIdMap[data.agent]);
+        spAddMsg('agent',data.agent.toUpperCase(),` ${data.msg}`,a?.color||'#66fcf1');
+    }
+    // Estado del agente
+    else if(data.type==='agent_status'){
+        const agIdx = agentIdMap[data.agent];
+        const isWorking = data.state==='working';
+        const isLead = data.state==='lead';
+        if(agIdx!==null&&agIdx!==undefined){
+            setDot(agIdx,isWorking||isLead);
+            if(AGENTS[agIdx]){
+                AGENTS[agIdx].state = isWorking?'WALK':'IDLE';
+                // Si es lead, el agente celebra caminando hacia el CEO
+                if(isLead){
+                    AGENTS[agIdx].tx=ZONES.BOSS_J.x+70;
+                    AGENTS[agIdx].ty=ZONES.BOSS_J.y+60;
+                    spawnP(AGENTS[agIdx].x,AGENTS[agIdx].y,AGENTS[agIdx].color,15);
+                    setTimeout(()=>{
+                        AGENTS[agIdx].tx=AGENTS[agIdx].desk.x;
+                        AGENTS[agIdx].ty=AGENTS[agIdx].desk.y;
+                    },6000);
+                }
+            }
+        }
+        // Burbuja en el personaje
+        if(agIdx!==null&&agIdx!==undefined) speak(agIdx, data.msg);
+        else speak(7, data.msg); // mensaje al CEO si es agente no mapeado
+        spAddMsg(isLead?'lead':'system',data.agent.toUpperCase(),` ${data.msg}`,isLead?'#10b981':'#a855f7');
+    }
+    // Reporte de TOP LEADS del Filtro Analista
+    else if(data.type==='lead_report'){
+        const leads = data.top_leads||data.data||[];
+        log('FILTRO ANALISTA',`🎯 ${leads.length} TOP LEADS calificados listos!`,'#10b981');
+        spAddMsg('lead','🎯 FILTRO ANALISTA',` ¡${leads.length} prospectos TOP calificados! Score promedio: ${data.score_promedio||'—'}`,  '#10b981');
+        // Mostrar leads en panel tab
+        document.getElementById('sp-leads-content').innerHTML='';
+        leads.forEach((lead, i) => spAddLeadCard(lead, i+1));
+        // Cambiar a tab de leads automáticamente
+        switchTab('leads');
+        // Abrir panel si está cerrado
+        if(!document.getElementById('side-panel').classList.contains('open')) toggleSidePanel();
+        // Animación: CEO reacciona
+        spawnP(BOSSES[0].x,BOSSES[0].y,'#fbbf24',25);
+        speak(7,`🎯 ¡${leads.length} TOP LEADS calificados! ¡Excelente trabajo equipo!`);
+        speak(8,`📊 ¡Reporte recibido! ${leads.length} prospectos de alto valor.`);
+        // Actualizar contador
+        spLeadCount += leads.length;
+        document.getElementById('sp-lead-count').innerText=`${spLeadCount} LEADS`;
+        incRep();
+    }
+    // Chat message de otro cliente WS
+    else if(data.type==='chat_message'){
+        spAddMsg('ceo',data.sender||'HQ',data.msg,BOSSES[0].color);
+    }
+}
+
+// ── Función para activar la ejecución remota de un Agente ──
+async function triggerAgentExecution(agentApiId, agentObj){
+    spAddMsg('system','HQ COMMAND',` 🚀 Enviando orden de inicio a PC remota (${agentApiId.toUpperCase()})...`,'#10b981');
+    speak(7,`🚀 ¡Orden enviada! Ejecutando ${agentApiId.toUpperCase()} en PC...`);
+    if(agentObj) speak(agentObj.id, `⚡ ¡Recibido CEO! Iniciando escaneo...`);
+    
+    // Intentar POST a API local / remote
+    try{
+        const res = await fetch('/api/run-agent',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({agent:agentApiId})
+        });
+        const d = await res.json();
+        spAddMsg('system','SERVER',` Status: ${d.msg||d.status||'Iniciado'}`,'#10b981');
+    }catch(e){
+        // Fallback: enviar directamente por WebSocket HQ
+        if(window._hqWS && window._hqWS.readyState===WebSocket.OPEN){
+            window._hqWS.send(JSON.stringify({ type:'trigger_local_agent', agent:agentApiId }));
+            spAddMsg('system','HQ WS',` Orden ${agentApiId} enviada por WebSocket`,'#10b981');
+        }
+    }
+}
+
+// ── Listener de Tecla [E] ──
+window.addEventListener('keydown', e => {
+    if(e.key.toLowerCase()==='e' && !e.target.matches('input, textarea, select')){
+        const modalOpen = document.getElementById('modal').classList.contains('on');
+        if(modalOpen && currentModalAgentId !== null){
+            const a = ALL_CHARS.find(c=>String(c.id)===currentModalAgentId);
+            const agentApiId = Object.keys(agentIdMap).find(k=>String(agentIdMap[k])===currentModalAgentId) || 'cazador360';
+            triggerAgentExecution(agentApiId, a);
+        } else if(window._nearAgent){
+            const a = window._nearAgent;
+            const agentApiId = Object.keys(agentIdMap).find(k=>String(agentIdMap[k])===String(a.id)) || 'cazador360';
+            selId = a.id;
+            openModal(a);
+            triggerAgentExecution(agentApiId, a);
+        }
+    }
+});
+
+// ══════════════════════════════════════════════
+//  CEO SPRITE SHEET + WEBHOOK INTEGRATION
+// ══════════════════════════════════════════════
+
+/* ── CEOSpritePlayer ── */
+class CEOSpritePlayer{
+    constructor(image,cfg){
+        this.image=image;this.config=cfg;
+        this.frameWidth=Math.floor(image.naturalWidth/cfg.meta.maxCols);
+        this.frameHeight=Math.floor(image.naturalHeight/cfg.meta.totalRows);
+        this.currentAnim='idle';this.currentFrame=0;this.lastFrameMs=0;this.loaded=true;
+        console.log(`[CEO Sprite] ${image.naturalWidth}x${image.naturalHeight}px | frame:${this.frameWidth}x${this.frameHeight}px`);
+    }
+    update(ms){
+        const a=this.config.animations[this.currentAnim];if(!a)return;
+        if(ms-this.lastFrameMs>=1000/a.fps){
+            this.currentFrame++;
+            if(this.currentFrame>=a.frameCount){
+                if(a.loop){this.currentFrame=0;}
+                else{this.currentFrame=a.frameCount-1;if(a.onComplete)setTimeout(()=>this.setAnim(a.onComplete),80);}
+            }
+            this.lastFrameMs=ms;
+        }
+    }
+    setAnim(n){
+        if(!this.config.animations[n]){console.warn('[CEOSprite] Anim no encontrada:',n);n='idle';}
+        if(this.currentAnim===n)return;
+        this.currentAnim=n;this.currentFrame=0;this.lastFrameMs=0;
+        console.log('[CEOSprite] →',n);
+    }
+    draw(ctx,cx,cy,drawH){
+        const a=this.config.animations[this.currentAnim];if(!a||!this.image)return;
+        const sx=this.currentFrame*this.frameWidth,sy=a.row*this.frameHeight;
+        const aspect=this.frameWidth/this.frameHeight,drawW=drawH*aspect;
+        ctx.drawImage(this.image,sx,sy,this.frameWidth,this.frameHeight,cx-drawW/2,cy-drawH,drawW,drawH);
+    }
+    get animLabel(){const a=this.config.animations[this.currentAnim];return`${this.currentAnim.toUpperCase()} [${this.currentFrame+1}/${a?.frameCount||'?'}]`;}
+}
+
+/* ── AvatarWebhookController ── */
+class AvatarWebhookController{
+    constructor(opts={}){
+        this.wsUrl=opts.wsUrl||'ws://localhost:5678/webhook-ws/ceo-avatar';
+        this.pollUrl=opts.pollUrl||'http://localhost:5678/webhook/ceo-avatar-state';
+        this.sendUrl=opts.sendUrl||'http://localhost:5678/webhook/office-events';
+        this.pollInterval=opts.pollInterval||3000;
+        this.onEvent=opts.onEvent||(()=>{});this.onStatus=opts.onStatus||(()=>{});
+        this.ws=null;this.pollTimer=null;this.wsConnected=false;this.status='init';this._lastId=null;
+    }
+    connect(){this._connectWS();this._startPolling();}
+    disconnect(){if(this.ws)this.ws.close();clearInterval(this.pollTimer);}
+    _connectWS(){
+        try{
+            this.ws=new WebSocket(this.wsUrl);
+            this.ws.onopen=()=>{this.wsConnected=true;this._setStatus('ws-connected');};
+            this.ws.onmessage=(e)=>{try{const d=JSON.parse(e.data);this._dispatch(d,'ws');}catch(err){}};
+            this.ws.onclose=()=>{this.wsConnected=false;this._setStatus('ws-reconnecting');setTimeout(()=>this._connectWS(),5000);};
+            this.ws.onerror=()=>this._setStatus('ws-error');
+        }catch(e){this._setStatus('polling-only');}
+    }
+    _startPolling(){
+        clearInterval(this.pollTimer);
+        this.pollTimer=setInterval(async()=>{
+            try{
+                const r=await fetch(this.pollUrl,{method:'GET',signal:AbortSignal.timeout(2500)});
+                if(r.ok){const d=await r.json();if(d&&d.action)this._dispatch(d,'poll');if(!this.wsConnected)this._setStatus('polling-ok');}
+            }catch(e){if(!this.wsConnected)this._setStatus('n8n-offline');}
+        },this.pollInterval);
+    }
+    _dispatch(data,src){
+        if(data.eventId&&data.eventId===this._lastId)return;
+        this._lastId=data.eventId||null;
+        console.log(`[Webhook:${src}]`,data);
+        this.onEvent(data);
+    }
+    send(payload){
+        fetch(this.sendUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload,ts:new Date().toISOString(),src:'virtual-office'})}).catch(()=>{});
+    }
+    _setStatus(s){
+        this.status=s;
+        _updateStatusBadge(s);
+        this.onStatus(s);
+    }
+    get statusLabel(){
+        const m={'init':'⏳','ws-connected':'🟢 WebSocket n8n','ws-reconnecting':'🟡 WS Recon.','ws-error':'🟠 WS Error','polling-only':'🔵 HTTP Poll','polling-ok':'🔵 Polling OK','n8n-offline':'🔴 n8n Offline'};
+        return m[this.status]||this.status;
+    }
+}
+
+/* ── changeAvatarState — Controlador de Estados ── */
+function changeAvatarState(event){
+    const sprite=window._ceoSprite, cfg=window._spriteConfig;
+    if(!sprite||!cfg){window._pendingCEO=window._pendingCEO||[];window._pendingCEO.push(event);return;}
+    const animName=(cfg.webhookEventMap||{})[event.action]||'idle';
+    sprite.setAnim(animName);
+    switch(event.action){
+        case 'moving':{
+            const pts=(event.destination||'').split(',').map(Number);
+            if(pts.length>=2&&!isNaN(pts[0]))BOSSES[0].x=pts[0],BOSSES[0].y=pts[1];
+            speak(7,`🚶 CEO en camino a [${event.destination||'destino'}]...`);break;
+        }
+        case 'scraping_active':{
+            speak(7,'💻 ¡Scraping activo! Analizando macrolotes en Los Lagos...');
+            setDot(7,true);
+            clearTimeout(window._ceoWorkTimer);
+            window._ceoWorkTimer=setTimeout(()=>{
+                sprite.setAnim('idle');setDot(7,false);
+                speak(7,'✅ Análisis completado. Revisando resultados.');
+            },cfg.animations.work?.autoReturnDelay||10000);
+            break;
+        }
+        case 'lead_qualified':{
+            const nm=event.leadName||'Prospecto B2B';
+            speak(7,`🎉 ¡"${nm}" calificado! ¡CONVERSIÓN EXITOSA!`);
+            setDot(7,true);
+            spawnP(BOSSES[0].x,BOSSES[0].y,'#fbbf24',28);
+            setTimeout(()=>{speak(8,`🎊 Nicole! ${nm} convirtió. ¡Éxito!`);spawnP(BOSSES[1].x,BOSSES[1].y,'#ec4899',18);setDot(7,false);},3200);
+            break;
+        }
+        default:{
+            clearTimeout(window._ceoWorkTimer);setDot(7,false);
+            speak(7,'😌 CEO revisando dashboard de AustralDrone...');
+        }
+    }
+    log(`n8n → CEO JAIME`,`Evento: "${event.action}" → Anim: "${animName}"`,BOSSES[0].color);
+    incWH();
+    return animName;
+}
+
+/* ── Status Badge en HUD ── */
+function _updateStatusBadge(status){
+    let el=document.getElementById('wh-status-badge');
+    if(!el){
+        el=document.createElement('span');
+        el.id='wh-status-badge';
+        el.style.cssText='font-family:"Press Start 2P",monospace;font-size:5.5px;padding:3px 7px;border:2px solid #111;border-radius:2px;background:#111;cursor:pointer;';
+        el.title='Estado de conexión con n8n';
+        document.querySelector('.hud').appendChild(el);
+    }
+    const map={'ws-connected':'#10b981','ws-reconnecting':'#f59e0b','ws-error':'#f97316','polling-ok':'#3b82f6','polling-only':'#3b82f6','n8n-offline':'#ef4444','init':'#64748b'};
+    const lbl={'ws-connected':'🟢 WS n8n','ws-reconnecting':'🟡 Reconect.','ws-error':'🟠 WS Error','polling-ok':'🔵 Polling','polling-only':'🔵 Poll only','n8n-offline':'🔴 n8n OFF','init':'⏳ Init...'};
+    el.style.color=map[status]||'#64748b';
+    el.innerText=lbl[status]||status;
+}
+
+/* ── Inicializar CEO Sprite ── */
+async function initCEOSprite(){
+    try{
+        const cfgResp=await fetch('sprites/sprite_config_ceo.json');
+        const cfg=await cfgResp.json();
+        window._spriteConfig=cfg;
+        const img=new Image();
+        img.onload=()=>{
+            window._ceoSprite=new CEOSpritePlayer(img,cfg);
+            log('CEO SPRITE','✅ CEO.png cargado. Sprite sheet activo. Reemplazando canvas draw.','#fbbf24');
+            speak(7,'¡Mi avatar sprite está activo! Listo para recibir eventos n8n.');
+            // Flush pending events
+            (window._pendingCEO||[]).forEach(e=>changeAvatarState(e));
+            window._pendingCEO=[];
+        };
+        img.onerror=()=>log('CEO SPRITE','⚠️ CEO.png no encontrado en sprites/. Usando canvas pixel art.','#ef4444');
+        img.src='sprites/CEO.png';
+    }catch(e){
+        log('CEO SPRITE','⚠️ sprite_config_ceo.json no encontrado. Modo canvas activo.','#ef4444');
+    }
+}
+
+/* ── Inicializar Webhook Controller ── */
+window._webhookCtrl=new AvatarWebhookController({
+    wsUrl:'ws://localhost:5678/webhook-ws/ceo-avatar',
+    pollUrl:'http://localhost:5678/webhook/ceo-avatar-state',
+    sendUrl:'http://localhost:5678/webhook/office-events',
+    pollInterval:3000,
+    onEvent:changeAvatarState,
+    onStatus:(s)=>console.log('[n8n Status]',s)
+});
+
+/* ── Panel de Test de Webhooks ── */
+(()=>{
+    const testBar=document.createElement('div');
+    testBar.style.cssText='width:100%;max-width:1420px;background:#0d1220;border:3px solid #111;box-shadow:4px 4px 0 #000;padding:8px 14px;margin-top:8px;border-radius:4px;display:flex;align-items:center;gap:7px;flex-wrap:wrap;';
+    testBar.innerHTML=`
+        <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#66fcf1;white-space:nowrap;">🧪 TEST n8n CEO:</span>
+        <button class="wb" style="background:#475569;color:#fff;" onclick="changeAvatarState({action:'idle'})">😌 IDLE</button>
+        <button class="wb" style="background:#1d4ed8;color:#fff;" onclick="changeAvatarState({action:'moving',destination:'680,290'})">🚶 MOVING→MESA</button>
+        <button class="wb" style="background:#d97706;color:#000;" onclick="changeAvatarState({action:'scraping_active'})">💻 SCRAPING (10s)</button>
+        <button class="wb" style="background:#10b981;color:#000;" onclick="changeAvatarState({action:'lead_qualified',leadName:'Carlos Méndez — 145 Has Alerce'})">🎉 LEAD QUALIFIED</button>
+        <button class="wb" style="background:#7c3aed;color:#fff;" onclick="changeAvatarState({action:'wsp_sent'})">📱 WSP SENT</button>
+        <span style="font-family:'Press Start 2P',monospace;font-size:5px;color:#334155;margin-left:auto;">console: ceoEvent('action')</span>
+        <div id="wh-conn-panel" style="font-family:'Press Start 2P',monospace;font-size:5px;color:#64748b;display:flex;flex-direction:column;gap:2px;text-align:right;"><div>WS: <span id="wsp">⏳</span></div><div>POLL: <span id="plp">⏳</span></div></div>
+    `;
+    document.body.appendChild(testBar);
+})();
+
+/* ── Helpers de consola ── */
+window.ceoEvent=(action,extra={})=>changeAvatarState({action,...extra});
+window.n8nSend=(payload)=>window._webhookCtrl?.send(payload);
+
+/* ── Arranque ── */
+initCEOSprite();
+
+// ══════════════════════════════════════════════
+//  BITÁCORA MODAL POR FECHA & NAVEGACIÓN DE HISTORIAL
+// ══════════════════════════════════════════════
+function openBitacoraModal() {
+    const dates = [
+        { fecha: '2026-07-25 (Hoy)', count: 811, top: 'Andrea Araya (90/100) — 26 Has Los Lagos', file: '/api/download-master-csv' },
+        { fecha: '2026-07-24', count: 176, top: 'Catalina Belen — 6.710 m² Puerto Montt', file: '/api/download-master-csv' },
+        { fecha: '2026-07-23', count: 236, top: 'Marite Robles — Viña del Mar / Sur', file: '/api/download-master-csv' }
+    ];
+
+    let html = `
+    <div id="modal-bitacora" class="overlay on">
+      <div class="modal" style="max-width:700px;border-color:var(--yel);">
+        <div class="mbar" style="background:#0a0e17;color:var(--yel);">
+          <span>🗄️ CAJONERA DE BITÁCORA DE BÚSQUEDAS POR FECHA</span>
+          <span style="cursor:pointer;font-size:12px;" onclick="closeBitacoraModal()">✕</span>
+        </div>
+        <div class="mbody">
+          <p style="font-size:12px;color:#94a3b8;margin-bottom:12px;line-height:1.5;">
+            Selecciona la fecha o sesión de prospección específica para descargar su informe individual o el archivo maestro consolidado:
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+    `;
+
+    dates.forEach(d => {
+        html += `
+        <div style="background:#030508;border:2px solid #1e293b;border-left:4px solid var(--yel);padding:10px 14px;border-radius:4px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <b style="font-family:'Press Start 2P',monospace;font-size:8px;color:var(--yel);">📅 ${d.fecha}</b>
+            <div style="font-size:11px;color:#cbd5e1;margin-top:4px;">PROSPECTOS ANALIZADOS: <b>${d.count}</b></div>
+            <div style="font-size:10px;color:#64748b;margin-top:2px;">TOP Lead: ${d.top}</div>
+          </div>
+          <button onclick="window.open('${d.file}')" class="wb wy" style="font-size:6px;padding:8px 12px;">📥 DESCARGAR EXCEL</button>
+        </div>
+        `;
+    });
+
+    html += `
+          </div>
+          <div style="margin-top:16px;padding-top:12px;border-top:2px solid #111;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:10px;color:#475569;">Formato compatible con Microsoft Excel, Google Sheets y CSV.</span>
+            <button onclick="closeBitacoraModal()" class="wb mbtn-r" style="font-size:6px;padding:8px 14px;">✕ CERRAR CAJONERA</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    `;
+
+    document.getElementById('modal-bitacora-wrap')?.remove();
+    const wrap = document.createElement('div');
+    wrap.id = 'modal-bitacora-wrap';
+    wrap.innerHTML = html;
+    document.body.appendChild(wrap);
+}
+
+function closeBitacoraModal() {
+    document.getElementById('modal-bitacora-wrap')?.remove();
+}
+
+// ══════════════════════════════════════════════
+//  TOUCH GESTURES & CANVAS ZOOM / PAN CONTROLS
+// ══════════════════════════════════════════════
+let canvasScale = 1.0;
+let panX = 0, panY = 0;
+let isPanning = false, startPanX = 0, startPanY = 0;
+let initialDistance = 0;
+
+function zoomCanvas(factor) {
+    canvasScale = Math.min(Math.max(0.6, canvasScale * factor), 2.5);
+    applyCanvasTransform();
+}
+
+function resetZoom() {
+    canvasScale = 1.0; panX = 0; panY = 0;
+    applyCanvasTransform();
+}
+
+function applyCanvasTransform() {
+    const gc = document.getElementById('gc');
+    if (gc) {
+        gc.style.transform = `scale(${canvasScale}) translate(${panX}px, ${panY}px)`;
+        gc.style.transformOrigin = 'center center';
+        gc.style.transition = 'transform 0.15s ease-out';
+    }
+}
+
+// Pinch to zoom and Drag to Pan for Mobile Touchscreens
+const canvasEl = document.getElementById('gc');
+if (canvasEl) {
+    canvasEl.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            initialDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+        } else if (e.touches.length === 1) {
+            isPanning = true;
+            startPanX = e.touches[0].pageX - panX;
+            startPanY = e.touches[0].pageY - panY;
+        }
+    }, { passive: true });
+
+    canvasEl.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && initialDistance > 0) {
+            const newDistance = Math.hypot(
+                e.touches[0].pageX - e.touches[1].pageX,
+                e.touches[0].pageY - e.touches[1].pageY
+            );
+            const factor = newDistance / initialDistance;
+            zoomCanvas(factor > 1 ? 1.03 : 0.97);
+            initialDistance = newDistance;
+        } else if (e.touches.length === 1 && isPanning) {
+            panX = (e.touches[0].pageX - startPanX) / canvasScale;
+            panY = (e.touches[0].pageY - startPanY) / canvasScale;
+            applyCanvasTransform();
+        }
+    }, { passive: true });
+
+    canvasEl.addEventListener('touchend', () => {
+        isPanning = false;
+        initialDistance = 0;
+    });
+}
+window._webhookCtrl.connect();
+log('SISTEMA','🎮 Controlador CEO Webhook v2.0 activo. Use ceoEvent("action") en consola.','#66fcf1');
+</script>
+</body>
+</html>
