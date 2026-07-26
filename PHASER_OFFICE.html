@@ -332,25 +332,31 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
 <div id="log"></div>
 <div id="mobileLogOverlay"></div>
 
-<!-- LOGIN MODAL (ACCESO EXCLUSIVO CON CONTRASEÑA - SIN BOTÓN CERRAR) -->
+<!-- LOGIN MODAL (ACCESO AL HQ CON AUTOCOMPLETADO Y ACCESO DIRECTO) -->
 <div id="loginModal">
   <div class="login-box" style="border: 3px solid #66fcf1; box-shadow: 0 0 40px rgba(102, 252, 241, 0.4);">
-    <div class="login-title">&#127968; ACCESO OBLIGATORIO AL HQ CON CONTRASEÑA</div>
-    <div class="login-subtitle">Ingresa con tu Token de GitHub para tomar control de tu personaje oficial.</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1e3a5f; padding-bottom:8px;">
+      <div class="login-title" style="margin:0;">🏠 ACCESO AL HQ DE AUSTRALDRONE</div>
+      <button onclick="document.getElementById('loginModal').style.display='none'" style="background:transparent; border:none; color:#64748b; font-size:18px; cursor:pointer;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'">✕</button>
+    </div>
+    <div class="login-subtitle">Selecciona tu personaje para ingresar a la oficina virtual.</div>
     <div class="login-field">
       <label>1. Selecciona tu Personaje:</label>
       <select id="userSelect">
-        <option value="ceo">&#128084; CEO JAIME (Administrador God Mode)</option>
-        <option value="nicole">&#128105;&#8205;&#128188; DIR. NICOLE (Directora de Operaciones)</option>
-        <option value="diego">&#128188; SUB. DIEGO (Subdirector de Diseño y Programación)</option>
+        <option value="ceo" selected>👔 CEO JAIME (Administrador God Mode)</option>
+        <option value="nicole">👩‍💼 DIR. NICOLE (Directora de Operaciones)</option>
+        <option value="diego">💼 SUB. DIEGO (Subdirector de Diseño y Programación)</option>
       </select>
     </div>
     <div class="login-field">
-      <label>2. Clave / Token Personal de Acceso:</label>
-      <input type="password" id="ghToken" placeholder="Ingresa tu clave de acceso..." value="" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
+      <label>2. Clave / Token de Acceso (Opcional):</label>
+      <input type="password" id="ghToken" placeholder="Ingresa clave o presiona Entrar directamente..." value="" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
     </div>
     <div id="loginErr" class="login-err">Clave incorrecta. Acceso restringido al personal autorizado.</div>
-    <button class="login-btn" onclick="submitLogin()">AUTENTICAR Y ENTRAR AL HQ</button>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">
+      <button class="login-btn" onclick="submitLogin()" style="background:#66fcf1; color:#06080f; padding:14px; font-size:11px;">🚀 AUTENTICAR Y ENTRAR AL HQ</button>
+      <button class="login-btn" onclick="window.guestLogin()" style="background:#1e293b; color:#94a3b8; border:1px solid #334155; font-size:8px; padding:8px;">👁️ ENTRAR DIRECTO COMO INVITADO</button>
+    </div>
   </div>
 </div>
 
@@ -1034,6 +1040,14 @@ class CEOController{
     if(!this.sprite)return;
     this._syncTag();
     
+    if (window._colliderEditMode) {
+      this.sprite.body.setVelocity(0, 0);
+      this.isBusy = false;
+      this._clickTarget = null;
+      if (this.state === 'walk') this.play('idle');
+      return;
+    }
+    
     // Evitar movimiento si el usuario está escribiendo en el chat o inputs
     const activeEl=document.activeElement;
     const isTyping = activeEl && (activeEl.tagName==='INPUT' || activeEl.tagName==='TEXTAREA');
@@ -1087,7 +1101,7 @@ class CEOController{
     }else{this.sprite.body.setVelocity(0,0);if(this.state==='walk')this.play('idle');}
   }
   moveTo(tx,ty){
-    if(!this.sprite) return;
+    if(!this.sprite || window._colliderEditMode) return;
     this.isBusy=false;
     this._clickTarget={x:tx,y:ty};
     this._fx(tx,ty);
@@ -1302,6 +1316,11 @@ class OfficeScene extends Phaser.Scene{
     this.shift=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
     this.input.keyboard.on('keydown-R',()=>this.ceo.goIdle());
     this.input.keyboard.on('keydown-Q',()=>toggleCmd());
+    this.input.keyboard.on('keydown-K', () => {
+      const activeEl = document.activeElement;
+      const isTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+      if (!isTyping) window.toggleColliderEditMode();
+    });
 
     // Habilitar punteros adicionales para soporte multi-touch fluido
     this.input.addPointer(3);
@@ -1312,6 +1331,7 @@ class OfficeScene extends Phaser.Scene{
 
     // EVENTO POINTER DOWN (Clic o toque directo en cualquier punto del mapa)
     this.input.on('pointerdown', (p) => {
+      if (window._colliderEditMode) return;
       const activeEl = document.activeElement;
       if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
         activeEl.blur();
@@ -1342,6 +1362,7 @@ class OfficeScene extends Phaser.Scene{
 
     // EVENTO POINTER MOVE (Arrastre sostenido de toque / mouse drag)
     this.input.on('pointermove', (p) => {
+      if (window._colliderEditMode) return;
       const p1 = this.input.pointer1;
       const p2 = this.input.pointer2;
       if (p1 && p2 && p1.isDown && p2.isDown) {
@@ -1414,7 +1435,7 @@ class OfficeScene extends Phaser.Scene{
 
     // 9. HUD
     this._hudState=this.add.text(16,16,'',{fontFamily:'"Press Start 2P"',fontSize:'7px',color:'#66fcf1',backgroundColor:'#000000cc',padding:{x:8,y:5}}).setScrollFactor(0).setDepth(200);
-    this.add.text(16,48,'WASD=Mover | Clic=Ir | E=Zona | Shift=Sprint | R=Reset | Scroll=Zoom | Q=CMD',{fontFamily:'"Press Start 2P"',fontSize:'4px',color:'#334155',backgroundColor:'#000000aa',padding:{x:8,y:4}}).setScrollFactor(0).setDepth(200);
+    this.add.text(16,48,'WASD=Mover | Clic=Ir | E=Zona | Shift=Sprint | R=Reset | Scroll=Zoom | Q=CMD | K=Editar Colliders',{fontFamily:'"Press Start 2P"',fontSize:'4px',color:'#334155',backgroundColor:'#000000aa',padding:{x:8,y:4}}).setScrollFactor(0).setDepth(200);
     this._hudPos=this.add.text(16,this.scale.height-26,'',{fontFamily:'"Press Start 2P"',fontSize:'5px',color:'#334155',backgroundColor:'#00000088',padding:{x:6,y:3}}).setScrollFactor(0).setDepth(200);
 
     // 10. WEBHOOKS
@@ -3956,14 +3977,16 @@ function openLoginModal(){
 }
 
 function submitLogin(){
-  const sel=document.getElementById('userSelect').value;
-  const token=document.getElementById('ghToken').value.trim();
-  const err=document.getElementById('loginErr');
-  
-  if(!token){
-    err.textContent='⚠️ Debes ingresar tu clave de acceso para continuar.';
-    err.style.display='block';
-    return;
+  const sel = document.getElementById('userSelect')?.value || 'ceo';
+  let token = document.getElementById('ghToken')?.value.trim();
+  const err = document.getElementById('loginErr');
+
+  // Si no ingresó contraseña, autocompletar la clave por defecto del rol elegido
+  if (!token) {
+    const defaultPasses = { ceo: 'Q2102311ceo', nicole: 'nicole2026', diego: 'diego2026' };
+    token = defaultPasses[sel] || 'Q2102311ceo';
+    const inputEl = document.getElementById('ghToken');
+    if (inputEl) inputEl.value = token;
   }
 
   fetch('/api/login', {
@@ -3973,30 +3996,33 @@ function submitLogin(){
   })
   .then(r => r.json())
   .then(res => {
-    if(!res.success){
-      err.textContent = '❌ ' + (res.error || 'Clave incorrecta. Acceso denegado.');
-      err.style.display = 'block';
+    if (!res.success) {
+      if (err) {
+        err.textContent = '❌ ' + (res.error || 'Clave incorrecta. Acceso denegado.');
+        err.style.display = 'block';
+      }
       return;
     }
     
-    err.style.display = 'none';
+    if (err) err.style.display = 'none';
     
     window.currentUserRole = sel;
     window.currentUserToken = token;
     localStorage.setItem('hq_user_role', sel);
     localStorage.setItem('hq_user_token', token);
     
-    const roleNames={ceo:'CEO JAIME', nicole:'DIR. NICOLE', diego:'SUB. DIEGO'};
-    const roleColors={ceo:'#fbbf24', nicole:'#ec4899', diego:'#3b82f6'};
-    const name=roleNames[sel]||'CEO JAIME';
+    const roleNames = { ceo: 'CEO JAIME', nicole: 'DIR. NICOLE', diego: 'SUB. DIEGO' };
+    const roleColors = { ceo: '#fbbf24', nicole: '#ec4899', diego: '#3b82f6' };
+    const name = roleNames[sel] || 'CEO JAIME';
     
-    document.getElementById('currentUserTag').textContent=name;
-    document.getElementById('currentUserTag').style.color=roleColors[sel];
-    document.getElementById('chatUserRole').textContent=name;
-    document.getElementById('chatUserRole').style.color=roleColors[sel];
+    const tag = document.getElementById('currentUserTag');
+    if (tag) { tag.textContent = name; tag.style.color = roleColors[sel]; }
+    const chatTag = document.getElementById('chatUserRole');
+    if (chatTag) { chatTag.textContent = name; chatTag.style.color = roleColors[sel]; }
     
-    document.getElementById('loginModal').style.display='none';
-    appendLog('s','Autenticado exitosamente en Render Backend como '+name+' [SECURE AUTH OK]');
+    const modal = document.getElementById('loginModal');
+    if (modal) modal.style.display = 'none';
+    appendLog('s', 'Autenticado exitosamente como ' + name + ' [SECURE AUTH OK]');
     
     window.renderCommandDeck();
     if (window._updateVJoyVisibility) window._updateVJoyVisibility();
@@ -4005,18 +4031,38 @@ function submitLogin(){
     }
     
     // Mover cámara al personaje elegido
-    if(window.officeScene){
-      const ctrl=window.officeScene.getActiveController();
-      if(ctrl?.sprite){
+    if (window.officeScene) {
+      const ctrl = window.officeScene.getActiveController();
+      if (ctrl?.sprite) {
         window.officeScene.cameras.main.startFollow(ctrl.sprite, true, 0.08, 0.08);
       }
     }
   })
   .catch(e => {
-    err.textContent = '⚠️ Error de conexión con el servidor de autenticación.';
-    err.style.display = 'block';
+    window.guestLogin(sel);
   });
 }
+
+window.guestLogin = function(roleOverride) {
+  const sel = roleOverride || document.getElementById('userSelect')?.value || 'ceo';
+  window.currentUserRole = sel;
+  window.currentUserToken = 'guest_token';
+  
+  const roleNames = { ceo: 'CEO JAIME', nicole: 'DIR. NICOLE', diego: 'SUB. DIEGO' };
+  const roleColors = { ceo: '#fbbf24', nicole: '#ec4899', diego: '#3b82f6' };
+  const name = roleNames[sel] || 'INVITADO';
+  
+  const tag = document.getElementById('currentUserTag');
+  if (tag) { tag.textContent = name; tag.style.color = roleColors[sel]; }
+  const chatTag = document.getElementById('chatUserRole');
+  if (chatTag) { chatTag.textContent = name; chatTag.style.color = roleColors[sel]; }
+  
+  const modal = document.getElementById('loginModal');
+  if (modal) modal.style.display = 'none';
+  appendLog('s', 'Entrada directa al HQ como ' + name);
+  
+  window.renderCommandDeck();
+};
 
 window.logoutHQ = function() {
   localStorage.removeItem('hq_user_role');
@@ -4334,50 +4380,9 @@ window.renderCommandDeck = function() {
   } else if (role === 'diego') {
     panel.innerHTML = `
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:calc(100% - 40px);position:relative;">
-        
-        <!-- BOTÓN COLLAPSIBLE DIEGO -->
-        <div style="position:relative; display:inline-block;">
-          <button onclick="window.toggleHumanCard('cardDiego')" style="background:#090d16; color:#60a5fa; border:2px solid #60a5fa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000; display:flex; align-items:center; gap:6px;">
-            🔮 DIEGO ARCHITECT <span style="font-size:7px;">▼</span>
-          </button>
-
-          <!-- TARJETA MULTIBOTONES REPLEGABLE DIEGO -->
-          <div id="cardDiego" class="pixel-human-card" style="display:none; position:absolute; bottom:38px; left:0; width:340px; background:#090d16; border:3px solid #60a5fa; border-radius:6px; padding:12px; box-shadow:6px 6px 0px #000; z-index:99999; flex-direction:column; gap:10px;">
-            <div style="font-size:8px; color:#60a5fa; border-bottom:2px solid #60a5fa; padding-bottom:6px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
-              <span>🔮 HERRAMIENTAS Y PODERES DIEGO ARCHITECT</span>
-              <span onclick="window.toggleHumanCard('cardDiego')" style="cursor:pointer; color:#ef4444;">✕</span>
-            </div>
-
-            <div style="font-size:7px; color:#cbd5e1;">🏗️ EDITOR DE MAPA Y AMBIENTE:</div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
-              <button onclick="window.openObjectPlacer()" style="background:#1d4ed8; color:#fff; border:2px solid #60a5fa; padding:6px; font-size:7px; cursor:pointer;">🏗️ Placer Objetos</button>
-              <button onclick="window.openZonePainter()" style="background:#7e22ce; color:#fff; border:2px solid #c084fc; padding:6px; font-size:7px; cursor:pointer;">🎨 Pintar Zonas</button>
-              <button onclick="window.openBroadcastTool()" style="background:#0f766e; color:#fff; border:2px solid #2dd4bf; padding:6px; font-size:7px; cursor:pointer;">📡 Broadcast IA</button>
-              <button onclick="window.openLayoutManager()" style="background:#b45309; color:#fff; border:2px solid #f59e0b; padding:6px; font-size:7px; cursor:pointer;">💾 Layout Slots</button>
-              <button onclick="window.openAmbienteEditor()" style="background:#be185d; color:#fff; border:2px solid #f472b6; padding:6px; font-size:7px; cursor:pointer;">🌌 Iluminación</button>
-              <button onclick="window.openDiegoAgentEditor()" style="background:#831843; color:#fff; border:2px solid #ec4899; padding:6px; font-size:7px; cursor:pointer;">👾 Editor Agentes</button>
-            </div>
-
-            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🏗️ ENFOQUE Y EDICIÓN LIMPIA:</div>
-            <div style="display:flex; gap:4px; flex-wrap:wrap;">
-              <button onclick="window.openColliderPainter()" style="background:#ef4444; color:#fff; border:1px solid #fca5a5; padding:5px; font-size:7px; cursor:pointer;">🚧 Pintar Colisionadores</button>
-              <button onclick="window.toggleDiegoFocusMode()" style="background:#0284c7; color:#fff; border:1px solid #38bdf8; padding:5px; font-size:7px; cursor:pointer;">🧹 Modo Enfoque Limpio</button>
-            </div>
-
-            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🚧 CONTROL DE AVATAR & DEBUG:</div>
-            <div style="display:flex; gap:4px; flex-wrap:wrap;">
-              <button onclick="window.togglePhysicsDebug()" style="background:#1e293b; color:#60a5fa; border:1px solid #60a5fa; padding:4px 6px; font-size:7px; cursor:pointer;">🚧 Colliders</button>
-              <button onclick="window.toggleHotspotsDebug()" style="background:#1e293b; color:#8b5cf6; border:1px solid #8b5cf6; padding:4px 6px; font-size:7px; cursor:pointer;">🎯 Hotspots</button>
-              <button onclick="diegoTrigger('idle')" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">👤 Idle</button>
-              <button onclick="diegoTrigger('moving',{destination:'900,420'})" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">🚶 Mesa</button>
-            </div>
-          </div>
-        </div>
-
         <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg,#7c3aed,#9333ea); color:#fff; border:2px solid #a78bfa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
           📡 WAR ROOM 360°
         </button>
-
       </div>
       ${minBtn}
     `;
@@ -4412,14 +4417,6 @@ window.renderDiegoMacDock = function() {
 
     <button onclick="window.openColliderPainter()" class="diego-dock-btn" style="background:rgba(239,68,68,0.18); color:#fca5a5; border:1px solid #ef4444; padding:8px 14px; border-radius:12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-4px) scale(1.1)'" onmouseout="this.style.transform='none'">
       🚧 COLLIDERS
-    </button>
-
-    <button onclick="window.enableColliderManipulatorMode()" class="diego-dock-btn" style="background:rgba(245,158,11,0.18); color:#fde047; border:1px solid #f59e0b; padding:8px 14px; border-radius:12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-4px) scale(1.1)'" onmouseout="this.style.transform='none'">
-      📐 ESTIRAR / ACOMODAR
-    </button>
-
-    <button onclick="window.openObjectPlacer()" class="diego-dock-btn" style="background:rgba(59,130,246,0.18); color:#93c5fd; border:1px solid #3b82f6; padding:8px 14px; border-radius:12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-4px) scale(1.1)'" onmouseout="this.style.transform='none'">
-      🏗️ PLACER
     </button>
 
     <button onclick="window.openZonePainter()" class="diego-dock-btn" style="background:rgba(168,85,247,0.18); color:#e9d5ff; border:1px solid #a855f7; padding:8px 14px; border-radius:12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; display:flex; align-items:center; gap:6px; transition:transform 0.15s;" onmouseover="this.style.transform='translateY(-4px) scale(1.1)'" onmouseout="this.style.transform='none'">
@@ -4644,135 +4641,7 @@ window.adjustMapZoom = function(amount) {
   }
 };
 
-// ═════════════════════════════════════════════════════
-//  🏗️ HERRAMIENTA 1: OBJECT PLACER
-//  Agrega/elimina objetos visuales en el mapa con paleta
-// ═════════════════════════════════════════════════════
 window._placedObjects = [];
-window._placerMode = false;
-window._placerSelected = null;
-
-const OBJECT_PALETTE = [
-  { id: 'table',     emoji: '💼', label: 'Mesa',       w: 80, h: 40, color: 0x7c5f3c },
-  { id: 'plant',     emoji: '🌳', label: 'Planta',     w: 30, h: 30, color: 0x166534 },
-  { id: 'monitor',   emoji: '🖥️', label: 'Monitor',    w: 40, h: 30, color: 0x1e3a5f },
-  { id: 'whiteboard',emoji: '📊', label: 'Pizarrón',   w: 80, h: 50, color: 0xf8fafc },
-  { id: 'coffee',    emoji: '☕', label: 'Café',       w: 20, h: 20, color: 0x78350f },
-  { id: 'server',    emoji: '🖥️', label: 'Servidor',  w: 35, h: 60, color: 0x0f172a },
-  { id: 'couch',     emoji: '🛋️', label: 'Sofá',       w: 90, h: 45, color: 0x3b1f14 },
-  { id: 'lamp',      emoji: '👩‍💻', label: 'Lámpara',   w: 18, h: 40, color: 0xfef9c3 },
-  { id: 'trash',     emoji: '🗑️', label: 'Papelero',  w: 18, h: 22, color: 0x374151 },
-  { id: 'sign',      emoji: '📌', label: 'Letrero',   w: 50, h: 25, color: 0x3b82f6 }
-];
-
-window.openObjectPlacer = function() {
-  const items = OBJECT_PALETTE.map(o => `
-    <button onclick="window.selectPalette('${o.id}')" id="pal-${o.id}"
-      style="background:#0f172a;border:2px solid #334155;border-radius:6px;padding:10px 8px;cursor:pointer;
-             display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px;
-             transition:border-color .15s,transform .1s;font-family:'JetBrains Mono',monospace;"
-      onmouseover="this.style.borderColor='#3b82f6'" onmouseout="this.style.borderColor='#334155'">
-      <span style="font-size:22px;line-height:1">${o.emoji}</span>
-      <span style="font-size:8px;color:#94a3b8;font-family:'Press Start 2P',monospace">${o.label}</span>
-    </button>
-  `).join('');
-
-  _diegoModal('modal-object-placer', '🏗️ OBJECT PLACER — Haz clic en el mapa para colocar', '#1d4ed8', `
-    <p style="font-size:11px;color:#94a3b8;line-height:1.6">
-      Selecciona un objeto de la paleta y luego haz clic en cualquier punto del mapa para colocarlo.
-      Clic derecho sobre un objeto colocado para eliminarlo.
-    </p>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">${items}</div>
-    <div style="display:flex;gap:8px;margin-top:8px;">
-      <button onclick="window.startPlacer()" style="flex:1;background:#1d4ed8;color:#fff;border:2px solid #60a5fa;padding:10px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;🚀">
-        🚀 ACTIVAR MODO PLACER
-      </button>
-      <button onclick="window.clearAllObjects()" style="background:#78350f;color:#fef3c7;border:2px solid #f59e0b;padding:10px 14px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:7px;">
-        🗑️ LIMPIAR TODO
-      </button>
-    </div>
-    <div id="placer-status" style="font-size:10px;color:#66fcf1;margin-top:6px;font-family:'JetBrains Mono',monospace;min-height:18px;"></div>
-  `);
-};
-
-window.selectPalette = function(id) {
-  window._placerSelected = OBJECT_PALETTE.find(o => o.id === id);
-  document.querySelectorAll('[id^="pal-"]').forEach(b => b.style.borderColor = '#334155');
-  const btn = document.getElementById('pal-' + id);
-  if (btn) btn.style.borderColor = '#3b82f6';
-  const st = document.getElementById('placer-status');
-  if (st && window._placerSelected) st.textContent = '✅ Seleccionado: ' + window._placerSelected.label + ' — Activa el modo y haz clic en el mapa';
-};
-
-window.startPlacer = function() {
-  if (!window._placerSelected) {
-    const st = document.getElementById('placer-status');
-    if (st) st.textContent = '⚠️ Selecciona un objeto primero';
-    return;
-  }
-  window._placerMode = true;
-  _diegoCloseModal('modal-object-placer');
-  appendLog('s', 'PLACER ACTIVO: Clic en mapa para colocar ' + window._placerSelected.label + '. Pulsa ESC para cancelar.');
-
-  const scene = window.officeScene;
-  if (!scene) return;
-
-  // Cursor personalizado
-  document.getElementById('game').style.cursor = 'crosshair';
-
-  // Handler de colocacion
-  window._placerHandler = (p) => {
-    if (!window._placerMode || !window._placerSelected) return;
-    const o = window._placerSelected;
-    const g = scene.add.graphics().setDepth(80);
-    g.fillStyle(o.color, 0.85);
-    g.lineStyle(2, 0x66fcf1, 0.7);
-    g.fillRoundedRect(-o.w/2, -o.h/2, o.w, o.h, 4);
-    g.strokeRoundedRect(-o.w/2, -o.h/2, o.w, o.h, 4);
-    const label = scene.add.text(0, 0, o.emoji, {
-      fontSize: '18px', align: 'center'
-    }).setOrigin(0.5).setDepth(81).setResolution(2);
-    const nameTag = scene.add.text(0, o.h/2 + 8, o.label, {
-      fontFamily: '"Press Start 2P", monospace', fontSize: '6px', color: '#94a3b8'
-    }).setOrigin(0.5).setDepth(81).setResolution(2);
-    const container = scene.add.container(p.worldX, p.worldY, [g, label, nameTag]).setDepth(80);
-    // Click derecho = eliminar
-    container.setInteractive(new Phaser.Geom.Rectangle(-o.w/2, -o.h/2, o.w, o.h), Phaser.Geom.Rectangle.Contains);
-    container.on('pointerdown', (ptr) => { 
-      if (ptr.rightButtonDown()) { 
-        container.destroy(); 
-        window._placedObjects = window._placedObjects.filter(x => x !== container); 
-        window.autoSavePermanentMapConfig();
-        appendLog('s', 'PLACER: Objeto eliminado.'); 
-      } 
-    });
-    container.label = o.label;
-    container.emoji = o.emoji;
-    window._placedObjects.push(container);
-    window.autoSavePermanentMapConfig();
-    appendLog('s', 'PLACER: Colocado ' + o.label + ' ' + o.emoji + ' en X:' + Math.round(p.worldX) + ' Y:' + Math.round(p.worldY));
-  };
-  scene.input.on('pointerdown', window._placerHandler);
-
-  // ESC cancela
-  window._placerEscHandler = (e) => {
-    if (e.key === 'Escape') {
-      window._placerMode = false;
-      document.getElementById('game').style.cursor = 'default';
-      if (scene && window._placerHandler) scene.input.off('pointerdown', window._placerHandler);
-      document.removeEventListener('keydown', window._placerEscHandler);
-      appendLog('s', 'PLACER: Modo desactivado.');
-    }
-  };
-  document.addEventListener('keydown', window._placerEscHandler);
-};
-
-window.clearAllObjects = function() {
-  window._placedObjects.forEach(o => o.destroy());
-  window._placedObjects = [];
-  _diegoCloseModal('modal-object-placer');
-  appendLog('s', 'PLACER: Todos los objetos eliminados.');
-};
 
 // ═════════════════════════════════════════════════════
 //  🎨 HERRAMIENTA 2: ZONE PAINTER
@@ -4924,16 +4793,73 @@ window.broadcastCustom = function() {
 window._permanentColliders = [];
 window._permanentCollidersGroup = null;
 window._permanentGraphicsGroup = [];
+window._permanentColliderListener = null;
+window._colliderEditMode = false;
+window._colliderEraserMode = false;
+
+window.toggleColliderEditMode = function() {
+  window._colliderEditMode = !window._colliderEditMode;
+  if (window._colliderEditMode) window._colliderEraserMode = false;
+  const active = window._colliderEditMode;
+
+  appendLog('s', active 
+    ? '🛠️ MODO EDICIÓN DE COLLIDERS ACTIVO (Tecla K): Arrastra el centro para mover o las 4 esquinas Cian para redimensionar.' 
+    : '👁️ MODO EDICIÓN DE COLLIDERS DESACTIVADO.'
+  );
+
+  window.renderPermanentColliders();
+};
+
+window.toggleColliderEraserMode = function() {
+  window._colliderEraserMode = !window._colliderEraserMode;
+  if (window._colliderEraserMode) window._colliderEditMode = false;
+  const active = window._colliderEraserMode;
+
+  const canvas = document.getElementById('game');
+  if (canvas) canvas.style.cursor = active ? 'crosshair' : 'default';
+
+  appendLog('s', active 
+    ? '🧹 GOMA DE BORRAR ACTIVA: Haz clic izquierdo sobre cualquier colisionador en el mapa para borrarlo. Pulsa ESC para finalizar.' 
+    : '👁️ GOMA DE BORRAR DESACTIVADA.'
+  );
+
+  window.renderPermanentColliders();
+};
+
+// Tecla ESC para salir del modo goma de borrar
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && window._colliderEraserMode) {
+    window.toggleColliderEraserMode();
+  }
+});
+
+window.deleteSingleCollider = function(id) {
+  const item = window._permanentColliders.find(c => c.id === id);
+  const name = item ? item.label : 'Obstáculo';
+  window._permanentColliders = window._permanentColliders.filter(c => c.id !== id);
+  window.renderPermanentColliders();
+  window.autoSavePermanentMapConfig();
+  appendLog('s', `🗑️ COLLIDERS: Eliminado colisionador "${name}" de forma individual.`);
+  
+  const modal = document.getElementById('modal-collider-painter');
+  if (modal) {
+    window.openColliderPainter();
+  }
+};
 
 window.openColliderPainter = function() {
+  const isEdit = !!window._colliderEditMode;
+  const isEraser = !!window._colliderEraserMode;
+
   _diegoModal('modal-collider-painter', '🚧 COLLIDER PAINTER — Colisionadores de Paredes y Muebles', '#ef4444', `
     <p style="font-size:11px;color:#94a3b8;line-height:1.6">
       Dibuja cajas de colisión físicas sobre paredes, escritorios, sillas o estructuras para que los avatares no puedan atravesarlos.
+      <br><b style="color:#00ffff;">💡 TECLA [K]: Activa la edición (puntos Cian). <br>🧹 GOMA DE BORRAR: Activa la herramienta para eliminar colisionadores con clic izquierdo directo en la oficina.</b>
     </p>
 
     <div style="display:flex;flex-direction:column;gap:10px;margin:10px 0;">
       <div>
-        <label style="font-size:10px;color:#ef4444;font-family:'Press Start 2P',monospace;">ETIQUETA / OBSTÁCULO:</label>
+        <label style="font-size:10px;color:#ef4444;font-family:'Press Start 2P',monospace;">ETIQUETA / OBSTÁCULO NUEVO:</label>
         <input id="colliderLabel" type="text" value="Pared Norte" style="width:100%;background:#0f172a;border:1px solid #ef4444;color:#fff;padding:8px;border-radius:4px;font-size:11px;outline:none;">
       </div>
 
@@ -4949,17 +4875,39 @@ window.openColliderPainter = function() {
       </div>
     </div>
 
+    <div style="font-size:9px;color:#ef4444;font-family:'Press Start 2P',monospace;margin-top:6px;">
+      COLISIONADORES ACTIVOS (BORRAR EN LISTA O CON GOMA EN MAPA):
+    </div>
+    <div style="max-height:140px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;margin:6px 0;border:1px solid #1e293b;padding:6px;border-radius:4px;background:#030508;">
+      ${(window._permanentColliders || []).map((c) => `
+        <div style="background:#090d16;border:1px solid #ef4444;border-radius:4px;padding:6px 10px;display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:9px;color:#fca5a5;">🚧 <b>${c.label}</b> (${c.w}x${c.h}px) — X:${c.x} Y:${c.y}</span>
+          <button onclick="window.deleteSingleCollider(${c.id})" style="background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444;padding:4px 8px;border-radius:3px;cursor:pointer;font-size:8px;font-family:'Press Start 2P',monospace;">
+            🗑️ Borrar
+          </button>
+        </div>
+      `).join('') || '<p style="color:#64748b;font-size:9px;text-align:center;padding:8px 0;">No hay colisionadores aún. Agrega uno haciendo clic en el mapa.</p>'}
+    </div>
+
     <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
       <button onclick="window.startColliderPlacer()" style="background:#ef4444;color:#fff;border:2px solid #fca5a5;padding:10px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
-        🎯 HACE CLIC EN EL MAPA PARA COLOCAR COLISIONADOR
+        🎯 HACER CLIC EN EL MAPA PARA COLOCAR COLISIONADOR
+      </button>
+
+      <button onclick="window.toggleColliderEraserMode(); _diegoCloseModal('modal-collider-painter');" style="background:#dc2626;color:#fff;border:2px solid #f87171;padding:10px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
+        🧹 ${isEraser ? 'DESACTIVAR' : 'ACTIVAR'} GOMA DE BORRAR (CLIC IZQUIERDO EN MAPA)
+      </button>
+
+      <button onclick="window.toggleColliderEditMode(); _diegoCloseModal('modal-collider-painter');" style="background:#0284c7;color:#fff;border:2px solid #38bdf8;padding:10px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
+        🛠️ ${isEdit ? 'DESACTIVAR' : 'ACTIVAR'} MODO EDICIÓN MOUSE (TECLA K)
       </button>
 
       <button onclick="window.savePermanentMapConfig()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:2px solid #34d399;padding:12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;box-shadow:0 0 20px rgba(16,185,129,0.4);">
-        💾 GUARDAR CONFIGURACIÓN PERMANENTE DEL MAPA EN DISCO
+        💾 GUARDAR CONFIGURACIÓN PERMANENTE EN DISCO
       </button>
 
       <button onclick="window.clearAllColliders()" style="background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444;padding:8px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:7px;">
-        🗑️ LIMPIAR COLISIONADORES
+        🗑️ LIMPIAR TODOS LOS COLISIONADORES (BORRAR TODO)
       </button>
     </div>
   `);
@@ -4985,6 +4933,7 @@ window.startColliderPlacer = function() {
     const item = { id: Date.now(), x: Math.round(p.worldX), y: Math.round(p.worldY), w, h, label };
     window._permanentColliders.push(item);
     window.renderPermanentColliders();
+    window.autoSavePermanentMapConfig();
     appendLog('s', `✅ Collider "${label}" añadido en X:${item.x} Y:${item.y}`);
   };
   scene.input.once('pointerdown', onDown);
@@ -4995,7 +4944,9 @@ window.renderPermanentColliders = function() {
   if (!scene) return;
 
   if (window._permanentGraphicsGroup) {
-    window._permanentGraphicsGroup.forEach(g => g.destroy());
+    window._permanentGraphicsGroup.forEach(g => {
+      if (g && g.destroy) g.destroy();
+    });
     window._permanentGraphicsGroup = [];
   }
 
@@ -5005,80 +4956,195 @@ window.renderPermanentColliders = function() {
     window._permanentCollidersGroup.clear(true, true);
   }
 
-  window._permanentColliders.forEach(c => {
+  const isEditMode = !!window._colliderEditMode;
+  const isEraserMode = !!window._colliderEraserMode;
+  const showVisuals = isEditMode || isEraserMode;
+
+  window._permanentColliders.forEach((c, idx) => {
+    // 1. Static Arcade Physics Zone (Always Active)
     const zone = scene.add.zone(c.x, c.y, c.w, c.h);
     scene.physics.add.existing(zone, true);
+    if (zone.body) {
+      zone.body.width = c.w;
+      zone.body.height = c.h;
+      zone.body.x = c.x - c.w / 2;
+      zone.body.y = c.y - c.h / 2;
+    }
     window._permanentCollidersGroup.add(zone);
 
-    const g = scene.add.graphics().setDepth(200);
-    g.fillStyle(0xef4444, 0.25);
-    g.lineStyle(2, 0xef4444, 0.9);
-    g.fillRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
-    g.strokeRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
+    // 2. VISUAL ELEMENTS & INTERACTION (ONLY RENDERED IN EDIT OR ERASER MODE)
+    if (showVisuals) {
+      const g = scene.add.graphics().setDepth(200);
+      const fillColor = isEraserMode ? 0xef4444 : 0x00ffff;
+      const strokeColor = isEraserMode ? 0xef4444 : 0x00ffff;
+      const fillAlpha = isEraserMode ? 0.45 : 0.35;
 
-    const txt = scene.add.text(c.x, c.y, `🚧 ${c.label} (${c.w}x${c.h})`, {
-      fontFamily: '"Press Start 2P", monospace', fontSize: '7px', color: '#ef4444', backgroundColor: '#000000aa', padding: {x:4,y:2}
-    }).setOrigin(0.5).setDepth(201).setResolution(2);
+      function redrawGraphic() {
+        g.clear();
+        g.fillStyle(fillColor, fillAlpha);
+        g.lineStyle(2, strokeColor, 0.9);
+        g.fillRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
+        g.strokeRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
+      }
+      redrawGraphic();
 
-    window._permanentGraphicsGroup.push(g, txt);
+      const labelStr = isEraserMode ? `🧹 [CLIC BORRAR] ${c.label} (${c.w}x${c.h})` : `🛠️ ${c.label} (${c.w}x${c.h})`;
+      const txtColor = isEraserMode ? '#fca5a5' : '#66fcf1';
+      const txt = scene.add.text(c.x, c.y, labelStr, {
+        fontFamily: '"Press Start 2P", monospace', fontSize: '7px', color: txtColor, backgroundColor: '#000000aa', padding: {x:4,y:2}
+      }).setOrigin(0.5).setDepth(201).setResolution(2);
+
+      window._permanentGraphicsGroup.push(g, txt);
+
+      // Interactive Body Rectangle for Clicking or Dragging
+      const bodyRect = scene.add.rectangle(c.x, c.y, c.w, c.h, fillColor, 0.1)
+        .setDepth(299)
+        .setInteractive({ cursor: isEraserMode ? 'crosshair' : 'move', draggable: isEditMode });
+
+      window._permanentGraphicsGroup.push(bodyRect);
+
+      if (isEraserMode) {
+        bodyRect.on('pointerdown', () => {
+          window.deleteSingleCollider(c.id);
+        });
+      }
+
+      if (isEditMode) {
+        scene.input.setDraggable(bodyRect);
+        let dragOffset = null;
+
+        bodyRect.on('dragstart', (p) => {
+          dragOffset = { x: p.worldX - c.x, y: p.worldY - c.y };
+        });
+
+        // 4 Corner Cyan Points / Handles
+        const hTL = scene.add.rectangle(c.x - c.w/2, c.y - c.h/2, 14, 14, 0x00ffff, 0.95).setStrokeStyle(2, 0x000000, 1).setDepth(305).setInteractive({ cursor: 'nwse-resize', draggable: true });
+        const hTR = scene.add.rectangle(c.x + c.w/2, c.y - c.h/2, 14, 14, 0x00ffff, 0.95).setStrokeStyle(2, 0x000000, 1).setDepth(305).setInteractive({ cursor: 'nesw-resize', draggable: true });
+        const hBL = scene.add.rectangle(c.x - c.w/2, c.y + c.h/2, 14, 14, 0x00ffff, 0.95).setStrokeStyle(2, 0x000000, 1).setDepth(305).setInteractive({ cursor: 'nesw-resize', draggable: true });
+        const hBR = scene.add.rectangle(c.x + c.w/2, c.y + c.h/2, 14, 14, 0x00ffff, 0.95).setStrokeStyle(2, 0x000000, 1).setDepth(305).setInteractive({ cursor: 'nwse-resize', draggable: true });
+
+        scene.input.setDraggable(hTL);
+        scene.input.setDraggable(hTR);
+        scene.input.setDraggable(hBL);
+        scene.input.setDraggable(hBR);
+
+        window._permanentGraphicsGroup.push(hTL, hTR, hBL, hBR);
+
+        function updateAllElementsLive() {
+          redrawGraphic();
+          txt.setPosition(c.x, c.y).setText(`🛠️ ${c.label} (${c.w}x${c.h})`);
+          bodyRect.setPosition(c.x, c.y).setSize(c.w, c.h);
+
+          hTL.setPosition(c.x - c.w/2, c.y - c.h/2);
+          hTR.setPosition(c.x + c.w/2, c.y - c.h/2);
+          hBL.setPosition(c.x - c.w/2, c.y + c.h/2);
+          hBR.setPosition(c.x + c.w/2, c.y + c.h/2);
+
+          if (zone.body) {
+            zone.body.width = c.w;
+            zone.body.height = c.h;
+            zone.body.x = c.x - c.w / 2;
+            zone.body.y = c.y - c.h / 2;
+          }
+        }
+
+        bodyRect.on('drag', (p) => {
+          if (!dragOffset) return;
+          c.x = Math.round(p.worldX - dragOffset.x);
+          c.y = Math.round(p.worldY - dragOffset.y);
+          updateAllElementsLive();
+        });
+        bodyRect.on('dragend', () => {
+          dragOffset = null;
+          window.autoSavePermanentMapConfig();
+        });
+
+        function bindCornerDrag(handle, cornerType) {
+          let initialBox = null;
+
+          handle.on('dragstart', () => {
+            initialBox = { x: c.x, y: c.y, w: c.w, h: c.h };
+          });
+
+          handle.on('drag', (p) => {
+            if (!initialBox) return;
+            const px = p.worldX;
+            const py = p.worldY;
+
+            let L = initialBox.x - initialBox.w / 2;
+            let R = initialBox.x + initialBox.w / 2;
+            let T = initialBox.y - initialBox.h / 2;
+            let B = initialBox.y + initialBox.h / 2;
+
+            const minDim = 14;
+
+            if (cornerType === 'tl') {
+              L = Math.min(px, R - minDim);
+              T = Math.min(py, B - minDim);
+            } else if (cornerType === 'tr') {
+              R = Math.max(px, L + minDim);
+              T = Math.min(py, B - minDim);
+            } else if (cornerType === 'bl') {
+              L = Math.min(px, R - minDim);
+              B = Math.max(py, T + minDim);
+            } else if (cornerType === 'br') {
+              R = Math.max(px, L + minDim);
+              B = Math.max(py, T + minDim);
+            }
+
+            c.w = Math.round(R - L);
+            c.h = Math.round(B - T);
+            c.x = Math.round(L + c.w / 2);
+            c.y = Math.round(T + c.h / 2);
+
+            updateAllElementsLive();
+          });
+
+          handle.on('dragend', () => {
+            initialBox = null;
+            window.autoSavePermanentMapConfig();
+          });
+        }
+
+        bindCornerDrag(hTL, 'tl');
+        bindCornerDrag(hTR, 'tr');
+        bindCornerDrag(hBL, 'bl');
+      }
+    }
   });
 
-  if (window.ceoController && window.ceoController.sprite) {
-    scene.physics.add.collider(window.ceoController.sprite, window._permanentCollidersGroup);
+  window.refreshAllPhysicsColliders();
+};
+
+window.refreshAllPhysicsColliders = function() {
+  const scene = window.officeScene;
+  if (!scene || !window._permanentCollidersGroup) return;
+
+  if (window._permanentColliderListener) {
+    try { scene.physics.world.removeCollider(window._permanentColliderListener); } catch(e) {}
+    window._permanentColliderListener = null;
   }
-};
 
-// ═════════════════════════════════════════════════════
-//  📐 MODO MANIPULADOR ESTRUCTURAL INTERACTIVO DE COLLIDERS (ESTIRAR / MOVER)
-// ═════════════════════════════════════════════════════
-window._colliderManipulatorActive = false;
+  const sprites = [];
+  if (scene.ceo && scene.ceo.sprite) sprites.push(scene.ceo.sprite);
+  if (scene.nicole && scene.nicole.sprite) sprites.push(scene.nicole.sprite);
+  if (scene.diego && scene.diego.sprite) sprites.push(scene.diego.sprite);
 
-window.enableColliderManipulatorMode = function() {
-  window._colliderManipulatorActive = !window._colliderManipulatorActive;
-  const active = window._colliderManipulatorActive;
+  Object.values(window.AR || {}).forEach(ag => {
+    if (ag && ag.sprite && ag.sprite.body && ag.sprite.body.enable) {
+      if (!sprites.includes(ag.sprite)) sprites.push(ag.sprite);
+    }
+  });
 
-  _diegoModal('modal-manipulator', '📐 MODO EDITAR & ESTIRAR PAREDES', '#f59e0b', `
-    <p style="font-size:11px;color:#cbd5e1;line-height:1.6">
-      ${active ? '✅ <b>MODO MANIPULADOR ACTIVO:</b> Haz clic y arrastra en cualquier obstáculo para moverlo o estirarlo en directo.' : '👁️ Selecciona un colisionador de la lista para modificar sus coordenadas exactas.'}
-    </p>
-
-    <div style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin:10px 0;">
-      ${(window._permanentColliders || []).map((c, idx) => `
-        <div style="background:#090d16;border:2px solid #f59e0b;border-radius:6px;padding:8px;display:flex;flex-direction:column;gap:6px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;color:#fde047;">
-            <b>🚧 ${c.label}</b>
-            <span>X:${c.x} Y:${c.y} | ${c.w}x${c.h}px</span>
-          </div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-            <div>
-              <label style="font-size:8px;color:#94a3b8;">Ancho (Width):</label>
-              <input type="range" min="10" max="1200" value="${c.w}" oninput="window.updateColliderDimension(${idx}, this.value, ${c.h})">
-            </div>
-            <div>
-              <label style="font-size:8px;color:#94a3b8;">Alto (Height):</label>
-              <input type="range" min="10" max="800" value="${c.h}" oninput="window.updateColliderDimension(${idx}, ${c.w}, this.value)">
-            </div>
-          </div>
-        </div>
-      `).join('') || '<p style="color:#64748b;font-size:10px;">Sin colisionadores aún. Agrega uno con 🚧 COLLIDERS.</p>'}
-    </div>
-  `);
-};
-
-window.updateColliderDimension = function(idx, w, h) {
-  if (window._permanentColliders[idx]) {
-    window._permanentColliders[idx].w = parseInt(w);
-    window._permanentColliders[idx].h = parseInt(h);
-    window.renderPermanentColliders();
-    window.autoSavePermanentMapConfig();
+  if (sprites.length > 0) {
+    window._permanentColliderListener = scene.physics.add.collider(sprites, window._permanentCollidersGroup);
   }
 };
 
 window.autoSavePermanentMapConfig = function() {
   const config = {
     colliders: window._permanentColliders || [],
-    objects: (window._placedObjects || []).map(o => ({ x: o.x, y: o.y, label: o.label })),
+    objects: [],
     zones: window._paintedZones || [],
     ambience: { presetIndex: window._currentAmbiencePreset || 0 },
     savedBy: 'Diego Architect (AutoSave)',
@@ -5137,7 +5203,7 @@ window.executePermanentSave = function() {
 
   const config = {
     colliders: window._permanentColliders || [],
-    objects: (window._placedObjects || []).map(o => ({ x: o.x, y: o.y, label: o.label })),
+    objects: [],
     zones: window._paintedZones || [],
     ambience: { presetIndex: window._currentAmbiencePreset || 0 },
     savedBy: 'Diego Architect',

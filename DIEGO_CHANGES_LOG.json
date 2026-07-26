@@ -1,0 +1,826 @@
+[
+  {
+    "id": 1785103642368,
+    "timestamp": "2026-07-26T22:07:22.368Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103636695,
+    "timestamp": "2026-07-26T22:07:16.695Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103636119,
+    "timestamp": "2026-07-26T22:07:16.119Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103633254,
+    "timestamp": "2026-07-26T22:07:13.254Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 3 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103631563,
+    "timestamp": "2026-07-26T22:07:11.563Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 3 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103630573,
+    "timestamp": "2026-07-26T22:07:10.573Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 3 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103629735,
+    "timestamp": "2026-07-26T22:07:09.735Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 3 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103627335,
+    "timestamp": "2026-07-26T22:07:07.335Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 3 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103620454,
+    "timestamp": "2026-07-26T22:07:00.454Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103611631,
+    "timestamp": "2026-07-26T22:06:51.631Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785103565481,
+    "timestamp": "2026-07-26T22:06:05.481Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 0 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102984161,
+    "timestamp": "2026-07-26T21:56:24.161Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102980285,
+    "timestamp": "2026-07-26T21:56:20.285Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102965687,
+    "timestamp": "2026-07-26T21:56:05.687Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102964178,
+    "timestamp": "2026-07-26T21:56:04.178Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102803026,
+    "timestamp": "2026-07-26T21:53:23.026Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102801324,
+    "timestamp": "2026-07-26T21:53:21.324Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102781051,
+    "timestamp": "2026-07-26T21:53:01.051Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102776036,
+    "timestamp": "2026-07-26T21:52:56.036Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 2 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102767219,
+    "timestamp": "2026-07-26T21:52:47.219Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102737285,
+    "timestamp": "2026-07-26T21:52:17.285Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102570214,
+    "timestamp": "2026-07-26T21:49:30.214Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102565014,
+    "timestamp": "2026-07-26T21:49:25.014Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102560441,
+    "timestamp": "2026-07-26T21:49:20.441Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102556420,
+    "timestamp": "2026-07-26T21:49:16.420Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102554827,
+    "timestamp": "2026-07-26T21:49:14.827Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102373999,
+    "timestamp": "2026-07-26T21:46:13.999Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102368051,
+    "timestamp": "2026-07-26T21:46:08.051Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785102349524,
+    "timestamp": "2026-07-26T21:45:49.524Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991580,
+    "timestamp": "2026-07-26T21:39:51.580Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991555,
+    "timestamp": "2026-07-26T21:39:51.555Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991547,
+    "timestamp": "2026-07-26T21:39:51.547Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991530,
+    "timestamp": "2026-07-26T21:39:51.530Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991522,
+    "timestamp": "2026-07-26T21:39:51.522Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991514,
+    "timestamp": "2026-07-26T21:39:51.514Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991505,
+    "timestamp": "2026-07-26T21:39:51.505Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991497,
+    "timestamp": "2026-07-26T21:39:51.497Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991489,
+    "timestamp": "2026-07-26T21:39:51.489Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991480,
+    "timestamp": "2026-07-26T21:39:51.480Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991472,
+    "timestamp": "2026-07-26T21:39:51.472Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991463,
+    "timestamp": "2026-07-26T21:39:51.463Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991455,
+    "timestamp": "2026-07-26T21:39:51.455Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991447,
+    "timestamp": "2026-07-26T21:39:51.447Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991439,
+    "timestamp": "2026-07-26T21:39:51.439Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991430,
+    "timestamp": "2026-07-26T21:39:51.430Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991422,
+    "timestamp": "2026-07-26T21:39:51.422Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991414,
+    "timestamp": "2026-07-26T21:39:51.414Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991405,
+    "timestamp": "2026-07-26T21:39:51.405Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991397,
+    "timestamp": "2026-07-26T21:39:51.397Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991389,
+    "timestamp": "2026-07-26T21:39:51.389Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991380,
+    "timestamp": "2026-07-26T21:39:51.380Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991372,
+    "timestamp": "2026-07-26T21:39:51.372Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991364,
+    "timestamp": "2026-07-26T21:39:51.364Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991355,
+    "timestamp": "2026-07-26T21:39:51.355Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991347,
+    "timestamp": "2026-07-26T21:39:51.347Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991338,
+    "timestamp": "2026-07-26T21:39:51.338Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991330,
+    "timestamp": "2026-07-26T21:39:51.330Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991322,
+    "timestamp": "2026-07-26T21:39:51.322Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991314,
+    "timestamp": "2026-07-26T21:39:51.314Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991305,
+    "timestamp": "2026-07-26T21:39:51.305Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991297,
+    "timestamp": "2026-07-26T21:39:51.297Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991289,
+    "timestamp": "2026-07-26T21:39:51.289Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991280,
+    "timestamp": "2026-07-26T21:39:51.280Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991272,
+    "timestamp": "2026-07-26T21:39:51.272Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991263,
+    "timestamp": "2026-07-26T21:39:51.263Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101991238,
+    "timestamp": "2026-07-26T21:39:51.238Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990574,
+    "timestamp": "2026-07-26T21:39:50.574Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990572,
+    "timestamp": "2026-07-26T21:39:50.572Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990530,
+    "timestamp": "2026-07-26T21:39:50.530Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990522,
+    "timestamp": "2026-07-26T21:39:50.522Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990514,
+    "timestamp": "2026-07-26T21:39:50.514Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990511,
+    "timestamp": "2026-07-26T21:39:50.511Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990509,
+    "timestamp": "2026-07-26T21:39:50.509Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990507,
+    "timestamp": "2026-07-26T21:39:50.507Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990505,
+    "timestamp": "2026-07-26T21:39:50.505Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990503,
+    "timestamp": "2026-07-26T21:39:50.503Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990501,
+    "timestamp": "2026-07-26T21:39:50.501Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990500,
+    "timestamp": "2026-07-26T21:39:50.500Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990498,
+    "timestamp": "2026-07-26T21:39:50.498Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990496,
+    "timestamp": "2026-07-26T21:39:50.496Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990494,
+    "timestamp": "2026-07-26T21:39:50.494Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990492,
+    "timestamp": "2026-07-26T21:39:50.492Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990491,
+    "timestamp": "2026-07-26T21:39:50.491Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990489,
+    "timestamp": "2026-07-26T21:39:50.489Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990487,
+    "timestamp": "2026-07-26T21:39:50.487Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990485,
+    "timestamp": "2026-07-26T21:39:50.485Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990483,
+    "timestamp": "2026-07-26T21:39:50.483Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990481,
+    "timestamp": "2026-07-26T21:39:50.481Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990480,
+    "timestamp": "2026-07-26T21:39:50.480Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990478,
+    "timestamp": "2026-07-26T21:39:50.478Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990476,
+    "timestamp": "2026-07-26T21:39:50.476Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990474,
+    "timestamp": "2026-07-26T21:39:50.474Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990472,
+    "timestamp": "2026-07-26T21:39:50.472Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990470,
+    "timestamp": "2026-07-26T21:39:50.470Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990468,
+    "timestamp": "2026-07-26T21:39:50.468Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990466,
+    "timestamp": "2026-07-26T21:39:50.466Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990465,
+    "timestamp": "2026-07-26T21:39:50.465Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990463,
+    "timestamp": "2026-07-26T21:39:50.463Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990461,
+    "timestamp": "2026-07-26T21:39:50.461Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990459,
+    "timestamp": "2026-07-26T21:39:50.459Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990457,
+    "timestamp": "2026-07-26T21:39:50.457Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990456,
+    "timestamp": "2026-07-26T21:39:50.456Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  },
+  {
+    "id": 1785101990452,
+    "timestamp": "2026-07-26T21:39:50.452Z",
+    "autor": "Diego Architect",
+    "accion": "MODIFICACIÓN_MAPA",
+    "detalles": "Actualización de 1 colisionadores y 0 objetos.",
+    "estado": "PENDIENTE_APROBACION_CEO"
+  }
+]

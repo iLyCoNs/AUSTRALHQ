@@ -1,0 +1,20 @@
+{
+  "colliders": [
+    {
+      "id": 1785103620451,
+      "x": 1307,
+      "y": 656,
+      "w": 128,
+      "h": 146,
+      "label": "Pared Norte"
+    }
+  ],
+  "objects": [],
+  "zones": [],
+  "ambience": {
+    "presetIndex": 0
+  },
+  "savedBy": "Diego Architect (AutoSave)",
+  "timestamp": "2026-07-26T22:07:22.366Z",
+  "lastUpdated": "2026-07-26T22:07:22.367Z"
+}

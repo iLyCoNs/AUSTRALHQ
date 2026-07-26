@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-07-26T21:33:45.022Z",
+  "version": "5.0 - Modo Dios Baseline",
+  "adminOwner": "Jaime Vidal Paredes (CEO)",
+  "protectedModules": [
+    "CRM_KANBAN",
+    "EMAIL_TEMPLATES",
+    "META_ADS_SCRAPER",
+    "LLAMA_SCORING_PROMPTS"
+  ],
+  "permanentColliders": []
+}
