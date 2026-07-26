@@ -1872,7 +1872,31 @@ window.saveCurrentTVEditorConfig = function() {
   const scale = parseFloat(document.getElementById('inputScale').value);
   window.saveTVConfig({ top, right, left: 'auto', scale });
   document.getElementById('tvEditorModal').style.display = 'none';
-  appendLog('s', '📺 CEO: Configuración de la Tele HQ guardada y transmitida en vivo.');
+window.dispararCazadorBanana = function() {
+  const zona = document.getElementById('cbZonaTarget')?.value || 'Puerto Varas / Llanquihue';
+  const rubro = document.getElementById('cbRubroTarget')?.value || 'Inmobiliarias y Loteos Prediales';
+  const oferta = document.getElementById('cbOfertaTarget')?.value || 'MASTERPLAN_360';
+  const emailTarget = document.getElementById('cbTargetEmail')?.value || 'vidalparedes.jaime@gmail.com';
+  const promptCustom = document.getElementById('cbPromptCustom')?.value || '';
+
+  appendLog('s', `🍌 [CAZADOR BANANA] Disparando cacería y outreach B2B para ${rubro} en ${zona}...`);
+  alert(`🍌 ¡CAZADOR BANANA EN ACCIÓN!\n\nProspección B2B iniciada:\n📍 Zona: ${zona}\n🏢 Rubro: ${rubro}\n🎯 Oferta: ${oferta}\n📩 Target Email: ${emailTarget}\n\nConectando a n8n Cloud, ejecutando inferencia con Llama 3.1 70B y enviando correos reales por Gmail SMTP...`);
+
+  fetch('/api/run-agent', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      agent: 'cazadorbanana',
+      parametros: { zona, rubro, oferta, emailTarget, promptCustom }
+    })
+  })
+  .then(r => r.json())
+  .then(d => {
+    appendLog('c', `✅ [CAZADOR BANANA] Evento de cacería transmitido a n8n Cloud y Telegram!`);
+  })
+  .catch(err => {
+    appendLog('e', `[-] Error disparando Cazador Banana: ${err.message}`);
+  });
 };
 
 window.triggerTestLead = function() {
@@ -2194,6 +2218,74 @@ window.openTVSubPlatform = function() {
             <div style="font-size:10px; color:#94a3b8; margin-bottom:4px;">⚡ PAUTA META ADS ACTIVA</div>
             <div id="wrKpiAds" style="font-size:26px; font-weight:900; color:#ec4899;">15 Anunciantes</div>
             <div style="font-size:9px; color:#ec4899; margin-top:4px;">🔥 Escaneo Graph API v19.0</div>
+          </div>
+        </div>
+
+        <!-- 🍌 CONSOLA DE OUTREACH Y CACERÍA B2B — CAZADOR BANANA -->
+        <div style="background:linear-gradient(135deg, rgba(254, 240, 138, 0.08), rgba(234, 179, 8, 0.04)); backdrop-filter:blur(12px); border:2px solid #facc15; border-radius:12px; padding:20px; margin-bottom:24px; box-shadow:0 0 25px rgba(250, 204, 21, 0.15);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <div style="width:40px; height:40px; border-radius:10px; background:#facc15; color:#000; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:bold; box-shadow:0 0 15px rgba(250, 204, 21, 0.6);">🍌</div>
+              <div>
+                <div style="font-size:16px; font-weight:900; color:#facc15; letter-spacing:0.5px;">CAZADOR BANANA — CONSOLA DE OUTREACH Y CACERÍA B2B</div>
+                <div style="font-size:10px; color:#cbd5e1;">CONTROL EN TIEMPO REAL DE PROSPECCIÓN EN GOOGLE MAPS, INFERENCIA LLAMA 3.1 70B Y DESPACHO GMAIL SMTP</div>
+              </div>
+            </div>
+            <div style="background:rgba(250, 204, 21, 0.2); border:1px solid #facc15; color:#fde047; padding:5px 12px; border-radius:20px; font-size:10px; font-weight:bold;">
+              ⚡ ESTADO: ONLINE / SMTPS CONECTADO
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr 1.5fr; gap:12px; margin-bottom:16px;">
+            <div>
+              <label style="font-size:10px; color:#fde047; font-weight:bold; display:block; margin-bottom:4px;">📍 ZONA TARGET</label>
+              <select id="cbZonaTarget" style="width:100%; background:#0f172a; border:1px solid #eab308; color:#fff; padding:8px 10px; border-radius:6px; font-size:11px;">
+                <option value="Puerto Varas / Llanquihue">Puerto Varas / Llanquihue</option>
+                <option value="Osorno / Puyehue">Osorno / Puyehue</option>
+                <option value="Valdivia / Los Ríos">Valdivia / Los Ríos</option>
+                <option value="Chiloé / Ancud / Castro">Chiloé / Ancud / Castro</option>
+                <option value="Temuco / Araucanía">Temuco / Araucanía</option>
+                <option value="Santiago / RM">Santiago / RM</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:10px; color:#fde047; font-weight:bold; display:block; margin-bottom:4px;">🏢 RUBRO OBJETIVO</label>
+              <select id="cbRubroTarget" style="width:100%; background:#0f172a; border:1px solid #eab308; color:#fff; padding:8px 10px; border-radius:6px; font-size:11px;">
+                <option value="Inmobiliarias y Loteos Prediales">Inmobiliarias y Loteos Prediales</option>
+                <option value="Constructoras">Constructoras</option>
+                <option value="Corredoras de Propiedades">Corredoras de Propiedades</option>
+                <option value="Pymes de Servicios">PYMEs de Servicios</option>
+                <option value="Hoteles y Turismo">Hoteles y Turismo</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:10px; color:#fde047; font-weight:bold; display:block; margin-bottom:4px;">🎯 OFERTA DE SERVICIO</label>
+              <select id="cbOfertaTarget" style="width:100%; background:#0f172a; border:1px solid #eab308; color:#fff; padding:8px 10px; border-radius:6px; font-size:11px;">
+                <option value="MASTERPLAN_360">MasterPlan 360 & Tour Drone 4K</option>
+                <option value="AUTOMATIZACION_IA_PYMEs">Automatización IA & Workflows n8n</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="font-size:10px; color:#fde047; font-weight:bold; display:block; margin-bottom:4px;">📩 CORREO PRUEBA / TARGET</label>
+              <input id="cbTargetEmail" type="email" value="vidalparedes.jaime@gmail.com" style="width:100%; background:#0f172a; border:1px solid #eab308; color:#fff; padding:8px 10px; border-radius:6px; font-size:11px;">
+            </div>
+          </div>
+
+          <div style="margin-bottom:16px;">
+            <label style="font-size:10px; color:#fde047; font-weight:bold; display:block; margin-bottom:4px;">✍️ PROMPT DE REDACCIÓN PERSONALIZADA (LLAMA 3.1 70B)</label>
+            <textarea id="cbPromptCustom" rows="2" style="width:100%; background:#0f172a; border:1px solid #eab308; color:#e2e8f0; padding:10px; border-radius:6px; font-size:11px; font-family:'JetBrains Mono', monospace; line-height:1.5;">Eres el Director Comercial B2B de AustralDrone 360. Redacta una propuesta comercial consultiva de alto valor resaltando el incremento del 40% en ventas a distancia con MasterPlan 360 e invita a una reunión de 10 min por Google Meet.</textarea>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="font-size:11px; color:#94a3b8;">
+              📧 Emisor Oficial: <b style="color:#fde047;">australdrone.cl@gmail.com</b> | ⚡ Transmisión: <b style="color:#66fcf1;">n8n Cloud Webhook + Telegram</b>
+            </div>
+            <button onclick="window.dispararCazadorBanana()" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:900; font-size:12px; cursor:pointer; box-shadow:0 0 20px rgba(234,179,8,0.5); display:flex; align-items:center; gap:8px;">
+              🚀 INICIAR CACERÍA Y DISPARAR OUTREACH B2B
+            </button>
           </div>
         </div>
 
