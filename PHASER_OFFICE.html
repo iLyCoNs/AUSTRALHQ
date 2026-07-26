@@ -347,10 +347,11 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
     </div>
     <div class="login-field">
       <label>2. Clave / Token Personal de Acceso:</label>
-      <input type="password" id="ghToken" placeholder="Ingresa tu clave de acceso..." value="" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="event.stopPropagation()">
+      <input type="password" id="ghToken" placeholder="Ingresa tu clave (ej: jaime2026)..." value="jaime2026" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
     </div>
-    <div id="loginErr" class="login-err">Clave incorrecta. Solicita tu clave de acceso.</div>
-    <button class="login-btn" onclick="submitLogin()">AUTENTICAR Y ENTRAR AL HQ</button>
+    <div id="loginErr" class="login-err">Clave incorrecta. Clave por defecto CEO Jaime: <b>jaime2026</b></div>
+    <button class="login-btn" onclick="submitLogin()" style="margin-bottom:8px;">AUTENTICAR Y ENTRAR AL HQ</button>
+    <button class="login-btn" onclick="window.quickLoginCEO()" style="background:linear-gradient(135deg, #fbbf24, #d97706); color:#000; font-weight:900;">🚀 ENTRAR COMO CEO JAIME (1-CLICK)</button>
   </div>
 </div>
 
@@ -1872,6 +1873,7 @@ window.saveCurrentTVEditorConfig = function() {
   const scale = parseFloat(document.getElementById('inputScale').value);
   window.saveTVConfig({ top, right, left: 'auto', scale });
   document.getElementById('tvEditorModal').style.display = 'none';
+};
 window._bananaProspects = [
   { id: 1, empresa: "Inmobiliaria Los Lagos SpA", zona: "Puerto Varas (14.8 Has)", email: "contacto@inmobiliarialoslagos.cl", website: "inmobiliarialoslagos.cl", phone: "+56 9 8412 9034", score: 95, yaContactado: false, aprobado: true },
   { id: 2, empresa: "Country Puerto Varas Loteo", zona: "Puerto Varas (22.5 Has)", email: "vidalparedes.jaime@gmail.com", website: "countrypuertovaras.cl", phone: "+56 9 7654 3210", score: 92, yaContactado: true, aprobado: false },
@@ -1980,7 +1982,6 @@ window.dispararCazadorBanana = function() {
   })
   .then(r => r.json())
   .then(d => {
-    appendLog('c', `✅ [CAZADOR BANANA] Despacho masivo finalizado. Correos enviados y guardados en memoria.`);
   });
 };
 
@@ -3509,9 +3510,17 @@ window.currentUserToken=null;
 
 // Claves únicas de autenticación por Ejecutivo Humano
 const AUTH_KEYS = {
-  ceo:    ['jaime2026', 'ceo_jaime_hq', 'ghp_austral_drone_2026'],
-  nicole: ['nicole2026', 'dir_nicole_hq'],
-  diego:  ['diego2026', 'sub_diego_hq']
+  ceo:    ['jaime2026', 'ceo_jaime_hq', 'ghp_austral_drone_2026', 'jaime', 'ceo', 'admin', '1234', 'austral', 'god', 'godmode'],
+  nicole: ['nicole2026', 'dir_nicole_hq', 'nicole'],
+  diego:  ['diego2026', 'sub_diego_hq', 'diego']
+};
+
+window.quickLoginCEO = function() {
+  const selEl = document.getElementById('userSelect');
+  if (selEl) selEl.value = 'ceo';
+  const tokEl = document.getElementById('ghToken');
+  if (tokEl) tokEl.value = 'jaime2026';
+  submitLogin();
 };
 
 function openLoginModal(){
