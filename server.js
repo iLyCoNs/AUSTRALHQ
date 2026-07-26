@@ -913,6 +913,55 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // Permanent Map Config Store File & Path
+    const MAP_PERMANENT_FILE = path.join(ROOT, 'MAP_CONFIG_PERMANENT.json');
+
+    function cargarMapConfigPermanente() {
+        if (fs.existsSync(MAP_PERMANENT_FILE)) {
+            try {
+                return JSON.parse(fs.readFileSync(MAP_PERMANENT_FILE, 'utf8'));
+            } catch(e) {}
+        }
+        return { colliders: [], objects: [], zones: [], ambience: { presetIndex: 0 }, lastUpdated: new Date().toISOString() };
+    }
+
+    function guardarMapConfigPermanente(config) {
+        try {
+            config.lastUpdated = new Date().toISOString();
+            fs.writeFileSync(MAP_PERMANENT_FILE, JSON.stringify(config, null, 2), 'utf8');
+            broadcast({ type: 'map_config_synced', config });
+            return true;
+        } catch(e) {
+            return false;
+        }
+    }
+
+    // API Route: GET /api/permanent-map-config
+    if (req.method === 'GET' && req.url === '/api/permanent-map-config') {
+        const config = cargarMapConfigPermanente();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, config }));
+        return;
+    }
+
+    // API Route: POST /api/permanent-map-config (Guardar Cambios de Diego Architect)
+    if (req.method === 'POST' && req.url === '/api/permanent-map-config') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const ok = guardarMapConfigPermanente(data);
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: ok, message: 'Configuración permanente del mapa guardada exitosamente.' }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: GET /api/crm-leads
     if (req.method === 'GET' && req.url === '/api/crm-leads') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -953,6 +1002,12 @@ const connectedClients = new Map(); // ws -> { role, x, y, anim }
 
 wss.on('connection', (ws) => {
     console.log('[WS] Nuevo cliente conectado al HQ');
+
+    // Transmitir configuración de mapa permanente guardada
+    try {
+        const currentMapCfg = cargarMapConfigPermanente();
+        ws.send(JSON.stringify({ type: 'map_config_synced', config: currentMapCfg }));
+    } catch(e) {}
 
     ws.on('message', (message) => {
         try {

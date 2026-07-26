@@ -1423,6 +1423,9 @@ class OfficeScene extends Phaser.Scene{
     // 11. CHARLAS AUTÓNOMAS IA ENTRE AGENTES
     this._initAutonomousAIConversations();
 
+    // 12. MAPA PERMANENTE DISCO & COLLIDERS EN VIVO
+    window.loadPermanentMapConfig();
+
     appendLog('s','HQ ONLINE — CEO+Nicole+5 Agentes!');
     console.log('%c AustralDrone.CL HQ v5 ','background:#06080f;color:#66fcf1;font-size:13px;font-weight:bold;border:2px solid #66fcf1;padding:4px 12px');
   }
@@ -4838,6 +4841,163 @@ window.broadcastCustom = function() {
     method: 'POST', headers: {'Content-Type':'application/json'},
     body: JSON.stringify({ agent: 'all', prompt: msg, sender: 'SUB. DIEGO (BROADCAST)' })
   }).catch(() => {});
+};
+
+// ═════════════════════════════════════════════════════
+//  🚧 HERRAMIENTA DISPONIBLE PARA DIEGO: COLLIDER PAINTER & PERMANENT STORE
+// ═════════════════════════════════════════════════════
+window._permanentColliders = [];
+window._permanentCollidersGroup = null;
+window._permanentGraphicsGroup = [];
+
+window.openColliderPainter = function() {
+  _diegoModal('modal-collider-painter', '🚧 COLLIDER PAINTER — Colisionadores de Paredes y Muebles', '#ef4444', `
+    <p style="font-size:11px;color:#94a3b8;line-height:1.6">
+      Dibuja cajas de colisión físicas sobre paredes, escritorios, sillas o estructuras para que los avatares no puedan atravesarlos.
+    </p>
+
+    <div style="display:flex;flex-direction:column;gap:10px;margin:10px 0;">
+      <div>
+        <label style="font-size:10px;color:#ef4444;font-family:'Press Start 2P',monospace;">ETIQUETA / OBSTÁCULO:</label>
+        <input id="colliderLabel" type="text" value="Pared Norte" style="width:100%;background:#0f172a;border:1px solid #ef4444;color:#fff;padding:8px;border-radius:4px;font-size:11px;outline:none;">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label style="font-size:9px;color:#cbd5e1;">Ancho (Width): <b id="valColW" style="color:#ef4444;">120px</b></label>
+          <input type="range" id="colW" min="10" max="1000" value="120" oninput="document.getElementById('valColW').innerText=this.value+'px'">
+        </div>
+        <div>
+          <label style="font-size:9px;color:#cbd5e1;">Alto (Height): <b id="valColH" style="color:#ef4444;">40px</b></label>
+          <input type="range" id="colH" min="10" max="600" value="40" oninput="document.getElementById('valColH').innerText=this.value+'px'">
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+      <button onclick="window.startColliderPlacer()" style="background:#ef4444;color:#fff;border:2px solid #fca5a5;padding:10px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
+        🎯 HACE CLIC EN EL MAPA PARA COLOCAR COLISIONADOR
+      </button>
+
+      <button onclick="window.savePermanentMapConfig()" style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;border:2px solid #34d399;padding:12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;box-shadow:0 0 20px rgba(16,185,129,0.4);">
+        💾 GUARDAR CONFIGURACIÓN PERMANENTE DEL MAPA EN DISCO
+      </button>
+
+      <button onclick="window.clearAllColliders()" style="background:#7f1d1d;color:#fca5a5;border:1px solid #ef4444;padding:8px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:7px;">
+        🗑️ LIMPIAR COLISIONADORES
+      </button>
+    </div>
+  `);
+};
+
+window.startColliderPlacer = function() {
+  const label = document.getElementById('colliderLabel')?.value || 'Obstáculo';
+  const w = parseInt(document.getElementById('colW')?.value || '120');
+  const h = parseInt(document.getElementById('colH')?.value || '40');
+
+  _diegoCloseModal('modal-collider-painter');
+  appendLog('s', `COLLIDER: Haz clic en el mapa para colocar "${label}" (${w}x${h} px).`);
+
+  const scene = window.officeScene;
+  if (!scene) return;
+
+  document.getElementById('game').style.cursor = 'crosshair';
+
+  const onDown = (p) => {
+    scene.input.off('pointerdown', onDown);
+    document.getElementById('game').style.cursor = 'default';
+
+    const item = { id: Date.now(), x: Math.round(p.worldX), y: Math.round(p.worldY), w, h, label };
+    window._permanentColliders.push(item);
+    window.renderPermanentColliders();
+    appendLog('s', `✅ Collider "${label}" añadido en X:${item.x} Y:${item.y}`);
+  };
+  scene.input.once('pointerdown', onDown);
+};
+
+window.renderPermanentColliders = function() {
+  const scene = window.officeScene;
+  if (!scene) return;
+
+  if (window._permanentGraphicsGroup) {
+    window._permanentGraphicsGroup.forEach(g => g.destroy());
+    window._permanentGraphicsGroup = [];
+  }
+
+  if (!window._permanentCollidersGroup) {
+    window._permanentCollidersGroup = scene.physics.add.staticGroup();
+  } else {
+    window._permanentCollidersGroup.clear(true, true);
+  }
+
+  window._permanentColliders.forEach(c => {
+    const zone = scene.add.zone(c.x, c.y, c.w, c.h);
+    scene.physics.add.existing(zone, true);
+    window._permanentCollidersGroup.add(zone);
+
+    const g = scene.add.graphics().setDepth(200);
+    g.fillStyle(0xef4444, 0.25);
+    g.lineStyle(2, 0xef4444, 0.9);
+    g.fillRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
+    g.strokeRect(c.x - c.w/2, c.y - c.h/2, c.w, c.h);
+
+    const txt = scene.add.text(c.x, c.y, `🚧 ${c.label} (${c.w}x${c.h})`, {
+      fontFamily: '"Press Start 2P", monospace', fontSize: '7px', color: '#ef4444', backgroundColor: '#000000aa', padding: {x:4,y:2}
+    }).setOrigin(0.5).setDepth(201).setResolution(2);
+
+    window._permanentGraphicsGroup.push(g, txt);
+  });
+
+  if (window.ceoController && window.ceoController.sprite) {
+    scene.physics.add.collider(window.ceoController.sprite, window._permanentCollidersGroup);
+  }
+};
+
+window.savePermanentMapConfig = function() {
+  const config = {
+    colliders: window._permanentColliders || [],
+    objects: (window._placedObjects || []).map(o => ({ x: o.x, y: o.y, label: o.label })),
+    zones: window._paintedZones || [],
+    ambience: { presetIndex: window._currentAmbiencePreset || 0 },
+    savedBy: 'Diego Architect',
+    timestamp: new Date().toISOString()
+  };
+
+  fetch('/api/permanent-map-config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(config)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      alert("💾 CONFIGURACIÓN PERMANENTE GUARDADA EXITOSAMENTE EN DISCO (MAP_CONFIG_PERMANENT.json).\n\nTodos los colisionadores, muebles y zonas quedarán cargados eternamente para todos los usuarios que inicien sesión.");
+      appendLog('s', '💾 MAPA PERMANENTE: Archivo MAP_CONFIG_PERMANENT.json actualizado en disco.');
+    }
+  })
+  .catch(err => {
+    alert("⚠️ Error guardando mapa permanente: " + err.message);
+  });
+};
+
+window.clearAllColliders = function() {
+  window._permanentColliders = [];
+  window.renderPermanentColliders();
+  _diegoCloseModal('modal-collider-painter');
+  appendLog('s', 'COLLIDERS: Todos los colisionadores han sido eliminados.');
+};
+
+window.loadPermanentMapConfig = function() {
+  fetch('/api/permanent-map-config')
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.success && d.config) {
+        if (d.config.colliders) window._permanentColliders = d.config.colliders;
+        window.renderPermanentColliders();
+        appendLog('s', `📡 MAPA CARGADO: ${window._permanentColliders.length} colisionadores permanentes activos desde disco.`);
+      }
+    })
+    .catch(() => {});
 };
 
 // ═════════════════════════════════════════════════════
