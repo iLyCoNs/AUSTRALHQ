@@ -62,6 +62,54 @@ def extraer_superficie(texto):
             return 0.0
     return 0.0
 
+KEYWORDS_INTENCION_COMPRA_ALTA = [
+    "busco", "necesito", "recomienden", "cotización", "cotizacion", "presupuesto", 
+    "alguien vende", "urgente", "compro", "comprar", "interesado en comprar", 
+    "buscamos terreno", "busco parcela", "inversionista busca", "pago al contado", 
+    "pie listo", "con crédito aprobado"
+]
+
+KEYWORDS_URGENCIA_PLAZO = [
+    "hoy", "esta semana", "urgente", "de inmediato", "asap", "para ya", "cuanto antes", "disponible hoy"
+]
+
+KEYWORDS_MEDIO_CONTACTO = [
+    "whatsapp", "dm", "por interno", "correo", "inbox", "llamar a", "contacto", "+569", "+56 9"
+]
+
+def evaluar_intencion_texto(texto):
+    if not texto:
+        return 0, "⚪ BAJA (Sin Texto)", []
+        
+    t = texto.lower()
+    score = 0
+    senales = []
+    
+    if any(k in t for k in KEYWORDS_INTENCION_COMPRA_ALTA):
+        score += 35
+        senales.append("Intención Directa de Compra/Servicio")
+        
+    if any(k in t for k in KEYWORDS_URGENCIA_PLAZO):
+        score += 25
+        senales.append("Plazo Urgente (Hoy/Esta Semana)")
+        
+    if any(k in t for k in KEYWORDS_MEDIO_CONTACTO):
+        score += 20
+        senales.append("Contacto Directo (WhatsApp/DM/Correo)")
+        
+    if any(k in t for k in ["ha", "has", "hectárea", "m2", "uf", "$", "clp", "puerto", "osorno", "valdivia", "frutillar"]):
+        score += 20
+        senales.append("Parámetros Concretos (Has/Precio/Zona)")
+        
+    if score >= 75:
+        nivel = "🔥 ALTA INTENCIÓN (Lead Caliente)"
+    elif score >= 45:
+        nivel = "🟡 MEDIA INTENCIÓN (Lead Tibio)"
+    else:
+        nivel = "⚪ BAJA INTENCIÓN (Filtro Ruido)"
+        
+    return score, nivel, senales
+
 def calcular_score(lead, is_duplicate, config=None):
     if not config:
         config = {}
@@ -70,6 +118,11 @@ def calcular_score(lead, is_duplicate, config=None):
     phone_pts = int(config.get('phone_bonus_points', 20))
     
     score = 0
+    
+    # 1. Evaluación de Intención del Comprador (Scoring de Intención Directa)
+    texto_lead = f"{lead.get('Nombre Vendedor', '')} {lead.get('Ubicacion', '')} {lead.get('Diagnostico IA', '')} {lead.get('Accion Recomendada', '')}"
+    intention_score, intention_level, intention_signals = evaluar_intencion_texto(texto_lead)
+    score += int(intention_score * 0.4) # Ponderación de Intención
     
     superficie_ha = extraer_superficie(lead.get('Superficie Has', ''))
     if superficie_ha >= min_surf:
@@ -105,6 +158,10 @@ def calcular_score(lead, is_duplicate, config=None):
     if not nombre or nombre.lower() == 'no especifica':
         score -= 15
         
+    lead['score_intencion'] = intention_score
+    lead['nivel_intencion'] = intention_level
+    lead['senales_intencion'] = intention_signals
+    
     link_perfil = lead.get('Link Perfil', '').strip()
     link_post = lead.get('Link Post Directo', '').strip()
     if not link_perfil and not link_post:
