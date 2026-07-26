@@ -4738,9 +4738,19 @@ window.startPlacer = function() {
     const container = scene.add.container(p.worldX, p.worldY, [g, label, nameTag]).setDepth(80);
     // Click derecho = eliminar
     container.setInteractive(new Phaser.Geom.Rectangle(-o.w/2, -o.h/2, o.w, o.h), Phaser.Geom.Rectangle.Contains);
-    container.on('pointerdown', (ptr) => { if (ptr.rightButtonDown()) { container.destroy(); window._placedObjects = window._placedObjects.filter(x => x !== container); appendLog('s', 'PLACER: Objeto eliminado.'); } });
+    container.on('pointerdown', (ptr) => { 
+      if (ptr.rightButtonDown()) { 
+        container.destroy(); 
+        window._placedObjects = window._placedObjects.filter(x => x !== container); 
+        window.autoSavePermanentMapConfig();
+        appendLog('s', 'PLACER: Objeto eliminado.'); 
+      } 
+    });
+    container.label = o.label;
+    container.emoji = o.emoji;
     window._placedObjects.push(container);
-    appendLog('s', 'PLACER: Colocado ' + o.label + ' en X:' + Math.round(p.worldX) + ' Y:' + Math.round(p.worldY));
+    window.autoSavePermanentMapConfig();
+    appendLog('s', 'PLACER: Colocado ' + o.label + ' ' + o.emoji + ' en X:' + Math.round(p.worldX) + ' Y:' + Math.round(p.worldY));
   };
   scene.input.on('pointerdown', window._placerHandler);
 
