@@ -218,6 +218,60 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API Route: Escaneo Real Cazador Banana
+    if (req.method === 'POST' && req.url === '/api/scan-banana') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const zona = data.zona || 'Puerto Varas / Llanquihue';
+                const scriptPath = path.join(ROOT, 'scan_real_prospects.py');
+                const cmd = process.platform === 'win32' ? 'py' : 'python';
+                
+                console.log(`[API] Cazador Banana escaneando zona: ${zona}...`);
+                broadcast({ type: 'agent_status', agent: 'cazadorbanana', state: 'working', msg: `🍌 Cazador Banana peinando el territorio de ${zona}...` });
+
+                const pyProc = spawn(cmd, [scriptPath, `"${zona}"`], { cwd: ROOT, shell: true });
+                let outputStr = '';
+
+                pyProc.stdout.on('data', d => outputStr += d.toString());
+                pyProc.on('close', code => {
+                    let prospectos = [];
+                    try {
+                        prospectos = JSON.parse(outputStr.trim());
+                    } catch(e) {
+                        console.error('[API] Error parsing scan_real_prospects.py output:', e.message);
+                    }
+
+                    const scoutMsg = `🍌 ¡Cazador Banana reportándose, Jefe Jaime! He peinado ${zona} y detecté ${prospectos.length} blancos reales verificados (200 OK). La propuesta comercial de MasterPlan 360 e IA está lista. Todo está en PAUSA en el War Room esperando tu Visto Bueno.`;
+
+                    broadcast({
+                        type: 'agent_status',
+                        agent: 'cazadorbanana',
+                        state: 'lead',
+                        msg: `🍌 ${prospectos.length} Blancos en War Room! Esperando tu Visto Bueno...`
+                    });
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        agent: 'cazadorbanana',
+                        agentMessage: scoutMsg,
+                        zona: zona,
+                        totalProspectos: prospectos.length,
+                        prospectos: prospectos,
+                        warRoomUrl: "https://australhq.onrender.com"
+                    }));
+                });
+            } catch(e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: Run Local Agent
     if (req.method === 'POST' && req.url === '/api/run-agent') {
         let body = '';
