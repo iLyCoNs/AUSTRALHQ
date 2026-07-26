@@ -98,24 +98,29 @@ def get_gmail_pass():
 def get_nv_key():
     return load_secret("NVIDIA_API_KEY")
 
-def generar_propuesta_360():
+def generar_propuesta_360(empresa="Country Puerto Varas", rubro="Inmobiliarias", zona="Puerto Varas / Los Lagos"):
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {get_nv_key()}",
         "Content-Type": "application/json"
     }
     
-    prompt = f"""Eres el Director Comercial B2B de AustralDrone 360 (empresa líder en Ortomosaicos 3D, MasterPlan 360 interactivo y Fotografía Aérea Drone 4K en el Sur de Chile).
+    prompt = f"""Eres el Director Comercial de AustralDrone.CL, basados en Puerto Montt, Región de Los Lagos (expertos en Masterplan 360° Inmobiliario, Ortomosaicos 3D, Grabación Drone 4K y FPV).
 
-Redacta una propuesta comercial fría B2B de alta conversión dirigida al Gerente Comercial de una inmobiliaria predial en el Sur de Chile (ej: Country Puerto Varas / Lomas de Cancura) que vende parcelas de 5.000m² y más.
+Redacta una propuesta comercial altamente respetuosa, profesional y armoniosa dirigida al Gerente Comercial de la empresa '{empresa}' ({rubro} en {zona}).
 
-OBJETIVO: Vender nuestro servicio de MasterPlan 360 Interactivo y Tour Drone 4K para elevar las ventas a distancia con compradores de Santiago y el extranjero.
+REGLAS DE ORO DEL CORREO:
+1. Iniciar presentándonos como AustralDrone.CL desde Puerto Montt.
+2. Reconocer el valor de sus proyectos inmobiliarios/prediales en el Sur de Chile.
+3. Explicar claramente nuestra solución: MasterPlan 360° Interactivo + Ortomosaico 3D con delimitación predial SAG + Tour Drone 4K.
+4. Iluminar su oportunidad comercial: Explicar cómo esto permite a compradores de Santiago y el extranjero recorrer las parcelas virtualmente antes de viajar, incrementando las ventas a distancia en más de un 40%.
+5. Cierre respetuoso invitando a una breve reunión de 10 minutos por Google Meet o café en Puerto Montt/Puerto Varas.
 
-Devuelve ÚNICAMENTE un objeto JSON estrictamente válido:
+Devuelve ÚNICAMENTE un objeto JSON válido:
 {{
-    "asunto": "Asunto atractivo y profesional con emojis",
-    "cuerpo_html": "Cuerpo HTML formateado con estilo elegante, viñetas, beneficios clave, estimación de retorno y llamado a reunión",
-    "cuerpo_texto": "Versión en texto plano para clientes de correo tradicionales",
+    "asunto": "Asunto profesional y elegante",
+    "cuerpo_html": "Cuerpo HTML elegante con tonos azul pastel #8CA3B0, arena lujo #DCCBAE y fondo oscuro #0f172a, viñetas claras y botón CTA",
+    "cuerpo_texto": "Versión en texto plano legible",
     "target_email": "{TARGET_EMAIL}"
 }}"""
 
@@ -141,9 +146,55 @@ Devuelve ÚNICAMENTE un objeto JSON estrictamente válido:
         print(f"Error generando con Llama: {e}")
         
     return {
-        "asunto": "Propuesta Exclusiva: MasterPlan 360 para Loteo Predial en Puerto Varas",
-        "cuerpo_html": "<h1>Propuesta MasterPlan 360</h1><p>Potencie sus ventas de parcelas de 5.000m2 con ortomosaico 3D y tour drone 4K.</p>",
-        "cuerpo_texto": "Estimado equipo comercial: Le presentamos la propuesta de MasterPlan 360 e integracion de ortomosaico 3D con tour drone 4K para potenciar la venta a distancia de sus parcelas prediales en el Sur de Chile.",
+        "asunto": "Elevando las ventas a distancia de sus desarrollos inmobiliarios | AustralDrone.CL Puerto Montt",
+        "cuerpo_html": f"""<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="font-family: 'Inter', Arial, sans-serif; background-color: #0f172a; color: #f8fafc; padding: 30px;">
+  <div style="max-width: 620px; margin: 0 auto; background-color: #1e293b; padding: 36px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <div style="text-align: center; margin-bottom: 24px;">
+      <h2 style="color: #8CA3B0; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 0;">AUSTRALDRONE.CL — PUERTO MONTT</h2>
+      <h1 style="color: #DCCBAE; font-size: 22px; margin-top: 6px; font-weight: 800;">MasterPlan 360° & Tecnología Aérea Inmobiliaria</h1>
+    </div>
+    
+    <p style="font-size: 15px; color: #cbd5e1; line-height: 1.7;">Estimado Equipo Comercial de <b>{empresa}</b>,</p>
+    
+    <p style="font-size: 14px; color: #94a3b8; line-height: 1.7;">
+      Le saludamos cordialmente desde <b>AustralDrone.CL en Puerto Montt</b>. Hemos estado observando con gran admiración el desarrollo de sus proyectos en la Región de Los Lagos y la excelente proyección de sus terrenos.
+    </p>
+
+    <p style="font-size: 14px; color: #94a3b8; line-height: 1.7;">
+      Sabemos que uno de los mayores desafíos actuales en la comercialización predial es brindar total certeza visual a los inversionistas y familias de <b>Santiago y otras regiones</b> antes de que coordinen un viaje presencial al Sur.
+    </p>
+
+    <div style="background-color: #0f172a; padding: 22px; border-radius: 12px; border-left: 4px solid #DCCBAE; margin: 24px 0;">
+      <h3 style="color: #f8fafc; font-size: 15px; margin-top: 0;">🛸 Solución de Valor AustralDrone.CL:</h3>
+      <ul style="color: #cbd5e1; font-size: 13px; line-height: 1.9; margin-bottom: 0; padding-left: 20px;">
+        <li><b>MasterPlan 360° Interactivo</b>: Maqueta digital navegable donde cada parcela incluye sus datos, disponibilidad y vista panorámica real.</li>
+        <li><b>Ortomosaico 3D & Topografía SAG</b>: Mapeo aéreo de precisión con delimitación clara de linderos prediales y curvas de nivel.</li>
+        <li><b>Recorridos Drone 4K & FPV</b>: Captura cinematográfica que destaca los paisajes, acceso a vías principales y entorno natural.</li>
+      </ul>
+    </div>
+
+    <p style="font-size: 14px; color: #cbd5e1; line-height: 1.7;">
+      Nuestra tecnología permite que sus clientes remotos tomen decisiones de compra con total confianza, <b>incrementando la tasa de conversión a distancia en más de un 40%</b> y reduciendo los tiempos de cierre comercial.
+    </p>
+
+    <div style="text-align: center; margin: 32px 0 20px 0;">
+      <a href="https://australdrone.cl" target="_blank" style="background: linear-gradient(135deg, #DCCBAE 0%, #CBB99C 100%); color: #111827; padding: 14px 28px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 13px; display: inline-block; box-shadow: 0 4px 15px rgba(220, 203, 174, 0.3);">Conocer Experiencia 360° en AustralDrone.cl</a>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #334155; margin-top: 32px; margin-bottom: 20px;">
+    
+    <p style="font-size: 12px; color: #64748b; text-align: center; line-height: 1.6;">
+      <b>AustralDrone.CL — Puerto Montt, Región de Los Lagos</b><br>
+      Servicios de Drone Inmobiliario, MasterPlan 360° y Grabación FPV 4K.<br>
+      <i>Contacto Comercial: Jaime Vidal Paredes | CEO AustralDrone.CL</i>
+    </p>
+  </div>
+</body>
+</html>""",
+        "cuerpo_texto": f"Estimado Equipo Comercial de {empresa}:\n\nLe saludamos cordialmente desde AustralDrone.CL en Puerto Montt. Les presentamos nuestra propuesta comercial de MasterPlan 360° Interactivo, Ortomosaico 3D y Tour Drone 4K para elevar las ventas a distancia con compradores de Santiago y el extranjero en más de un 40%.\n\nPuede conocer nuestra tecnología en https://australdrone.cl\n\nAtentamente,\nJaime Vidal Paredes | CEO AustralDrone.CL Puerto Montt",
         "target_email": TARGET_EMAIL
     }
 
