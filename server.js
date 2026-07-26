@@ -1075,7 +1075,15 @@ const server = http.createServer((req, res) => {
                         if (foundTitle) titlePropKey = foundTitle;
                     }
 
-                    const leadTitle = `🛸 ${lead.empresa || lead.nombre || 'Lead AustralHQ'} — ${lead.zona || 'Sur'} [${lead.etapa || 'CAPTURADO'}]`;
+                    const agenteNombre = lead.agente || (lead.motivo_top?.includes('Meta') ? '🎯 Cazador 360 Meta' : '🍌 Cazador Banana');
+                    const leadEmpresa = lead.empresa || lead.nombre || 'Inmobiliaria / Loteo B2B';
+                    const leadZona = lead.zona || lead.ubicacion || 'Sur de Chile';
+                    const leadScore = lead.score || 95;
+                    const leadEtapa = lead.etapa || 'CAPTURADO';
+                    const leadFono = lead.phone || lead.telefono || 'Sin teléfono';
+                    const leadDiag = lead.notas || lead.motivo_top || lead.accion_recomendada || 'Prospecto calificado mediante escaneo agéntico B2B.';
+
+                    const leadTitle = `🤖 [${agenteNombre}] ${leadEmpresa} — ${leadZona} [${leadEtapa}]`;
                     const props = {};
                     props[titlePropKey] = { title: [{ text: { content: leadTitle } }] };
 
@@ -1083,9 +1091,47 @@ const server = http.createServer((req, res) => {
                         props['Categoría'] = { multi_select: [{ name: 'Llamada con el cliente' }] };
                     }
 
+                    const pageChildren = [
+                        {
+                            object: 'block',
+                            type: 'callout',
+                            callout: {
+                                rich_text: [{ text: { content: `🎯 PROSPECTO CALIFICADO B2B (${leadScore}/100 PTS)\n🤖 Agente Capturador: ${agenteNombre}\n🏢 Empresa: ${leadEmpresa}\n📍 Ubicación / Zona: ${leadZona}\n📞 Contacto / WhatsApp: ${leadFono}\n📊 Etapa CRM: ${leadEtapa}` } }],
+                                icon: { emoji: '🛸' },
+                                color: 'yellow_background'
+                            }
+                        },
+                        {
+                            object: 'block',
+                            type: 'heading_3',
+                            heading_3: { rich_text: [{ text: { content: '🧠 Diagnóstico de IA (Meta Llama 3.1 70B & Cazador B2B):' } }] }
+                        },
+                        {
+                            object: 'block',
+                            type: 'paragraph',
+                            paragraph: { rich_text: [{ text: { content: leadDiag } }] }
+                        },
+                        {
+                            object: 'block',
+                            type: 'heading_3',
+                            heading_3: { rich_text: [{ text: { content: '👤 Asignación Comercial & Seguimiento:' } }] }
+                        },
+                        {
+                            object: 'block',
+                            type: 'bulleted_list_item',
+                            bulleted_list_item: { rich_text: [{ text: { content: 'Jaime Vidal Paredes (CEO Directo)' } }] }
+                        },
+                        {
+                            object: 'block',
+                            type: 'bulleted_list_item',
+                            bulleted_list_item: { rich_text: [{ text: { content: 'Nicole (Operaciones Comerciales & WhatsApp)' } }] }
+                        }
+                    ];
+
                     const notionPagePayload = {
                         parent: { database_id: targetDbId },
-                        properties: props
+                        properties: props,
+                        children: pageChildren
                     };
 
                     queryNotionAPI('/pages', 'POST', notionPagePayload, (err, data, code) => {
