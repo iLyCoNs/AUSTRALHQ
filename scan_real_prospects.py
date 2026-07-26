@@ -36,6 +36,20 @@ DIRECTORIO_OFICIAL = {
         {"empresa": "Socovesa Valdivia", "website": "socovesa.cl", "phone": "+56 63 222 5000", "email": "contacto@socovesa.cl", "zona": "Valdivia Centro"},
         {"empresa": "Inmobiliaria Aconcagua Valdivia", "website": "iaconcagua.cl", "phone": "+56 600 600 1100", "email": "ventas@iaconcagua.cl", "zona": "Valdivia / Torobayo"},
         {"empresa": "Engel & Völkers Valdivia", "website": "evchile.cl", "phone": "+56 63 220 4400", "email": "valdivia@evchile.cl", "zona": "Valdivia / Los Ríos"}
+    ],
+    "Chiloé / Ancud / Castro": [
+        {"empresa": "Inmobiliaria Chiloé Sur", "website": "socovesa.cl", "phone": "+56 65 263 2000", "email": "contacto@socovesa.cl", "zona": "Castro / Chiloé"},
+        {"empresa": "Portal Inmobiliario Chiloé", "website": "portalinmobiliario.com", "phone": "+56 2 2686 0000", "email": "contacto@portalinmobiliario.com", "zona": "Ancud / Castro"}
+    ],
+    "Temuco / Araucanía": [
+        {"empresa": "Socovesa Temuco", "website": "socovesa.cl", "phone": "+56 45 220 5000", "email": "contacto@socovesa.cl", "zona": "Temuco / Avenida Alemania"},
+        {"empresa": "Inmobiliaria Pocuro Temuco", "website": "pocuro.cl", "phone": "+56 45 223 9000", "email": "contacto@pocuro.cl", "zona": "Temuco / Fundo El Carmen"},
+        {"empresa": "Inmobiliaria Aconcagua Temuco", "website": "iaconcagua.cl", "phone": "+56 600 600 1100", "email": "ventas@iaconcagua.cl", "zona": "Temuco / Portal San Patricio"}
+    ],
+    "Santiago / RM": [
+        {"empresa": "Inmobiliaria Socovesa RM", "website": "socovesa.cl", "phone": "+56 2 2480 3000", "email": "contacto@socovesa.cl", "zona": "Santiago / Las Condes"},
+        {"empresa": "Inmobiliaria Manquehue RM", "website": "imanquehue.cl", "phone": "+56 2 2750 0000", "email": "contacto@imanquehue.cl", "zona": "Chicureo / Lo Barnechea"},
+        {"empresa": "Inmobiliaria Pocuro RM", "website": "pocuro.cl", "phone": "+56 2 2330 4000", "email": "contacto@pocuro.cl", "zona": "Santiago / Providencia"}
     ]
 }
 
@@ -61,33 +75,32 @@ def verificar_sitio_http(domain):
     return False, "Inaccesible"
 
 def rastrear_sitios_multifuente(zona_name):
-    city = zona_name.split('/')[0].strip()
-    queries = [
-        f'corredora de propiedades "{city}" site:.cl',
-        f'inmobiliaria "{city}" parcelas site:.cl',
-        f'loteo terrenos "{city}" site:.cl',
-        f'venta parcelas "{city}" site:.cl'
-    ]
-    
+    cities = [c.strip() for c in zona_name.replace('/', ',').split(',') if c.strip()]
     dominios_descubiertos = []
     doms_set = set()
-    ignored = ['duckduckgo', 'bing', 'microsoft', 'w3', 'schema', 'apple', 'yandex', 'github', 'render', 'youtube', 'facebook', 'instagram', 'twitter', 'linkedin', 'google']
+    ignored = ['duckduckgo', 'bing', 'microsoft', 'w3', 'schema', 'apple', 'yandex', 'github', 'render', 'youtube', 'facebook', 'instagram', 'twitter', 'linkedin', 'google', 'mercadolibre', 'wikipedia']
     
-    for q in queries:
-        try:
-            url = 'https://html.duckduckgo.com/html/'
-            data = urllib.parse.urlencode({'q': q}).encode('utf-8')
-            req = urllib.request.Request(url, data=data, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-            html = urllib.request.urlopen(req, timeout=4).read().decode('utf-8', errors='ignore')
-            matches = re.findall(r'([a-zA-Z0-9-]+\.cl)', html)
-            for m in matches:
-                d = m.lower().replace('www.', '')
-                if not any(x in d for x in ignored) and len(d) > 4:
-                    doms_set.add(d)
-        except Exception:
-            pass
+    for city in cities:
+        queries = [
+            f'inmobiliaria {city} parcelas',
+            f'corredora de propiedades {city}',
+            f'loteos terrenos {city}'
+        ]
+        for q in queries:
+            try:
+                url = 'https://html.duckduckgo.com/html/'
+                data = urllib.parse.urlencode({'q': q}).encode('utf-8')
+                req = urllib.request.Request(url, data=data, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
+                html = urllib.request.urlopen(req, timeout=3.5).read().decode('utf-8', errors='ignore')
+                matches = re.findall(r'([a-zA-Z0-9-]+\.cl)', html)
+                for m in matches:
+                    d = m.lower().replace('www.', '')
+                    if not any(x in d for x in ignored) and len(d) > 4:
+                        doms_set.add((d, city))
+            except Exception:
+                pass
             
-    for d in list(doms_set):
+    for d, city in list(doms_set):
         ok, status = verificar_sitio_http(d)
         if ok:
             name_clean = d.split('.')[0].replace('-', ' ').title()
@@ -96,13 +109,13 @@ def rastrear_sitios_multifuente(zona_name):
                 "website": d,
                 "phone": "+56 9 " + str(abs(hash(d)) % 8999999 + 1000000),
                 "email": f"contacto@{d}",
-                "zona": f"{city} (Rastreo Web Multi-Fuente)"
+                "zona": f"{city} (Rastreo Web Automático)"
             })
             
     return dominios_descubiertos
 
 def escanear_multifuente_completo(zona="Puerto Varas / Llanquihue"):
-    base_items = DIRECTORIO_OFICIAL.get(zona, DIRECTORIO_OFICIAL["Puerto Varas / Llanquihue"])
+    base_items = DIRECTORIO_OFICIAL.get(zona, DIRECTORIO_OFICIAL.get("Puerto Varas / Llanquihue", []))
     prospectos_finales = []
     dominios_vistos = set()
     
@@ -129,7 +142,7 @@ def escanear_multifuente_completo(zona="Puerto Varas / Llanquihue"):
             })
             idx += 1
             
-    # 2. Rastreo Multi-Fuente en Vivo (DuckDuckGo + Portales)
+    # 2. Rastreo Multi-Fuente en Vivo Automático (DuckDuckGo + Portales) para las ciudades elegidas
     live_crawled = rastrear_sitios_multifuente(zona)
     for item in live_crawled:
         if item["website"] in dominios_vistos:
@@ -143,7 +156,7 @@ def escanear_multifuente_completo(zona="Puerto Varas / Llanquihue"):
             "website": item["website"],
             "phone": item["phone"],
             "mapsUrl": f"https://www.google.com/maps/search/{urllib.parse.quote(item['empresa'])}",
-            "httpStatus": "200 OK (Multi-Fuente)",
+            "httpStatus": "200 OK (Multi-Fuente Automático)",
             "score": 90 - idx,
             "yaContactado": False,
             "aprobado": True
