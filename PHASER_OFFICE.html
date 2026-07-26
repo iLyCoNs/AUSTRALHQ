@@ -347,9 +347,9 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
     </div>
     <div class="login-field">
       <label>2. Clave / Token Personal de Acceso:</label>
-      <input type="password" id="ghToken" placeholder="Ingresa tu clave (ej: jaime2026)..." value="jaime2026" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
+      <input type="password" id="ghToken" placeholder="Ingresa tu clave de acceso..." value="Q2102311ceo" onfocus="disableGameKeyboard()" onblur="enableGameKeyboard()" onkeydown="if(event.key==='Enter')submitLogin(); event.stopPropagation();">
     </div>
-    <div id="loginErr" class="login-err">Clave incorrecta. Clave por defecto CEO Jaime: <b>jaime2026</b></div>
+    <div id="loginErr" class="login-err">Clave incorrecta. Acceso restringido al personal autorizado.</div>
     <button class="login-btn" onclick="submitLogin()" style="margin-bottom:8px;">AUTENTICAR Y ENTRAR AL HQ</button>
     <button class="login-btn" onclick="window.quickLoginCEO()" style="background:linear-gradient(135deg, #fbbf24, #d97706); color:#000; font-weight:900;">🚀 ENTRAR COMO CEO JAIME (1-CLICK)</button>
   </div>
@@ -3508,9 +3508,9 @@ window._updateVJoyVisibility = function() {
 window.currentUserRole='guest';
 window.currentUserToken=null;
 
-// Claves únicas de autenticación por Ejecutivo Humano
+// Claves únicas de autenticación por Ejecutivo Humano (Clave Principal CEO: Q2102311ceo)
 const AUTH_KEYS = {
-  ceo:    ['jaime2026', 'ceo_jaime_hq', 'ghp_austral_drone_2026', 'jaime', 'ceo', 'admin', '1234', 'austral', 'god', 'godmode'],
+  ceo:    ['Q2102311ceo', 'jaime2026', 'ceo_jaime_hq', 'ghp_austral_drone_2026', 'jaime', 'ceo', 'admin', '1234', 'austral', 'god', 'godmode'],
   nicole: ['nicole2026', 'dir_nicole_hq', 'nicole'],
   diego:  ['diego2026', 'sub_diego_hq', 'diego']
 };
@@ -3519,8 +3519,30 @@ window.quickLoginCEO = function() {
   const selEl = document.getElementById('userSelect');
   if (selEl) selEl.value = 'ceo';
   const tokEl = document.getElementById('ghToken');
-  if (tokEl) tokEl.value = 'jaime2026';
+  
+  let customPasses = {};
+  try {
+    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
+  } catch(e) {}
+  
+  const currentPass = customPasses['ceo'] || 'Q2102311ceo';
+  if (tokEl) tokEl.value = currentPass;
   submitLogin();
+};
+
+window.openChangePasswordModal = function() {
+  const newPass = prompt("🔐 INGRESA TU NUEVA CLAVE SEGURA PARA " + (window.currentUserRole === 'ceo' ? 'CEO JAIME' : window.currentUserRole.toUpperCase()) + ":");
+  if (!newPass || !newPass.trim()) return;
+  
+  let customPasses = {};
+  try {
+    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
+  } catch(e) {}
+  
+  customPasses[window.currentUserRole] = newPass.trim();
+  localStorage.setItem('hq_custom_passwords', JSON.stringify(customPasses));
+  alert("✅ ¡Clave actualizada exitosamente!\n\nTu nueva clave de acceso es: " + newPass.trim());
+  appendLog('s', '🔐 Clave de acceso personalizada guardada para ' + window.currentUserRole);
 };
 
 function openLoginModal(){
@@ -3539,9 +3561,17 @@ function submitLogin(){
     return;
   }
 
-  // Validación estricta de Clave por Personaje
-  const allowedKeys = AUTH_KEYS[sel] || [];
-  const isValid = allowedKeys.some(k => k.toLowerCase() === token.toLowerCase());
+  // Cargar claves personalizadas desde localStorage si existen
+  let customPasses = {};
+  try {
+    customPasses = JSON.parse(localStorage.getItem('hq_custom_passwords') || '{}');
+  } catch(e) {}
+
+  const defaultKeys = AUTH_KEYS[sel] || [];
+  const customKey = customPasses[sel];
+  const allowedKeys = customKey ? [customKey, ...defaultKeys] : defaultKeys;
+
+  const isValid = allowedKeys.some(k => k === token || k.toLowerCase() === token.toLowerCase());
 
   if(!isValid){
     err.textContent='❌ Clave incorrecta para este personaje. Acceso denegado.';
@@ -3826,6 +3856,7 @@ window.renderCommandDeck = function() {
         <!-- Excel & Bitácora -->
         <a href="/api/download-master-csv" class="btn" style="background:#16a34a;color:#fff;border-color:#4ade80;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" target="_blank">📥 Excel</a>
         <button class="btn" style="background:#b45309;color:#fff;border-color:#f59e0b;" onclick="window.openBitacoraModal()">🗄️ Bitácora</button>
+        <button class="btn" style="background:#475569;color:#fff;border-color:#94a3b8;" onclick="window.openChangePasswordModal()">🔐 Cambiar Clave</button>
       </div>
       ${minBtn}
     `;
