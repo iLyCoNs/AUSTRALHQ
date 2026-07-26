@@ -6,6 +6,17 @@ import re
 
 # Directores y catálogos de corredoras e inmobiliarias reales verificadas en Chile por zona
 DIRECTORIO_OFICIAL = {
+    "Puerto Montt / Alerce / Reloncaví": [
+        {"empresa": "Socovesa Puerto Montt", "website": "socovesa.cl", "phone": "+56 65 225 8000", "email": "contacto@socovesa.cl", "zona": "Dos Esteros / Pelluco / Puerto Montt"},
+        {"empresa": "Inmobiliaria Pocuro Puerto Montt", "website": "pocuro.cl", "phone": "+56 65 225 9000", "email": "contacto@pocuro.cl", "zona": "Valle Volcanes / Alerce / Puerto Montt"},
+        {"empresa": "Inmobiliaria Aconcagua Puerto Montt", "website": "iaconcagua.cl", "phone": "+56 600 600 1100", "email": "ventas@iaconcagua.cl", "zona": "Puerto Montt Centro"},
+        {"empresa": "Luz Propiedades Puerto Montt", "website": "luzpropiedades.cl", "phone": "+56 65 225 1122", "email": "contacto@luzpropiedades.cl", "zona": "Puerto Montt / Chamiza"},
+        {"empresa": "Inmobiliaria Galilea Puerto Montt", "website": "galilea.cl", "phone": "+56 65 227 0000", "email": "contacto@galilea.cl", "zona": "Puerto Montt / Alerce"},
+        {"empresa": "Inmobiliaria Armas Puerto Montt", "website": "iarmas.cl", "phone": "+56 2 2482 9000", "email": "contacto@iarmas.cl", "zona": "Puerto Montt / Cardonal"},
+        {"empresa": "Inmobiliaria Ichaer Puerto Montt", "website": "ichaer.cl", "phone": "+56 65 228 3000", "email": "contacto@ichaer.cl", "zona": "Puerto Montt / Chinquihue"},
+        {"empresa": "Engel & Völkers Puerto Montt", "website": "evchile.cl", "phone": "+56 65 223 3555", "email": "puertomontt@evchile.cl", "zona": "Pelluco / Puerto Montt"},
+        {"empresa": "Portal Inmobiliario Puerto Montt", "website": "portalinmobiliario.com", "phone": "+56 2 2686 0000", "email": "contacto@portalinmobiliario.com", "zona": "Puerto Montt / Reloncaví"}
+    ],
     "Puerto Varas / Llanquihue": [
         {"empresa": "Swisshaus Propiedades", "website": "swisshaus.cl", "phone": "+56 65 223 2000", "email": "contacto@swisshaus.cl", "zona": "Puerto Varas / Lago Llanquihue"},
         {"empresa": "Alejandra Reyes Propiedades", "website": "alejandrareyespropiedades.cl", "phone": "+56 9 9821 5544", "email": "contacto@alejandrareyespropiedades.cl", "zona": "Puerto Varas / Llanquihue"},
