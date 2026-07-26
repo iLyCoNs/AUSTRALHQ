@@ -842,6 +842,84 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // Global In-Memory CRM Store & Persistence
+    if (!global._crmPipelineLeads) {
+        global._crmPipelineLeads = [];
+    }
+
+    // API Route: POST /api/inbound-lead (Form Inbound de www.australdrone.cl)
+    if (req.method === 'POST' && req.url === '/api/inbound-lead') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const newLead = {
+                    id: Date.now(),
+                    empresa: data.empresa || data.nombre || 'Lead Inbound Web',
+                    zona: data.zona || 'Puerto Varas / Llanquihue',
+                    email: data.email || 'contacto@inbound.cl',
+                    phone: data.phone || data.telefono || '+56 9 8412 9034',
+                    website: data.website || 'australdrone.cl',
+                    mapsUrl: `https://www.google.com/maps/search/${encodeURIComponent(data.empresa || 'Puerto Varas')}`,
+                    httpStatus: '200 OK (Inbound Directo)',
+                    etapa: 'CAPTURADO',
+                    score: data.score || 95,
+                    score_intencion: 90,
+                    nivel_intencion: '🔥 ALTA (Formulario Web)',
+                    notas: data.mensaje || 'Contacto capturado en vivo desde www.australdrone.cl',
+                    yaContactado: false,
+                    aprobado: true,
+                    fecha_creacion: new Date().toISOString()
+                };
+
+                global._crmPipelineLeads.unshift(newLead);
+                broadcast({ type: 'crm_new_inbound', lead: newLead });
+                broadcast({ type: 'agent_status', agent: 'cazadorbanana', state: 'lead', msg: `🔥 ¡Nuevo Lead Inbound de ${newLead.empresa}!` });
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, lead: newLead }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
+    // API Route: POST /api/crm-stage-update
+    if (req.method === 'POST' && req.url === '/api/crm-stage-update') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const { id, etapa, notas } = data;
+                
+                const item = global._crmPipelineLeads.find(l => l.id === id);
+                if (item) {
+                    if (etapa) item.etapa = etapa;
+                    if (notas !== undefined) item.notas = notas;
+                    broadcast({ type: 'crm_stage_updated', lead: item });
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, item }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
+    // API Route: GET /api/crm-leads
+    if (req.method === 'GET' && req.url === '/api/crm-leads') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, leads: global._crmPipelineLeads, total: global._crmPipelineLeads.length }));
+        return;
+    }
+
     // Static Files
     let urlPath = req.url.split('?')[0];
     if (urlPath === '/' || urlPath === '') urlPath = '/index.html';

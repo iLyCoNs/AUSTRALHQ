@@ -2689,8 +2689,9 @@ Web: https://australdrone.cl</textarea>
           <div style="background:rgba(9, 13, 22, 0.85); backdrop-filter:blur(16px); border:1px solid rgba(102, 252, 241, 0.2); border-radius:12px; padding:20px;">
             
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-              <div style="display:flex; gap:8px;">
-                <button onclick="window.switchWarRoomTab('all')" id="tabWrAll" style="background:#66fcf1; color:#000; font-weight:bold; border:none; padding:8px 14px; border-radius:6px; font-size:11px; cursor:pointer;">🔥 TODOS LOS LEADS</button>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button onclick="window.switchWarRoomTab('kanban')" id="tabWrKanban" style="background:#facc15; color:#090d16; font-weight:900; border:none; padding:8px 14px; border-radius:6px; font-size:11px; cursor:pointer; box-shadow:0 0 15px rgba(250,204,21,0.4);">📊 EMBUDO KANBAN (5 ETAPAS)</button>
+                <button onclick="window.switchWarRoomTab('all')" id="tabWrAll" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 14px; border-radius:6px; font-size:11px; cursor:pointer;">🔥 TODOS LOS LEADS</button>
                 <button onclick="window.switchWarRoomTab('top')" id="tabWrTop" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 14px; border-radius:6px; font-size:11px; cursor:pointer;">⭐ TOP SCORE (80-100)</button>
                 <button onclick="window.switchWarRoomTab('logs')" id="tabWrLogs" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid rgba(255,255,255,0.1); padding:8px 14px; border-radius:6px; font-size:11px; cursor:pointer;">📜 AGENTES LOGS</button>
               </div>
@@ -2795,52 +2796,197 @@ window.loadWarRoomData = function() {
       window.renderWarRoomLeads();
     });
 };
-
 window.getFallbackLeads = function() {
   return [
     {
-      rank: 1, score: 95, nombre: "Inmobiliaria Los Lagos SpA", telefono: "+56 9 8412 9034",
+      id: 1, rank: 1, score: 95, nombre: "Inmobiliaria Los Lagos SpA", telefono: "+56 9 8412 9034",
       ubicacion: "Puerto Varas", superficie: "14.8 Has", deal_size_estimado: "Alto (>$5M CLP)",
       nivel_urgencia: "ALTA", motivo_top: "Pauta activa Meta Ads sin video drone 4K ni MasterPlan.",
       accion_recomendada: "Enviar propuesta comercial inmediata con ortomosaico.",
-      link_post: "https://www.facebook.com/ads/library/?id=austral_test_lead"
+      link_post: "https://www.facebook.com/ads/library/?id=austral_test_lead",
+      etapa: "CAPTURADO"
     },
     {
-      rank: 2, score: 90, nombre: "Inversiones Frutillar Ltda", telefono: "+56 9 7654 3210",
+      id: 2, rank: 2, score: 90, nombre: "Inversiones Frutillar Ltda", telefono: "+56 9 7654 3210",
       ubicacion: "Frutillar Sur", superficie: "8.5 Has", deal_size_estimado: "Alto (>$5M CLP)",
       nivel_urgencia: "ALTA", motivo_top: "Loteo privado sin MasterPlan visual en web.",
       accion_recomendada: "Ofrecer paquete render 3D + landing de alta conversión.",
-      link_post: "https://www.facebook.com/ads/library/?id=austral_test_lead_2"
+      link_post: "https://www.facebook.com/ads/library/?id=austral_test_lead_2",
+      etapa: "CONTACTADO"
     },
     {
-      rank: 3, score: 85, nombre: "Parcelas Osorno Campo", telefono: "+56 9 9876 5432",
+      id: 3, rank: 3, score: 85, nombre: "Parcelas Osorno Campo", telefono: "+56 9 9876 5432",
       ubicacion: "Osorno", superficie: "12.0 Has", deal_size_estimado: "Medio ($1-5M CLP)",
       nivel_urgencia: "MEDIA", motivo_top: "Anuncio activo en Facebook Marketplace.",
-      accion_recomendada: "Agendar reunión presencial o videollamada con Nicole."
+      accion_recomendada: "Agendar reunión presencial o videollamada con Nicole.",
+      etapa: "DEMO"
     }
   ];
 };
 
+window._warRoomLeads = [];
+window._currentWarRoomTab = 'kanban';
+
+const ETAPAS_CRM = ['CAPTURADO', 'CONTACTADO', 'DEMO', 'COTIZACION', 'GANADO'];
+const LABELS_ETAPAS = {
+  'CAPTURADO': { label: '📥 1. CAPTURADO', color: '#38bdf8', bg: 'rgba(56,189,248,0.1)' },
+  'CONTACTADO': { label: '🔍 2. CONTACTADO', color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
+  'DEMO': { label: '💬 3. EN DEMO', color: '#66fcf1', bg: 'rgba(102,252,241,0.1)' },
+  'COTIZACION': { label: '📄 4. COTIZACIÓN', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
+  'GANADO': { label: '🎉 5. GANADO ($)', color: '#34d399', bg: 'rgba(52,211,153,0.15)' }
+};
+
 window.switchWarRoomTab = function(tab) {
   window._currentWarRoomTab = tab;
-  ['all', 'top', 'logs'].forEach(t => {
+  ['kanban', 'all', 'top', 'logs'].forEach(t => {
     const btn = document.getElementById('tabWr' + t.charAt(0).toUpperCase() + t.slice(1));
     if (btn) {
       if (t === tab) {
-        btn.style.background = '#66fcf1';
-        btn.style.color = '#000';
+        btn.style.background = (t === 'kanban') ? '#facc15' : '#66fcf1';
+        btn.style.color = '#090d16';
         btn.style.border = 'none';
+        btn.style.fontWeight = '900';
       } else {
         btn.style.background = 'rgba(255,255,255,0.06)';
         btn.style.color = '#94a3b8';
         btn.style.border = '1px solid rgba(255,255,255,0.1)';
+        btn.style.fontWeight = 'bold';
       }
     }
   });
   window.renderWarRoomLeads();
 };
 
-window.filterWarRoomLeads = function() {
+window.moverEtapaLead = function(id, direccion) {
+  let item = (window._warRoomLeads || []).find(l => (l.id === id || l.rank === id));
+  if (!item) return;
+
+  const currentIdx = ETAPAS_CRM.indexOf(item.etapa || 'CAPTURADO');
+  let newIdx = currentIdx + direccion;
+  if (newIdx < 0) newIdx = 0;
+  if (newIdx >= ETAPAS_CRM.length) newIdx = ETAPAS_CRM.length - 1;
+
+  item.etapa = ETAPAS_CRM[newIdx];
+
+  if (item.etapa === 'GANADO') {
+    window.triggerCelebrationFX(item.empresa || item.nombre || 'Inmobiliaria Partner');
+  }
+
+  fetch('/api/crm-stage-update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: item.id || item.rank, etapa: item.etapa })
+  }).catch(() => {});
+
+  window.renderWarRoomLeads();
+};
+
+window.triggerCelebrationFX = function(nombreEmpresa) {
+  if (window.AR && window.AR['ceo']) {
+    window.AR['ceo']._setStateSilent('lead');
+    window.AR['ceo']._showBubble(`🎉 ¡VENTA CERRADA CON ${nombreEmpresa.toUpperCase()}! ¡PARTNER CERRADO!`);
+  }
+  if (window.AR && window.AR['cazadorbanana']) {
+    window.AR['cazadorbanana']._showBubble(`🍌 ¡Jefe Jaime, comisión lista! $5M CLP registrados.`);
+  }
+
+  appendLog('s', `🎉 [CRM VICTORIA] Venta cerrada con ${nombreEmpresa}. Cartera B2B incrementada.`);
+
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.3);
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.5);
+  } catch(e) {}
+};
+
+window.abrirFichaCliente360 = function(id) {
+  const item = (window._warRoomLeads || []).find(l => (l.id === id || l.rank === id));
+  if (!item) return;
+
+  const nombre = item.empresa || item.nombre || 'Inmobiliaria Partner';
+  const fono = item.phone || item.telefono || '+56 9 8412 9034';
+  const zona = item.zona || item.ubicacion || 'Sur de Chile';
+  const score = item.score || 95;
+  const etapa = item.etapa || 'CAPTURADO';
+  const notas = item.notas || item.motivo_top || 'Prospecto calificado para MasterPlan 360° + Drone 4K.';
+
+  let modal = document.getElementById('fichaCliente360Modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'fichaCliente360Modal';
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; font-family:sans-serif; color:#fff;';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="background:linear-gradient(135deg, #090d16, #1e1b4b); border:2px solid #66fcf1; border-radius:16px; max-width:700px; width:100%; padding:24px; box-shadow:0 0 50px rgba(102,252,241,0.3); position:relative;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(102,252,241,0.3); padding-bottom:12px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="font-size:26px;">🏢</div>
+          <div>
+            <div style="font-size:17px; font-weight:900; color:#66fcf1;">FICHA HISTÓRICA 360° — ${nombre}</div>
+            <div style="font-size:10px; color:#cbd5e1;">TRAZABILIDAD Y NOTAS DE NEGOCIACIÓN | ETAPA: <b style="color:#facc15;">${etapa}</b></div>
+          </div>
+        </div>
+        <button onclick="document.getElementById('fichaCliente360Modal').style.display='none';" style="background:none; border:none; color:#ef4444; font-size:22px; font-weight:bold; cursor:pointer;">✕</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:16px;">
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:8px; font-size:11px;">
+          <div style="color:#94a3b8; font-size:10px; margin-bottom:4px;">📍 UBICACIÓN Y REGIONALIZACIÓN</div>
+          <div style="font-weight:bold; color:#fff;">${zona}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:8px; font-size:11px;">
+          <div style="color:#94a3b8; font-size:10px; margin-bottom:4px;">🎯 LEAD INTENT SCORE</div>
+          <div style="font-weight:900; color:#10b981;">🔥 ${score}/100 PTS (Calificación ALTA)</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:10px; color:#a78bfa; font-weight:bold; display:block; margin-bottom:4px;">✍️ NOTAS PRIVADAS DE NEGOCIACIÓN (JAIME / NICOLE / DIEGO)</label>
+        <textarea id="modalFichaNotas" rows="4" style="width:100%; background:#090d16; border:1px solid #a78bfa; color:#e2e8f0; padding:10px; border-radius:6px; font-size:11px; font-family:'JetBrains Mono', monospace; line-height:1.5;">${notas}</textarea>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <a href="https://wa.me/${fono.replace(/[^0-9]/g,'')}" target="_blank" style="background:#10b981; color:#000; font-weight:900; text-decoration:none; padding:10px 18px; border-radius:6px; font-size:11px; display:inline-flex; align-items:center; gap:6px;">
+          📱 Abrir WhatsApp Web con ${nombre}
+        </a>
+
+        <div style="display:flex; gap:8px;">
+          <button onclick="window.guardarNotasFicha(${item.id || item.rank})" style="background:#66fcf1; color:#000; border:none; padding:10px 16px; border-radius:6px; font-weight:900; font-size:11px; cursor:pointer;">
+            💾 Guardar Notas
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  modal.style.display = 'flex';
+};
+
+window.guardarNotasFicha = function(id) {
+  const item = (window._warRoomLeads || []).find(l => (l.id === id || l.rank === id));
+  if (!item) return;
+
+  const nuevasNotas = document.getElementById('modalFichaNotas')?.value || '';
+  item.notas = nuevasNotas;
+
+  fetch('/api/crm-stage-update', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: item.id || item.rank, notas: nuevasNotas })
+  }).catch(() => {});
+
+  document.getElementById('fichaCliente360Modal').style.display = 'none';
+  alert(`✅ NOTAS GUARDADAS EXITOSAMENTE PARA '${item.empresa || item.nombre}'.`);
   window.renderWarRoomLeads();
 };
 
@@ -2857,10 +3003,10 @@ window.renderWarRoomLeads = function() {
 
   if (query) {
     leads = leads.filter(l => 
-      (l.nombre || '').toLowerCase().includes(query) ||
-      (l.ubicacion || '').toLowerCase().includes(query) ||
-      (l.telefono || '').toLowerCase().includes(query) ||
-      (l.motivo_top || '').toLowerCase().includes(query)
+      (l.nombre || l.empresa || '').toLowerCase().includes(query) ||
+      (l.ubicacion || l.zona || '').toLowerCase().includes(query) ||
+      (l.telefono || l.phone || '').toLowerCase().includes(query) ||
+      (l.motivo_top || l.notas || '').toLowerCase().includes(query)
     );
   }
 
