@@ -4224,92 +4224,150 @@ window.renderCommandDeck = function() {
     }
   }
   
+  window.toggleHumanCard = function(cardId) {
+    const card = document.getElementById(cardId);
+    if (!card) return;
+    const isVisible = card.style.display === 'flex';
+    document.querySelectorAll('.pixel-human-card').forEach(el => el.style.display = 'none');
+    if (!isVisible) card.style.display = 'flex';
+  };
+
   const minBtn = `<button class="chat-btn-min" onclick="window.togglePanelMin(event)" style="font-size:8px;padding:4px 8px;cursor:pointer;margin-left:auto;align-self:center;border-color:#66fcf1;color:#66fcf1;" title="Minimizar panel">_</button>`;
   
   if (role === 'ceo') {
     panel.innerHTML = `
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;width:calc(100% - 40px)">
-        <span class="pl" style="color:#fbbf24;font-size:7.5px;margin-right:6px">👑 CEO JAIME:</span>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;width:calc(100% - 40px);position:relative;">
         
-        <!-- Avatar Triggers -->
-        <button class="btn bi" onclick="ceoTrigger('idle')">👤 Idle</button>
-        <button class="btn bw" onclick="ceoTrigger('moving',{destination:'900,420'})">🚶 Mesa</button>
-        <button class="btn bk" onclick="ceoTrigger('scraping_active')">💻 Scraping</button>
-        <button class="btn bc" onclick="ceoTrigger('lead_qualified',{leadName:'Macrolote Sur'})">🚨 Lead!</button>
-        <button class="btn br" onclick="ceoTrigger('idle')">🔄 Reset</button>
-        
-        <span style="color:#334155;font-size:18px;align-self:center">|</span>
-        
-        <!-- Cloud & Tele Triggers -->
-        <button class="btn" style="background:#0284c7;color:#fff;border-color:#38bdf8;" onclick="fetch('/api/trigger-filter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'meta'})}).then(()=>appendLog('s','CEO: Meta API en Nube iniciado.'))">☁️ Meta API</button>
-        <button class="btn" style="background:#0f766e;color:#fff;border-color:#2dd4bf;" onclick="fetch('/api/trigger-filter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'filter'})}).then(()=>appendLog('s','CEO: Filtro & Scoring Llama iniciado.'))">🧠 Scoring B2B</button>
-        <button class="btn" style="background:linear-gradient(135deg,#7c3aed,#9333ea);color:#fff;border-color:#a78bfa;font-weight:bold;" onclick="window.openTVSubPlatform()">📡 War Room 360°</button>
-        <button class="btn" style="background:#059669;color:#fff;border-color:#34d399;" onclick="window.triggerTestLead()">🧪 Test Lead Vivo</button>
-        <button class="btn" style="background:#d97706;color:#fff;border-color:#fbbf24;" onclick="window.openTVPinEditor()">📍 Posicionar Tele</button>
-        
-        <span style="color:#334155;font-size:18px;align-self:center">|</span>
-        
-        <!-- Excel & Bitácora -->
-        <a href="/api/download-master-csv" class="btn" style="background:#16a34a;color:#fff;border-color:#4ade80;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;" target="_blank">📥 Excel</a>
-        <button class="btn" style="background:#b45309;color:#fff;border-color:#f59e0b;" onclick="window.openBitacoraModal()">🗄️ Bitácora</button>
-        <button class="btn" style="background:#475569;color:#fff;border-color:#94a3b8;" onclick="window.openChangePasswordModal()">🔐 Cambiar Clave</button>
+        <!-- BOTÓN COLLAPSIBLE CEO JAIME -->
+        <div style="position:relative; display:inline-block;">
+          <button onclick="window.toggleHumanCard('cardJaime')" style="background:#090d16; color:#facc15; border:2px solid #facc15; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000; display:flex; align-items:center; gap:6px;">
+            👑 CEO JAIME <span style="font-size:7px;">▼</span>
+          </button>
+
+          <!-- TARJETA MULTIBOTONES REPLEGABLE CEO JAIME -->
+          <div id="cardJaime" class="pixel-human-card" style="display:none; position:absolute; bottom:38px; left:0; width:340px; background:#090d16; border:3px solid #facc15; border-radius:6px; padding:12px; box-shadow:6px 6px 0px #000; z-index:99999; flex-direction:column; gap:10px;">
+            <div style="font-size:8px; color:#facc15; border-bottom:2px solid #facc15; padding-bottom:6px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+              <span>👑 HERRAMIENTAS Y PODERES CEO JAIME</span>
+              <span onclick="window.toggleHumanCard('cardJaime')" style="cursor:pointer; color:#ef4444;">✕</span>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:2px;">⚡ PROSPECCIÓN Y MATRIZ B2B:</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <button onclick="window.openTVSubPlatform()" style="background:#7c3aed; color:#fff; border:2px solid #a78bfa; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">📡 War Room 360°</button>
+              <button onclick="window.triggerTestLead()" style="background:#059669; color:#fff; border:2px solid #34d399; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">🧪 Test Lead Vivo</button>
+              <button onclick="fetch('/api/trigger-filter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'meta'})})" style="background:#0284c7; color:#fff; border:2px solid #38bdf8; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">☁️ Meta Ads API</button>
+              <button onclick="fetch('/api/trigger-filter',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'filter'})})" style="background:#0f766e; color:#fff; border:2px solid #2dd4bf; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">🧠 Scoring Llama</button>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🎭 CONTROL DE AVATAR:</div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button onclick="ceoTrigger('idle')" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">👤 Idle</button>
+              <button onclick="ceoTrigger('moving',{destination:'900,420'})" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">🚶 Ir a Mesa</button>
+              <button onclick="ceoTrigger('scraping_active')" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">💻 Scraping</button>
+              <button onclick="ceoTrigger('lead_qualified',{leadName:'Macrolote Sur'})" style="background:#1e293b; color:#facc15; border:1px solid #facc15; padding:4px 6px; font-size:7px; cursor:pointer;">🚨 Lead!</button>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">📂 UTILIDADES DE GESTIÓN:</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <a href="/api/download-master-csv" target="_blank" style="background:#16a34a; color:#fff; border:1px solid #4ade80; text-decoration:none; padding:4px 8px; font-size:7px;">📥 Excel</a>
+              <button onclick="window.openBitacoraModal()" style="background:#b45309; color:#fff; border:1px solid #f59e0b; padding:4px 8px; font-size:7px; cursor:pointer;">🗄️ Bitácora</button>
+              <button onclick="window.openTVPinEditor()" style="background:#d97706; color:#fff; border:1px solid #fbbf24; padding:4px 8px; font-size:7px; cursor:pointer;">📍 Posicionar Tele</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACCESO RÁPIDO WAR ROOM 360° -->
+        <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg,#7c3aed,#9333ea); color:#fff; border:2px solid #a78bfa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
+          📡 WAR ROOM 360°
+        </button>
+        <button onclick="window.triggerTestLead()" style="background:#059669; color:#fff; border:2px solid #34d399; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
+          🧪 TEST LEAD
+        </button>
+
       </div>
       ${minBtn}
     `;
   } else if (role === 'nicole') {
     panel.innerHTML = `
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;width:calc(100% - 40px)">
-        <span class="pl" style="color:#ec4899;font-size:7.5px;margin-right:6px">💄 NICOLE:</span>
-        <button class="btn bi" style="border-color:#ec4899;color:#ec4899;" onclick="nicoleTrigger('idle')">👤 Idle</button>
-        <button class="btn bn" onclick="nicoleTrigger('moving',{destination:'900,420'})">🚶 Mesa</button>
-        <button class="btn bp" onclick="nicoleTrigger('scraping_active')">📊 Análisis</button>
-        <button class="btn bc" onclick="nicoleTrigger('lead_qualified',{leadName:'Loteo Nicole'})">🎉 Cierre!</button>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;width:calc(100% - 40px);position:relative;">
+        
+        <!-- BOTÓN COLLAPSIBLE NICOLE -->
+        <div style="position:relative; display:inline-block;">
+          <button onclick="window.toggleHumanCard('cardNicole')" style="background:#090d16; color:#ec4899; border:2px solid #ec4899; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000; display:flex; align-items:center; gap:6px;">
+            💄 NICOLE <span style="font-size:7px;">▼</span>
+          </button>
+
+          <!-- TARJETA MULTIBOTONES REPLEGABLE NICOLE -->
+          <div id="cardNicole" class="pixel-human-card" style="display:none; position:absolute; bottom:38px; left:0; width:300px; background:#090d16; border:3px solid #ec4899; border-radius:6px; padding:12px; box-shadow:6px 6px 0px #000; z-index:99999; flex-direction:column; gap:10px;">
+            <div style="font-size:8px; color:#ec4899; border-bottom:2px solid #ec4899; padding-bottom:6px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+              <span>💄 HERRAMIENTAS Y PODERES NICOLE</span>
+              <span onclick="window.toggleHumanCard('cardNicole')" style="cursor:pointer; color:#ef4444;">✕</span>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1;">💬 OPERACIONES Y SEGUIMIENTO B2B:</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <button onclick="window.openTroyaSIMModal()" style="background:#ec4899; color:#000; border:2px solid #f472b6; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">📱 Troya WA SIM</button>
+              <button onclick="window.openTVSubPlatform()" style="background:#7c3aed; color:#fff; border:2px solid #a78bfa; padding:6px; font-family:'Press Start 2P', monospace; font-size:7px; cursor:pointer;">📊 Embudo CRM</button>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🎭 CONTROL DE AVATAR:</div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button onclick="nicoleTrigger('idle')" style="background:#1e293b; color:#ec4899; border:1px solid #ec4899; padding:4px 6px; font-size:7px; cursor:pointer;">👤 Idle</button>
+              <button onclick="nicoleTrigger('moving',{destination:'900,420'})" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">🚶 Mesa</button>
+              <button onclick="nicoleTrigger('scraping_active')" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">📊 Análisis</button>
+              <button onclick="nicoleTrigger('lead_qualified',{leadName:'Loteo Nicole'})" style="background:#1e293b; color:#ec4899; border:1px solid #ec4899; padding:4px 6px; font-size:7px; cursor:pointer;">🎉 Cierre!</button>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg,#7c3aed,#9333ea); color:#fff; border:2px solid #a78bfa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
+          📡 WAR ROOM 360°
+        </button>
+
       </div>
       ${minBtn}
     `;
   } else if (role === 'diego') {
     panel.innerHTML = `
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:calc(100% - 40px)">
-        <span class="pl" style="color:#3b82f6;font-size:7.5px;margin-right:4px">🔮 DIEGO ARCHITECT:</span>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:calc(100% - 40px);position:relative;">
+        
+        <!-- BOTÓN COLLAPSIBLE DIEGO -->
+        <div style="position:relative; display:inline-block;">
+          <button onclick="window.toggleHumanCard('cardDiego')" style="background:#090d16; color:#60a5fa; border:2px solid #60a5fa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000; display:flex; align-items:center; gap:6px;">
+            🔮 DIEGO ARCHITECT <span style="font-size:7px;">▼</span>
+          </button>
 
-        <button class="btn" style="background:linear-gradient(160deg,#1d4ed8,#1e3a8a);border-color:#60a5fa;border-bottom:3px solid #1e3a8a;"
-          onclick="window.openObjectPlacer()" title="Coloca objetos en el mapa">
-          🏗️ PLACER
+          <!-- TARJETA MULTIBOTONES REPLEGABLE DIEGO -->
+          <div id="cardDiego" class="pixel-human-card" style="display:none; position:absolute; bottom:38px; left:0; width:340px; background:#090d16; border:3px solid #60a5fa; border-radius:6px; padding:12px; box-shadow:6px 6px 0px #000; z-index:99999; flex-direction:column; gap:10px;">
+            <div style="font-size:8px; color:#60a5fa; border-bottom:2px solid #60a5fa; padding-bottom:6px; font-weight:bold; display:flex; justify-content:space-between; align-items:center;">
+              <span>🔮 HERRAMIENTAS Y PODERES DIEGO ARCHITECT</span>
+              <span onclick="window.toggleHumanCard('cardDiego')" style="cursor:pointer; color:#ef4444;">✕</span>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1;">🏗️ EDITOR DE MAPA Y AMBIENTE:</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+              <button onclick="window.openObjectPlacer()" style="background:#1d4ed8; color:#fff; border:2px solid #60a5fa; padding:6px; font-size:7px; cursor:pointer;">🏗️ Placer Objetos</button>
+              <button onclick="window.openZonePainter()" style="background:#7e22ce; color:#fff; border:2px solid #c084fc; padding:6px; font-size:7px; cursor:pointer;">🎨 Pintar Zonas</button>
+              <button onclick="window.openBroadcastTool()" style="background:#0f766e; color:#fff; border:2px solid #2dd4bf; padding:6px; font-size:7px; cursor:pointer;">📡 Broadcast IA</button>
+              <button onclick="window.openLayoutManager()" style="background:#b45309; color:#fff; border:2px solid #f59e0b; padding:6px; font-size:7px; cursor:pointer;">💾 Layout Slots</button>
+              <button onclick="window.openAmbienteEditor()" style="background:#be185d; color:#fff; border:2px solid #f472b6; padding:6px; font-size:7px; cursor:pointer;">🌌 Iluminación</button>
+              <button onclick="window.openDiegoAgentEditor()" style="background:#831843; color:#fff; border:2px solid #ec4899; padding:6px; font-size:7px; cursor:pointer;">👾 Editor Agentes</button>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🚧 CONTROL DE AVATAR & DEBUG:</div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button onclick="window.togglePhysicsDebug()" style="background:#1e293b; color:#60a5fa; border:1px solid #60a5fa; padding:4px 6px; font-size:7px; cursor:pointer;">🚧 Colliders</button>
+              <button onclick="window.toggleHotspotsDebug()" style="background:#1e293b; color:#8b5cf6; border:1px solid #8b5cf6; padding:4px 6px; font-size:7px; cursor:pointer;">🎯 Hotspots</button>
+              <button onclick="diegoTrigger('idle')" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">👤 Idle</button>
+              <button onclick="diegoTrigger('moving',{destination:'900,420'})" style="background:#1e293b; color:#fff; border:1px solid #94a3b8; padding:4px 6px; font-size:7px; cursor:pointer;">🚶 Mesa</button>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg,#7c3aed,#9333ea); color:#fff; border:2px solid #a78bfa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
+          📡 WAR ROOM 360°
         </button>
 
-        <button class="btn" style="background:linear-gradient(160deg,#7e22ce,#581c87);border-color:#c084fc;border-bottom:3px solid #3b0764;"
-          onclick="window.openZonePainter()" title="Pinta zonas en el mapa">
-          🎨 ZONAS
-        </button>
-
-        <button class="btn" style="background:linear-gradient(160deg,#0f766e,#134e4a);border-color:#2dd4bf;border-bottom:3px solid #042f2e;"
-          onclick="window.openBroadcastTool()" title="Manda orden a TODOS los agentes">
-          📡 BROADCAST
-        </button>
-
-        <button class="btn" style="background:linear-gradient(160deg,#b45309,#78350f);border-color:#f59e0b;border-bottom:3px solid #451a03;"
-          onclick="window.openLayoutManager()" title="Guarda y restaura el estado del mapa">
-          💾 LAYOUT
-        </button>
-
-        <button class="btn" style="background:linear-gradient(160deg,#be185d,#9d174d);border-color:#f472b6;border-bottom:3px solid #831843;"
-          onclick="window.openAmbienteEditor()" title="Cambia iluminación y atmósfera">
-          🌌 AMBIENTE
-        </button>
-
-        <span class="sep"></span>
-
-        <button class="btn" style="background:linear-gradient(160deg,#1e40af,#1e3a8a);border-color:#3b82f6;border-bottom:3px solid #1e3a8a;font-size:7px;"
-          onclick="window.togglePhysicsDebug()">🚧 Colliders</button>
-        <button class="btn" style="background:linear-gradient(160deg,#5b21b6,#4c1d95);border-color:#8b5cf6;border-bottom:3px solid #2e1065;font-size:7px;"
-          onclick="window.toggleHotspotsDebug()">🎯 Hotspots</button>
-        <button class="btn" style="background:linear-gradient(160deg,#9d174d,#831843);border-color:#ec4899;border-bottom:3px solid #500724;font-size:7px;"
-          onclick="window.openDiegoAgentEditor()">👾 Agentes</button>
-
-        <span class="sep"></span>
-
-        <button class="btn bi" onclick="diegoTrigger('idle')">👤 Idle</button>
-        <button class="btn bw" onclick="diegoTrigger('moving',{destination:'900,420'})">🚶 Mesa</button>
       </div>
       ${minBtn}
     `;
