@@ -1988,6 +1988,43 @@ window.eliminarProspecto = function(id) {
   window.renderProspectsTable();
 };
 
+window.agregarProspectoManual = function() {
+  const nombre = prompt("🏢 Nombre de la Inmobiliaria / Corredora de Propiedades:");
+  if (!nombre || !nombre.trim()) return;
+  
+  const sitio = prompt("🌐 Sitio Web Oficial (ej: misitioinmobiliario.cl):");
+  if (!sitio || !sitio.trim()) return;
+
+  const cleanDomain = sitio.trim().toLowerCase().replace('https://','').replace('http://','').replace('www.','').split('/')[0];
+  const email = prompt("📩 Correo de contacto comercial:", "contacto@" + cleanDomain) || ("contacto@" + cleanDomain);
+  const fono = prompt("📱 Teléfono / WhatsApp de contacto:", "+56 9 8412 9034") || "+56 9 8412 9034";
+
+  const newItem = {
+    id: Date.now(),
+    empresa: nombre.trim(),
+    zona: "Ingreso Manual (CEO Jaime)",
+    email: email.trim(),
+    website: cleanDomain,
+    phone: fono.trim(),
+    mapsUrl: `https://www.google.com/maps/search/${encodeURIComponent(nombre.trim())}`,
+    httpStatus: "200 OK (Verificado CEO)",
+    score: 99,
+    yaContactado: false,
+    aprobado: true
+  };
+
+  window._bananaProspects.unshift(newItem);
+
+  const reviewBox = document.getElementById('cbProspectsReviewBox');
+  if (reviewBox) reviewBox.style.display = 'block';
+
+  const count = document.getElementById('cbProspectsCount');
+  if (count) count.innerText = window._bananaProspects.length;
+
+  window.renderProspectsTable();
+  alert(`✅ EMPRESA AGREGADA EXITOSAMENTE:\n\n'${nombre.trim()}' (${cleanDomain}) fue agregada al War Room y aprobada [✓] para despacho.`);
+};
+
 window.dispararCazadorBanana = function() {
   const aprobados = window._bananaProspects.filter(p => p.aprobado);
   if (aprobados.length === 0) {
@@ -2402,13 +2439,17 @@ window.openTVSubPlatform = function() {
               📧 Emisor Oficial: <b style="color:#fde047;">australdrone.cl@gmail.com</b> | ⚡ Transmisión: <b style="color:#66fcf1;">n8n Cloud Webhook + Telegram</b>
             </div>
             
-            <div style="display:flex; gap:10px;">
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
               <button onclick="window.escanearProspectosBanana()" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; border:1px solid #38bdf8; padding:12px 20px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer; box-shadow:0 0 15px rgba(56,189,248,0.3); display:flex; align-items:center; gap:8px;">
                 🔍 1. ESCANEAR Y VER PROSPECTOS (SIN ENVIAR)
               </button>
 
               <button onclick="window.dispararCazadorBanana()" style="background:linear-gradient(135deg, #eab308, #ca8a04); color:#000; border:none; padding:12px 24px; border-radius:8px; font-weight:900; font-size:12px; cursor:pointer; box-shadow:0 0 20px rgba(234,179,8,0.5); display:flex; align-items:center; gap:8px;">
                 🚀 2. DISPARAR OUTREACH A APROBADOS
+              </button>
+
+              <button onclick="window.agregarProspectoManual()" style="background:linear-gradient(135deg, #10b981, #047857); color:#fff; border:1px solid #34d399; padding:12px 18px; border-radius:8px; font-weight:800; font-size:12px; cursor:pointer; box-shadow:0 0 15px rgba(52,211,153,0.3); display:flex; align-items:center; gap:8px;">
+                ➕ 3. AGREGAR EMPRESA DIRECTA / WEB
               </button>
             </div>
           </div>
