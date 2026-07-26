@@ -1060,26 +1060,38 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const { database_id, lead } = JSON.parse(body || '{}');
-                if (!database_id || !lead) {
+                const targetDbId = (database_id || '3a995e6c-42b9-8095-bcfa-c35443c57669').replace(/-/g, '');
+                if (!lead) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: 'Falta database_id o datos del lead' }));
+                    res.end(JSON.stringify({ error: 'Falta datos del lead' }));
                     return;
                 }
 
-                const notionPagePayload = {
-                    parent: { database_id: database_id.replace(/-/g, '') },
-                    properties: {
-                        "Name": { title: [{ text: { content: lead.empresa || lead.nombre || 'Lead AustralHQ' } }] },
-                        "Estado": { select: { name: lead.etapa || 'CAPTURADO' } },
-                        "Score": { number: parseInt(lead.score || 90) },
-                        "Zona": { rich_text: [{ text: { content: lead.zona || 'Puerto Varas' } }] },
-                        "Contacto": { rich_text: [{ text: { content: lead.email || lead.phone || 'Contacto B2B' } }] }
+                // Obtener esquema de propiedades de la base de datos de Notion objetivo
+                queryNotionAPI('/databases/' + targetDbId, 'GET', null, (errDb, dbInfo) => {
+                    let titlePropKey = 'Name';
+                    if (dbInfo && dbInfo.properties) {
+                        const foundTitle = Object.keys(dbInfo.properties).find(k => dbInfo.properties[k].type === 'title');
+                        if (foundTitle) titlePropKey = foundTitle;
                     }
-                };
 
-                queryNotionAPI('/pages', 'POST', notionPagePayload, (err, data, code) => {
-                    res.writeHead(code || 200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ success: !err && code === 200, data, error: err ? err.message : null }));
+                    const leadTitle = `🛸 ${lead.empresa || lead.nombre || 'Lead AustralHQ'} — ${lead.zona || 'Sur'} [${lead.etapa || 'CAPTURADO'}]`;
+                    const props = {};
+                    props[titlePropKey] = { title: [{ text: { content: leadTitle } }] };
+
+                    if (dbInfo && dbInfo.properties && dbInfo.properties['Categoría']) {
+                        props['Categoría'] = { multi_select: [{ name: 'Llamada con el cliente' }] };
+                    }
+
+                    const notionPagePayload = {
+                        parent: { database_id: targetDbId },
+                        properties: props
+                    };
+
+                    queryNotionAPI('/pages', 'POST', notionPagePayload, (err, data, code) => {
+                        res.writeHead(code || 200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ success: !err && (code === 200 || code === 201), data, error: err ? err.message : null }));
+                    });
                 });
             } catch(e) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
