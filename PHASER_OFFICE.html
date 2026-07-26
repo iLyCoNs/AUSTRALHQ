@@ -2485,12 +2485,13 @@ window._currentWarRoomTab = 'all';
 
 window.openTVSubPlatform = function() {
   let modal = document.getElementById('tvSubPlatformModal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'tvSubPlatformModal';
-    modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#040711; z-index:99999; overflow-y:auto; font-family:"JetBrains Mono", monospace; color:#fff;';
-    
-    modal.innerHTML = `
+  if (modal) modal.remove();
+
+  modal = document.createElement('div');
+  modal.id = 'tvSubPlatformModal';
+  modal.style.cssText = 'display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#040711; z-index:99999; overflow-y:auto; font-family:"JetBrains Mono", monospace; color:#fff;';
+  
+  modal.innerHTML = `
       <div style="position:fixed; top:0; left:0; width:100vw; height:100vh; pointer-events:none; background: radial-gradient(circle at 50% 15%, rgba(102, 252, 241, 0.1), transparent 70%), linear-gradient(180deg, rgba(6, 9, 19, 0.95) 0%, rgba(4, 7, 17, 1) 100%); z-index:-1;"></div>
 
       <header style="display:flex; justify-content:space-between; align-items:center; padding:14px 28px; background:rgba(9, 14, 26, 0.85); backdrop-filter:blur(20px); border-bottom:1px solid rgba(102, 252, 241, 0.25); position:sticky; top:0; z-index:100; box-shadow:0 4px 20px rgba(0,0,0,0.5);">
@@ -2765,8 +2766,7 @@ Web: https://australdrone.cl</textarea>
 
       </main>
     `;
-    document.body.appendChild(modal);
-  }
+  document.body.appendChild(modal);
 
   modal.style.display = 'block';
   disableGameKeyboard();
