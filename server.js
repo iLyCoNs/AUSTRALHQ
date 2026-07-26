@@ -913,8 +913,53 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    // Permanent Map Config Store File & Path
+    // Permanent Map Config & Core Backup Files
     const MAP_PERMANENT_FILE = path.join(ROOT, 'MAP_CONFIG_PERMANENT.json');
+    const BACKUP_CORE_FILE = path.join(ROOT, 'BACKUP_CORE_INITIAL.json');
+    const DIEGO_LOG_FILE = path.join(ROOT, 'DIEGO_CHANGES_LOG.json');
+
+    // Inicializar Backup Madre Core si no existe
+    if (!fs.existsSync(BACKUP_CORE_FILE)) {
+        try {
+            const initialCore = {
+                timestamp: new Date().toISOString(),
+                version: "5.0 - Modo Dios Baseline",
+                adminOwner: "Jaime Vidal Paredes (CEO)",
+                protectedModules: ["CRM_KANBAN", "EMAIL_TEMPLATES", "META_ADS_SCRAPER", "LLAMA_SCORING_PROMPTS"],
+                permanentColliders: []
+            };
+            fs.writeFileSync(BACKUP_CORE_FILE, JSON.stringify(initialCore, null, 2), 'utf8');
+        } catch(e) {}
+    }
+
+    function cargarDiegoAuditLog() {
+        if (fs.existsSync(DIEGO_LOG_FILE)) {
+            try {
+                return JSON.parse(fs.readFileSync(DIEGO_LOG_FILE, 'utf8'));
+            } catch(e) {}
+        }
+        return [];
+    }
+
+    function registrarCambioDiego(accion, detalles) {
+        try {
+            const logs = cargarDiegoAuditLog();
+            const nuevoRegistro = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                autor: 'Diego Architect',
+                accion,
+                detalles,
+                estado: 'PENDIENTE_APROBACION_CEO'
+            };
+            logs.unshift(nuevoRegistro);
+            fs.writeFileSync(DIEGO_LOG_FILE, JSON.stringify(logs, null, 2), 'utf8');
+            broadcast({ type: 'diego_audit_log_updated', log: nuevoRegistro });
+            return nuevoRegistro;
+        } catch(e) {
+            return null;
+        }
+    }
 
     function cargarMapConfigPermanente() {
         if (fs.existsSync(MAP_PERMANENT_FILE)) {
@@ -925,15 +970,47 @@ const server = http.createServer((req, res) => {
         return { colliders: [], objects: [], zones: [], ambience: { presetIndex: 0 }, lastUpdated: new Date().toISOString() };
     }
 
-    function guardarMapConfigPermanente(config) {
+    function guardarMapConfigPermanente(config, accionLog) {
         try {
             config.lastUpdated = new Date().toISOString();
             fs.writeFileSync(MAP_PERMANENT_FILE, JSON.stringify(config, null, 2), 'utf8');
+            if (accionLog) registrarCambioDiego(accionLog.accion, accionLog.detalles);
             broadcast({ type: 'map_config_synced', config });
             return true;
         } catch(e) {
             return false;
         }
+    }
+
+    // API Route: GET /api/diego-audit-log (Bitácora de Diego para Modo Dios CEO)
+    if (req.method === 'GET' && req.url === '/api/diego-audit-log') {
+        const logs = cargarDiegoAuditLog();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, logs, total: logs.length }));
+        return;
+    }
+
+    // API Route: POST /api/ceo-approve-diego-change (CEO Modo Dios Aprueba o Rechaza)
+    if (req.method === 'POST' && req.url === '/api/ceo-approve-diego-change') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const { id, estado } = JSON.parse(body || '{}');
+                const logs = cargarDiegoAuditLog();
+                const target = logs.find(l => l.id === id);
+                if (target) {
+                    target.estado = estado; // 'APROBADO_E_INTEGRADO' | 'RECHAZADO'
+                    fs.writeFileSync(DIEGO_LOG_FILE, JSON.stringify(logs, null, 2), 'utf8');
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ success: true, message: `Registro ${id} actualizado a ${estado}` }));
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
     }
 
     // API Route: GET /api/permanent-map-config
@@ -951,9 +1028,9 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const data = JSON.parse(body || '{}');
-                const ok = guardarMapConfigPermanente(data);
+                const ok = guardarMapConfigPermanente(data, { accion: 'MODIFICACIÓN_MAPA', detalles: `Actualización de ${data.colliders?.length || 0} colisionadores y ${data.objects?.length || 0} objetos.` });
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ success: ok, message: 'Configuración permanente del mapa guardada exitosamente.' }));
+                res.end(JSON.stringify({ success: ok, message: 'Configuración registrada en la Bitácora de Diego y guardada exitosamente.' }));
             } catch(e) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: e.message }));

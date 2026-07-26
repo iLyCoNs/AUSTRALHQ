@@ -4270,10 +4270,11 @@ window.renderCommandDeck = function() {
               <button onclick="ceoTrigger('lead_qualified',{leadName:'Macrolote Sur'})" style="background:#1e293b; color:#facc15; border:1px solid #facc15; padding:4px 6px; font-size:7px; cursor:pointer;">🚨 Lead!</button>
             </div>
 
-            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">📂 UTILIDADES DE GESTIÓN:</div>
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">📂 UTILIDADES DE GESTIÓN (MODO DIOS):</div>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
               <a href="/api/download-master-csv" target="_blank" style="background:#16a34a; color:#fff; border:1px solid #4ade80; text-decoration:none; padding:4px 8px; font-size:7px;">📥 Excel</a>
               <button onclick="window.openBitacoraModal()" style="background:#b45309; color:#fff; border:1px solid #f59e0b; padding:4px 8px; font-size:7px; cursor:pointer;">🗄️ Bitácora</button>
+              <button onclick="window.openDiegoAuditLogModal()" style="background:#7c3aed; color:#fff; border:1px solid #a78bfa; padding:4px 8px; font-size:7px; cursor:pointer;">📜 Auditoría Diego</button>
               <button onclick="window.openTVPinEditor()" style="background:#d97706; color:#fff; border:1px solid #fbbf24; padding:4px 8px; font-size:7px; cursor:pointer;">📍 Posicionar Tele</button>
             </div>
           </div>
@@ -4355,6 +4356,12 @@ window.renderCommandDeck = function() {
               <button onclick="window.openLayoutManager()" style="background:#b45309; color:#fff; border:2px solid #f59e0b; padding:6px; font-size:7px; cursor:pointer;">💾 Layout Slots</button>
               <button onclick="window.openAmbienteEditor()" style="background:#be185d; color:#fff; border:2px solid #f472b6; padding:6px; font-size:7px; cursor:pointer;">🌌 Iluminación</button>
               <button onclick="window.openDiegoAgentEditor()" style="background:#831843; color:#fff; border:2px solid #ec4899; padding:6px; font-size:7px; cursor:pointer;">👾 Editor Agentes</button>
+            </div>
+
+            <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🏗️ ENFOQUE Y EDICIÓN LIMPIA:</div>
+            <div style="display:flex; gap:4px; flex-wrap:wrap;">
+              <button onclick="window.openColliderPainter()" style="background:#ef4444; color:#fff; border:1px solid #fca5a5; padding:5px; font-size:7px; cursor:pointer;">🚧 Pintar Colisionadores</button>
+              <button onclick="window.toggleDiegoFocusMode()" style="background:#0284c7; color:#fff; border:1px solid #38bdf8; padding:5px; font-size:7px; cursor:pointer;">🧹 Modo Enfoque Limpio</button>
             </div>
 
             <div style="font-size:7px; color:#cbd5e1; margin-top:4px;">🚧 CONTROL DE AVATAR & DEBUG:</div>
@@ -4953,7 +4960,49 @@ window.renderPermanentColliders = function() {
   }
 };
 
+// ═════════════════════════════════════════════════════
+//  🧹 MODO ENFOQUE LIMPIO Y AVISO DE INTERRUPCIÓN PARA DIEGO
+// ═════════════════════════════════════════════════════
+window._diegoFocusModeActive = false;
+
+window.toggleDiegoFocusMode = function() {
+  window._diegoFocusModeActive = !window._diegoFocusModeActive;
+  const hide = window._diegoFocusModeActive;
+
+  Object.values(window.AR || {}).forEach(ag => {
+    if (ag && ag.sprite) ag.sprite.setVisible(!hide);
+    if (ag && ag.nameText) ag.nameText.setVisible(!hide);
+  });
+
+  const hud = document.getElementById('liveLeadToastContainer');
+  if (hud) hud.style.display = hide ? 'none' : 'flex';
+
+  appendLog('s', hide ? '🧹 MODO ENFOQUE ACTIVO: Agentes y textos ocultados para trabajo limpio de Diego.' : '👁️ MODO ENFOQUE DESACTIVADO: Elementos visibles.');
+};
+
 window.savePermanentMapConfig = function() {
+  _diegoModal('modal-warning-save', '⚠️ AVISO DE MODIFICACIÓN DE ARQUITECTURA', '#f59e0b', `
+    <div style="background:rgba(245,158,11,0.1);border-left:4px solid #f59e0b;padding:12px;border-radius:6px;color:#fff;font-size:11px;line-height:1.5;">
+      <b>⚠️ ATENCIÓN DIEGO ARCHITECT:</b><br>
+      Esta modificación va a actualizar la estructura visual y de colisionadores del mapa en vivo para todos los usuarios.
+      <br><br>
+      <i>Los módulos core de Administración (Modo Dios CEO, CRM Kanban y Scrapers) se mantendrán 100% protegidos e intactos. Tus cambios quedarán registrados en la Bitácora de Auditoría para ser revisados e integrados armónicamente por el CEO.</i>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;">
+      <button onclick="window.executePermanentSave()" style="flex:1;background:#10b981;color:#000;font-weight:900;border:2px solid #34d399;padding:12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
+        ✅ CONTINUAR Y GUARDAR
+      </button>
+      <button onclick="_diegoCloseModal('modal-warning-save')" style="background:#334155;color:#fff;border:1px solid #94a3b8;padding:12px;border-radius:4px;cursor:pointer;font-family:'Press Start 2P',monospace;font-size:8px;">
+        ❌ CANCELAR
+      </button>
+    </div>
+  `);
+};
+
+window.executePermanentSave = function() {
+  _diegoCloseModal('modal-warning-save');
+
   const config = {
     colliders: window._permanentColliders || [],
     objects: (window._placedObjects || []).map(o => ({ x: o.x, y: o.y, label: o.label })),
@@ -4971,12 +5020,54 @@ window.savePermanentMapConfig = function() {
   .then(r => r.json())
   .then(res => {
     if (res.success) {
-      alert("💾 CONFIGURACIÓN PERMANENTE GUARDADA EXITOSAMENTE EN DISCO (MAP_CONFIG_PERMANENT.json).\n\nTodos los colisionadores, muebles y zonas quedarán cargados eternamente para todos los usuarios que inicien sesión.");
-      appendLog('s', '💾 MAPA PERMANENTE: Archivo MAP_CONFIG_PERMANENT.json actualizado en disco.');
+      alert("💾 ARQUITECTURA GUARDADA EXITOSAMENTE EN DISCO (MAP_CONFIG_PERMANENT.json).\n\nRegistrado en la Bitácora de Cambios de Diego Architect para revisión e integración armónica por el CEO (Modo Dios).");
+      appendLog('s', '💾 MAPA PERMANENTE: Archivo MAP_CONFIG_PERMANENT.json y Bitácora Diego actualizados.');
     }
   })
   .catch(err => {
     alert("⚠️ Error guardando mapa permanente: " + err.message);
+  });
+};
+
+window.openDiegoAuditLogModal = function() {
+  fetch('/api/diego-audit-log')
+    .then(r => r.json())
+    .then(d => {
+      const logs = (d.logs || []).map(l => `
+        <div style="background:#090d16;border:2px solid ${l.estado==='APROBADO_E_INTEGRADO'?'#10b981':l.estado==='RECHAZADO'?'#ef4444':'#f59e0b'};border-radius:6px;padding:10px;margin-bottom:8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:9px;">
+            <b style="color:#facc15;">🔨 ${l.accion} — ${l.autor}</b>
+            <span style="color:#94a3b8;">${new Date(l.timestamp).toLocaleString('es-CL')}</span>
+          </div>
+          <p style="font-size:10px;color:#cbd5e1;margin:6px 0;">${l.detalles}</p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+            <span style="font-size:9px;font-weight:bold;color:${l.estado==='APROBADO_E_INTEGRADO'?'#34d399':l.estado==='RECHAZADO'?'#ef4444':'#fbbf24'}">ESTADO: ${l.estado}</span>
+            ${l.estado === 'PENDIENTE_APROBACION_CEO' ? `
+              <div style="display:flex;gap:6px;">
+                <button onclick="window.ceoDecideDiegoChange(${l.id}, 'APROBADO_E_INTEGRADO')" style="background:#10b981;color:#000;border:none;padding:4px 8px;border-radius:4px;font-weight:bold;font-size:9px;cursor:pointer;">✅ INTEGRAR AL MASTER</button>
+                <button onclick="window.ceoDecideDiegoChange(${l.id}, 'RECHAZADO')" style="background:#ef4444;color:#fff;border:none;padding:4px 8px;border-radius:4px;font-weight:bold;font-size:9px;cursor:pointer;">❌ RECHAZAR</button>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      _diegoModal('modal-diego-audit', '📜 BITÁCORA DE CAMBIOS DIEGO ARCHITECT (MODO DIOS CEO)', '#fbbf24', `
+        <p style="font-size:11px;color:#94a3b8;">Revisa y aprueba de forma armónica todas las modificaciones de diseño de nivel realizadas por Diego Architect.</p>
+        <div style="max-height:400px;overflow-y:auto;margin:10px 0;">${logs || '<p style="color:#64748b;font-size:10px;">Sin registros pendientes.</p>'}</div>
+      `);
+    });
+};
+
+window.ceoDecideDiegoChange = function(id, estado) {
+  fetch('/api/ceo-approve-diego-change', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, estado })
+  })
+  .then(() => {
+    window.openDiegoAuditLogModal();
+    appendLog('s', `👑 MODO DIOS: Cambio #${id} marcado como ${estado}`);
   });
 };
 
