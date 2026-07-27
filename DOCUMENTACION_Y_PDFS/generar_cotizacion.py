@@ -69,7 +69,7 @@ loc_text = '''
 elements.append(Paragraph(loc_text, body_style))
 elements.append(Spacer(1, 14))
 
-# 4. SERVICES TABLE
+# 4. SERVICES TABLE (Drone DJI Mini 5 Pro)
 elements.append(Paragraph('🚁 <b>DETALLE DE SERVICIOS Y EQUIPAMIENTO TÉCNICO</b>', ParagraphStyle('SecTitle2', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 6))
 
@@ -78,7 +78,7 @@ table_data = [
 ]
 
 items = [
-    ('<b>Operación de Vuelo Aéreo 4K UHD en Ruta 5 Interior</b><br/><font size=8.5 color="#475569">• Vuelo de grabación con Drone DJI Mavic 3 Cine / Hasselblad CMOS 4/3.<br/>• Captura de Tomas Aéreas 4K @ 60fps & 15+ Fotografías HDR 20 MP.</font>', '1 Servicio', '$75.000 CLP'),
+    ('<b>Operación de Vuelo Aéreo 4K UHD en Ruta 5 Interior</b><br/><font size=8.5 color="#475569">• Vuelo de grabación con Drone DJI Mini 5 Pro.<br/>• Captura de Tomas Aéreas 4K @ 60fps & 15+ Fotografías HDR 20 MP.</font>', '1 Servicio', '$75.000 CLP'),
     ('<b>Post-Procesamiento, Corrección de Color & Entrega Cloud</b><br/><font size=8.5 color="#475569">• Edición de video en D-Log con corrección de color cinemática.<br/>• Respaldo digital en servidor privado cloud para descarga inmediata en 24 hrs.</font>', '1 Pack', '$25.000 CLP')
 ]
 
@@ -131,12 +131,12 @@ t_promo.setStyle(TableStyle([
 elements.append(t_promo)
 elements.append(Spacer(1, 12))
 
-# 7. TERMS & SIGNATURE (Sin 'según norma DGAC' ni '& Fotogrametría 3D en la Patagonia')
+# 7. TERMS & SIGNATURE (Edicion de pie de pagina: AustralDrone.CL — Innovación Aérea en Puerto Montt.)
 terms_text = '''
 <b>Condiciones Comerciales:</b> Validez de cotización: 15 días corridos. Forma de pago: 50% al confirmar vuelo y 50% a la entrega del material final. Vuelo sujeto a condiciones meteorológicas favorables.<br/>
-<b>AustralDrone.CL — Innovación Aérea en la Patagonia</b>
+<b>AustralDrone.CL — Innovación Aérea en Puerto Montt.</b>
 '''
 elements.append(Paragraph(terms_text, ParagraphStyle('Terms', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=colors.HexColor('#64748b'), alignment=1)))
 
 doc.build(elements)
-print("PDF actualizado sin los elementos del pie de pagina.")
+print("PDF actualizado con DJI MINI 5 PRO y nuevo pie de pagina.")
