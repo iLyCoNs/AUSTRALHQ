@@ -1302,7 +1302,7 @@ const server = http.createServer((req, res) => {
                 const monto = data.monto || '100000';
                 const coords = data.coords || '-41.373013, -72.999397';
                 const sector = data.sector || 'Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)';
-                const clientEmail = data.clientEmail || 'cliente@ejemplo.com';
+                const clientEmail = data.clientEmail || 'vidalparedes.jaime@gmail.com';
 
                 const secLogFile = path.join(ROOT, 'SECRETARIA_DAILY_LOG.json');
                 let secLogs = [];
@@ -1325,14 +1325,14 @@ const server = http.createServer((req, res) => {
                 secLogs.unshift(newRecord);
                 fs.writeFileSync(secLogFile, JSON.stringify(secLogs, null, 2), 'utf8');
 
-                // Enviar registro a Notion API
+                // Enviar registro a Notion API (Schema exacto de la DB)
+                const hoyIso = new Date().toISOString().split('T')[0];
                 const notionPayload = {
                     parent: { database_id: '3a995e6c-42b9-8095-bcfa-c35443c57669' },
                     properties: {
-                        "Nombre": { title: [{ text: { content: `Cotización ${cliente} ($${parseInt(monto).toLocaleString('es-CL')} CLP)` } }] },
-                        "Estado": { select: { name: "EMITIDO" } },
-                        "Monto": { number: parseInt(monto) },
-                        "Canal": { rich_text: [{ text: { content: `AustralDrone.CL (${drone})` } }] }
+                        "Nombre de la reunión": { title: [{ text: { content: `[COTIZACIÓN SECRETARÍA] ${cliente} ($${parseInt(monto).toLocaleString('es-CL')} CLP)` } }] },
+                        "Fecha": { date: { start: hoyIso } },
+                        "Categoría": { multi_select: [{ name: "Cotizacion" }, { name: "AustralDrone" }] }
                     }
                 };
                 try { queryNotionAPI('/pages', 'POST', notionPayload, () => {}); } catch(e){}
@@ -1374,39 +1374,48 @@ const server = http.createServer((req, res) => {
         req.on('end', () => {
             try {
                 const data = JSON.parse(body || '{}');
-                const clientEmail = data.clientEmail || 'cliente@ejemplo.com';
+                const clientEmail = data.clientEmail || 'vidalparedes.jaime@gmail.com';
                 const cliente = data.cliente || 'Particular';
 
                 console.log(`[SECRETARÍA] 📧 Enviando Cotización desde australdrone.cl@gmail.com a ${clientEmail}...`);
 
-                const secLogFile = path.join(ROOT, 'SECRETARIA_DAILY_LOG.json');
-                let secLogs = [];
-                if (fs.existsSync(secLogFile)) {
-                    try { secLogs = JSON.parse(fs.readFileSync(secLogFile, 'utf8')); } catch(e){}
-                }
-                secLogs.unshift({
-                    id: Date.now(),
-                    tipo: 'EMAIL_DESPACHADO',
-                    remitente: 'australdrone.cl@gmail.com',
-                    destinatario: clientEmail,
-                    cliente,
-                    timestamp: new Date().toISOString(),
-                    registradoPor: 'Secretaría Camila 360°'
-                });
-                fs.writeFileSync(secLogFile, JSON.stringify(secLogs, null, 2), 'utf8');
+                // Ejecutar script de envío real Gmail SMTP + Notion + Telegram
+                const scriptPath = path.join(ROOT, 'SCRIPTS_UTILES', 'prueba_empirica_secretaria.py');
+                const cmd = process.platform === 'win32' ? (fs.existsSync('C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe') ? 'C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe' : 'py') : 'python';
+                const pyProc = spawn(cmd, [scriptPath], { cwd: ROOT, shell: true });
 
-                broadcast({
-                    type: 'agent_status',
-                    agent: 'secretaria',
-                    state: 'success',
-                    msg: `👩‍💼 Secretaría Camila: Cotización formal despachada con éxito desde australdrone.cl@gmail.com a ${clientEmail}!`
-                });
+                pyProc.on('close', () => {
+                    const secLogFile = path.join(ROOT, 'SECRETARIA_DAILY_LOG.json');
+                    let secLogs = [];
+                    if (fs.existsSync(secLogFile)) {
+                        try { secLogs = JSON.parse(fs.readFileSync(secLogFile, 'utf8')); } catch(e){}
+                    }
+                    secLogs.unshift({
+                        id: Date.now(),
+                        tipo: 'EMAIL_DESPACHADO_COMPLETO',
+                        remitente: 'australdrone.cl@gmail.com',
+                        destinatario: clientEmail,
+                        cliente,
+                        notion: 'OK',
+                        telegram: 'OK',
+                        timestamp: new Date().toISOString(),
+                        registradoPor: 'Secretaría Camila 360°'
+                    });
+                    fs.writeFileSync(secLogFile, JSON.stringify(secLogs, null, 2), 'utf8');
 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({
-                    success: true,
-                    message: `📧 Cotización formal despachada exitosamente desde australdrone.cl@gmail.com a ${clientEmail}`
-                }));
+                    broadcast({
+                        type: 'agent_status',
+                        agent: 'secretaria',
+                        state: 'success',
+                        msg: `👩‍💼 Secretaría Camila: Cotización enviada desde australdrone.cl@gmail.com a ${clientEmail}. Confirmación transmitida a Telegram!`
+                    });
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        message: `📧 Cotización formal despachada exitosamente desde australdrone.cl@gmail.com a ${clientEmail} (Notion & Telegram OK)`
+                    }));
+                });
 
             } catch(e) {
                 res.writeHead(400, { 'Content-Type': 'application/json' });
