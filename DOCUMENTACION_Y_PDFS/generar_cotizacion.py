@@ -24,10 +24,10 @@ header_table_style = ParagraphStyle('HTStyle', parent=styles['Normal'], fontName
 
 elements = []
 
-# 1. HEADER BRANDING
+# 1. HEADER BRANDING (Sin '& Maquetas 3D')
 header_data = [
     [
-        Paragraph('<b>AUSTRALDRONE.CL</b><br/><font size=8.5 color="#64748b">Servicios Aéreos de Alta Precisión & Maquetas 3D</font>', title_style),
+        Paragraph('<b>AUSTRALDRONE.CL</b><br/><font size=8.5 color="#64748b">Servicios Aéreos de Alta Precisión</font>', title_style),
         Paragraph('<b>COTIZACIÓN FORMAL</b><br/><font color="#0284c7">N° COT-2026-07-4029</font><br/><font size=8.5 color="#64748b">Fecha: 27 de Julio, 2026</font>', ParagraphStyle('RightHd', parent=styles['Normal'], fontName='Helvetica', fontSize=9, leading=13, alignment=2))
     ]
 ]
@@ -54,7 +54,7 @@ t_info.setStyle(TableStyle([
 elements.append(t_info)
 elements.append(Spacer(1, 14))
 
-# 3. LOCATION & GPS MAP ACCESS
+# 3. LOCATION & GPS MAP ACCESS (Sin Punto Cero)
 elements.append(Paragraph('📍 <b>UBICACIÓN TÁCTICA Y RUTEO DE ACCESO (COORDENADAS GPS)</b>', ParagraphStyle('SecTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 4))
 
@@ -64,13 +64,12 @@ loc_text = '''
 <b>Mejores Indicaciones de Ruteo y Acceso:</b><br/>
 • <b>Ruta de Llegada Principal:</b> Conducir por Ruta 5 Sur en dirección Sur hacia el km 1010.<br/>
 • <b>Desvío Caletera Interior:</b> Tomar la salida lateral hacia la caletera Este en dirección al cruce La Vara / Alerce Norte.<br/>
-• <b>Ingreso al Predio:</b> Avanzar 800 metros por el camino vecinal interior asfaltado/estabilizado.<br/>
-• <b>Punto Cero (Despegue Seguro):</b> Zona despejada plana habilitada libre de tendido eléctrico de alta tensión, con visibilidad directa de 360° para operaciones bajo normativa DGAC.
+• <b>Ingreso al Predio:</b> Avanzar 800 metros por el camino vecinal interior asfaltado/estabilizado.
 '''
 elements.append(Paragraph(loc_text, body_style))
 elements.append(Spacer(1, 14))
 
-# 4. SERVICES TABLE
+# 4. SERVICES TABLE (Sin Piloto Certificado DGAC)
 elements.append(Paragraph('🚁 <b>DETALLE DE SERVICIOS Y EQUIPAMIENTO TÉCNICO</b>', ParagraphStyle('SecTitle2', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 6))
 
@@ -79,7 +78,7 @@ table_data = [
 ]
 
 items = [
-    ('<b>Operación de Vuelo Aéreo 4K UHD en Ruta 5 Interior</b><br/><font size=8.5 color="#475569">• Vuelo de grabación con Drone DJI Mavic 3 Cine / Hasselblad CMOS 4/3.<br/>• Captura de Tomas Aéreas 4K @ 60fps & 15+ Fotografías HDR 20 MP.<br/>• Piloto Certificado DGAC con protocolo de seguridad operacional.</font>', '1 Servicio', '$75.000 CLP'),
+    ('<b>Operación de Vuelo Aéreo 4K UHD en Ruta 5 Interior</b><br/><font size=8.5 color="#475569">• Vuelo de grabación con Drone DJI Mavic 3 Cine / Hasselblad CMOS 4/3.<br/>• Captura de Tomas Aéreas 4K @ 60fps & 15+ Fotografías HDR 20 MP.</font>', '1 Servicio', '$75.000 CLP'),
     ('<b>Post-Procesamiento, Corrección de Color & Entrega Cloud</b><br/><font size=8.5 color="#475569">• Edición de video en D-Log con corrección de color cinemática.<br/>• Respaldo digital en servidor privado cloud para descarga inmediata en 24 hrs.</font>', '1 Pack', '$25.000 CLP')
 ]
 
@@ -116,7 +115,7 @@ promo_data = [
         Paragraph('''
 <font color="#66fcf1" size=10.5><b>🌟 ¿DESARROLLAS LOTEOS, PARCELACIONES O PROYECTOS EN EL SUR?</b></font><br/>
 <font color="#ffffff" size=8.5>
-Conoce nuestras maquetas 3D interactivas y <b>MasterPlans 360°</b> con ortomosaicos aéreos georreferenciados. Aumenta la velocidad de venta de tus terrenos con maquetas inmersivas recorribles desde cualquier smartphone o PC.<br/>
+Conoce nuestros servicios de ortomosaicos aéreos georreferenciados y maquetas virtuales. Aumenta la velocidad de venta de tus terrenos con imágenes de alta definición.<br/>
 👉 <b>Visítanos hoy en <font color="#66fcf1"><u>www.australdrone.cl</u></font> y solicita una demostración en vivo.</b>
 </font>
         ''', ParagraphStyle('PromoStyle', parent=styles['Normal'], leading=12.5))
@@ -134,10 +133,10 @@ elements.append(Spacer(1, 12))
 
 # 7. TERMS & SIGNATURE
 terms_text = '''
-<b>Condiciones Comerciales:</b> Validez de cotización: 15 días corridos. Forma de pago: 50% al confirmar vuelo y 50% a la entrega del material final. Vuelo sujeto a condiciones meteorológicas favorables según norma DGAC.<br/>
-<b>AustralDrone.CL — Innovación Aérea & Fotogrametría 3D en la Patagonia</b>
+<b>Condiciones Comerciales:</b> Validez de cotización: 15 días corridos. Forma de pago: 50% al confirmar vuelo y 50% a la entrega del material final. Vuelo sujeto a condiciones meteorológicas favorables.<br/>
+<b>AustralDrone.CL — Innovación Aérea en la Patagonia</b>
 '''
 elements.append(Paragraph(terms_text, ParagraphStyle('Terms', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=colors.HexColor('#64748b'), alignment=1)))
 
 doc.build(elements)
-print('✅ PDF Generado exitosamente en: ' + pdf_path)
+print("PDF sin los datos solicitados generado con exito en: " + pdf_path)
