@@ -464,6 +464,10 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
     🚀 DESPLIEGUE SAAS
   </button>
 
+  <button onclick="window.openPDFStudioModal()" style="background:rgba(2, 132, 199, 0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    🖨️ AGENTE PDF 360°
+  </button>
+
   <button onclick="window.logoutHQ()" style="background:rgba(239, 68, 68, 0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
     🔒 BLOCK
   </button>
@@ -5660,6 +5664,89 @@ function _diegoCloseModal(id) {
   document.getElementById(id + '-wrap')?.remove();
   enableGameKeyboard();
 }
+
+// ═════════════════════════════════════════════════════
+//  🖨️ HERRAMIENTA AGENTE PDF STUDIO 360°
+// ═════════════════════════════════════════════════════
+window.openPDFStudioModal = function() {
+  _diegoModal('modal-pdf-studio', '🖨️ ESTACIÓN IMPRESORA AGENTE PDF 360° — AUSTRALDRONE.CL', '#0284c7', `
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      <div style="background:rgba(2, 132, 199, 0.1); border-left:4px solid #0284c7; padding:10px 14px; border-radius:6px; font-size:10.5px; color:#cbd5e1; line-height:1.5;">
+        <b>🛸 Agente Generador de Documentos y Cotizaciones PDF en Vivo:</b><br/>
+        Edita cualquier parámetro en tiempo real y presiona <b>⚡ GENERAR PDF REAL</b> para compilar el documento formal listo para enviar a clientes o publicar.
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">CLIENTE / SOLICITANTE:</label>
+          <input id="pdfInpClient" type="text" value="Particular" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+        </div>
+        <div>
+          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">MONTO A COBRAR (CLP):</label>
+          <input id="pdfInpPrice" type="text" value="100000" style="width:100%; background:#0f172a; border:1px solid #10b981; color:#10b981; font-weight:bold; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">MODELO DE DRONE:</label>
+          <input id="pdfInpDrone" type="text" value="DJI Mini 5 Pro" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+        </div>
+        <div>
+          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">COORDENADAS GPS:</label>
+          <input id="pdfInpGPS" type="text" value="-41.373013, -72.999397" style="width:100%; background:#0f172a; border:1px solid #66fcf1; color:#66fcf1; font-family:'JetBrains Mono'; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:9.5px; color:#64748b; font-weight:bold;">SECTOR / INDICACIONES DE LLEGADA:</label>
+        <input id="pdfInpSector" type="text" value="Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:6px;">
+        <button onclick="window.submitPDFGeneration()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; font-weight:bold; border:none; padding:12px; border-radius:6px; cursor:pointer; font-size:11px; box-shadow:0 0 15px rgba(2, 132, 199, 0.4);">
+          🖨️ ⚡ EMITIR Y DESCARGAR COTIZACIÓN PDF
+        </button>
+        <a id="btnOpenHTML" href="/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html" target="_blank" style="background:#090d16; color:#66fcf1; border:1px solid #66fcf1; font-weight:bold; padding:12px 16px; border-radius:6px; text-decoration:none; font-size:11px; text-align:center;">
+          🌐 VER HTML
+        </a>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label style="font-size:9px; color:#64748b; font-weight:bold;">👁️ VISTA PREVIA DEL DOCUMENTO EN VIVO:</label>
+        <iframe id="pdfPreviewFrame" src="/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html" style="width:100%; height:320px; border:1px solid #0284c7; border-radius:6px; margin-top:6px; background:#fff;"></iframe>
+      </div>
+    </div>
+  `);
+};
+
+window.submitPDFGeneration = function() {
+  const cliente = document.getElementById('pdfInpClient')?.value || 'Particular';
+  const monto = document.getElementById('pdfInpPrice')?.value || '100000';
+  const drone = document.getElementById('pdfInpDrone')?.value || 'DJI Mini 5 Pro';
+  const coords = document.getElementById('pdfInpGPS')?.value || '-41.373013, -72.999397';
+  const sector = document.getElementById('pdfInpSector')?.value || 'Ruta 5 Sur Interior';
+
+  appendLog('s', `🖨️ AGENTE PDF: Generando cotización formal para ${cliente} por $${parseInt(monto).toLocaleString('es-CL')} CLP...`);
+
+  fetch('/api/generate-custom-pdf', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cliente, monto, drone, coords, sector })
+  })
+  .then(r => r.json())
+  .then(d => {
+    if (d && d.success) {
+      appendLog('c', `✅ COTIZACIÓN PDF COMPILADA CON ÉXITO! Abriendo documento...`);
+      window.open(d.pdfUrl, '_blank');
+      const iframe = document.getElementById('pdfPreviewFrame');
+      if (iframe) iframe.src = d.htmlUrl + '?t=' + Date.now();
+    }
+  })
+  .catch(e => {
+    appendLog('e', 'Error generando PDF: ' + e.message);
+  });
+};
 
 initWebhooks();
 window.renderCommandDeck();

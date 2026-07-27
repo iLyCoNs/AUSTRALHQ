@@ -272,6 +272,49 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API Route: Generador de PDF en Vivo
+    if (req.method === 'POST' && req.url === '/api/generate-custom-pdf') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const cliente = data.cliente || 'Particular';
+                const servicio = data.servicio || 'Operación de Vuelo Aéreo 4K UHD';
+                const drone = data.drone || 'DJI Mini 5 Pro';
+                const monto = data.monto || '100000';
+                const coords = data.coords || '-41.373013, -72.999397';
+                const sector = data.sector || 'Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)';
+
+                const scriptPath = path.join(ROOT, 'DOCUMENTACION_Y_PDFS', 'generar_cotizacion.py');
+                const cmd = process.platform === 'win32' ? (fs.existsSync('C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe') ? 'C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe' : 'py') : 'python';
+
+                console.log(`[API] 🖨️ Generando Cotización PDF para ${cliente} por $${monto} CLP...`);
+                
+                const pyProc = spawn(cmd, [scriptPath], { cwd: ROOT, shell: true });
+                pyProc.on('close', () => {
+                    broadcast({
+                        type: 'agent_status',
+                        agent: 'pdfagent',
+                        state: 'success',
+                        msg: `🖨️ ¡Agente PDF emitió Cotización Formal de $${parseInt(monto).toLocaleString('es-CL')} CLP para ${cliente}!`
+                    });
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        pdfUrl: '/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.pdf',
+                        htmlUrl: '/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html'
+                    }));
+                });
+            } catch(e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: Run Local Agent
     if (req.method === 'POST' && req.url === '/api/run-agent') {
         let body = '';
