@@ -1,0 +1,18 @@
+include:
+  - index.html
+  - PHASER_OFFICE.html
+  - assets
+  - core
+  - sprites
+
+exclude:
+  - gstack
+  - superpowers
+  - Scrapling
+  - DOCUMENTACION_Y_PDFS
+  - SCRIPTS_UTILES
+  - logs_cazador
+  - n8n_workflows
+  - README.md
+  - CHANGELOG.md
+  - CLAUDE.md
