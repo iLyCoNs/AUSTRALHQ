@@ -5661,26 +5661,24 @@ window.camilaApproachCEO = function(onArrivedCallback) {
     return;
   }
 
-  // Buscar posición del CEO activo (Jaime o Nicole) en la escena Phaser
   const scene = window.officeScene;
   let targetX = 450;
   let targetY = 320;
 
   if (scene) {
-    const ceo = scene.ceo;
-    const nicole = scene.nicole;
-    if (ceo && ceo.active) {
-      targetX = ceo.x + 45;
-      targetY = ceo.y + 10;
-    } else if (nicole && nicole.active) {
-      targetX = nicole.x + 45;
-      targetY = nicole.y + 10;
+    if (scene.ceo && scene.ceo.sprite) {
+      targetX = scene.ceo.sprite.x + 50;
+      targetY = scene.ceo.sprite.y + 10;
+    } else if (scene.nicole && scene.nicole.sprite) {
+      targetX = scene.nicole.sprite.x + 50;
+      targetY = scene.nicole.sprite.y + 10;
     }
   }
 
-  // Camila camina en vivo hacia la posición del CEO
-  sec._showBubble('👩‍💼 ¡Voy enseguida Don Jaime!');
+  console.log('[CAMILA] 🚶‍♀️ Caminando en vivo hacia Don Jaime/CEO en x:' + targetX + ' y:' + targetY);
+  sec._showBubble('👩‍💼 ¡Voy enseguida a su posición, Don Jaime!');
   sec.moveTo(targetX, targetY, () => {
+    if (sec.sprite) sec.sprite.setFlipX(true);
     sec._setStateSilent('working');
     if (onArrivedCallback) onArrivedCallback();
   });
