@@ -24,7 +24,7 @@ header_table_style = ParagraphStyle('HTStyle', parent=styles['Normal'], fontName
 
 elements = []
 
-# 1. HEADER BRANDING (Sin '& Maquetas 3D')
+# 1. HEADER BRANDING
 header_data = [
     [
         Paragraph('<b>AUSTRALDRONE.CL</b><br/><font size=8.5 color="#64748b">Servicios Aéreos de Alta Precisión</font>', title_style),
@@ -54,7 +54,7 @@ t_info.setStyle(TableStyle([
 elements.append(t_info)
 elements.append(Spacer(1, 14))
 
-# 3. LOCATION & GPS MAP ACCESS (Sin Punto Cero)
+# 3. LOCATION & GPS MAP ACCESS
 elements.append(Paragraph('📍 <b>UBICACIÓN TÁCTICA Y RUTEO DE ACCESO (COORDENADAS GPS)</b>', ParagraphStyle('SecTitle', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 4))
 
@@ -69,7 +69,7 @@ loc_text = '''
 elements.append(Paragraph(loc_text, body_style))
 elements.append(Spacer(1, 14))
 
-# 4. SERVICES TABLE (Sin Piloto Certificado DGAC)
+# 4. SERVICES TABLE
 elements.append(Paragraph('🚁 <b>DETALLE DE SERVICIOS Y EQUIPAMIENTO TÉCNICO</b>', ParagraphStyle('SecTitle2', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 6))
 
@@ -131,7 +131,7 @@ t_promo.setStyle(TableStyle([
 elements.append(t_promo)
 elements.append(Spacer(1, 12))
 
-# 7. TERMS & SIGNATURE
+# 7. TERMS & SIGNATURE (Sin 'según norma DGAC' ni '& Fotogrametría 3D en la Patagonia')
 terms_text = '''
 <b>Condiciones Comerciales:</b> Validez de cotización: 15 días corridos. Forma de pago: 50% al confirmar vuelo y 50% a la entrega del material final. Vuelo sujeto a condiciones meteorológicas favorables.<br/>
 <b>AustralDrone.CL — Innovación Aérea en la Patagonia</b>
@@ -139,4 +139,4 @@ terms_text = '''
 elements.append(Paragraph(terms_text, ParagraphStyle('Terms', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=colors.HexColor('#64748b'), alignment=1)))
 
 doc.build(elements)
-print("PDF sin los datos solicitados generado con exito en: " + pdf_path)
+print("PDF actualizado sin los elementos del pie de pagina.")
