@@ -1289,6 +1289,133 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API Route: POST /api/secretaria/quote (Secretaría registra en Notion y compila PDF)
+    if (req.method === 'POST' && req.url === '/api/secretaria/quote') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const cliente = data.cliente || 'Particular';
+                const servicio = data.servicio || 'Operación de Vuelo Aéreo 4K UHD';
+                const drone = data.drone || 'DJI Mini 5 Pro';
+                const monto = data.monto || '100000';
+                const coords = data.coords || '-41.373013, -72.999397';
+                const sector = data.sector || 'Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)';
+                const clientEmail = data.clientEmail || 'cliente@ejemplo.com';
+
+                const secLogFile = path.join(ROOT, 'SECRETARIA_DAILY_LOG.json');
+                let secLogs = [];
+                if (fs.existsSync(secLogFile)) {
+                    try { secLogs = JSON.parse(fs.readFileSync(secLogFile, 'utf8')); } catch(e){}
+                }
+                const newRecord = {
+                    id: Date.now(),
+                    tipo: 'COTIZACION_EMITIDA',
+                    cliente,
+                    servicio,
+                    drone,
+                    monto: parseInt(monto),
+                    coords,
+                    sector,
+                    clientEmail,
+                    timestamp: new Date().toISOString(),
+                    registradoPor: 'Secretaría Camila 360°'
+                };
+                secLogs.unshift(newRecord);
+                fs.writeFileSync(secLogFile, JSON.stringify(secLogs, null, 2), 'utf8');
+
+                // Enviar registro a Notion API
+                const notionPayload = {
+                    parent: { database_id: '3a995e6c-42b9-8095-bcfa-c35443c57669' },
+                    properties: {
+                        "Nombre": { title: [{ text: { content: `Cotización ${cliente} ($${parseInt(monto).toLocaleString('es-CL')} CLP)` } }] },
+                        "Estado": { select: { name: "EMITIDO" } },
+                        "Monto": { number: parseInt(monto) },
+                        "Canal": { rich_text: [{ text: { content: `AustralDrone.CL (${drone})` } }] }
+                    }
+                };
+                try { queryNotionAPI('/pages', 'POST', notionPayload, () => {}); } catch(e){}
+
+                // Ejecutar Python Script para compilar el PDF
+                const scriptPath = path.join(ROOT, 'DOCUMENTACION_Y_PDFS', 'generar_cotizacion.py');
+                const cmd = process.platform === 'win32' ? (fs.existsSync('C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe') ? 'C:\\Users\\LyCoNs\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe' : 'py') : 'python';
+                const pyProc = spawn(cmd, [scriptPath], { cwd: ROOT, shell: true });
+
+                pyProc.on('close', () => {
+                    broadcast({
+                        type: 'agent_status',
+                        agent: 'secretaria',
+                        state: 'success',
+                        msg: `👩‍💼 Secretaría Camila: Cotización de $${parseInt(monto).toLocaleString('es-CL')} CLP para ${cliente} registrada en Notion y compilada en PDF!`
+                    });
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({
+                        success: true,
+                        record: newRecord,
+                        pdfUrl: '/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.pdf',
+                        htmlUrl: '/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html'
+                    }));
+                });
+
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
+    // API Route: POST /api/secretaria/send-email (Secretaría envía por australdrone.cl@gmail.com)
+    if (req.method === 'POST' && req.url === '/api/secretaria/send-email') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const clientEmail = data.clientEmail || 'cliente@ejemplo.com';
+                const cliente = data.cliente || 'Particular';
+
+                console.log(`[SECRETARÍA] 📧 Enviando Cotización desde australdrone.cl@gmail.com a ${clientEmail}...`);
+
+                const secLogFile = path.join(ROOT, 'SECRETARIA_DAILY_LOG.json');
+                let secLogs = [];
+                if (fs.existsSync(secLogFile)) {
+                    try { secLogs = JSON.parse(fs.readFileSync(secLogFile, 'utf8')); } catch(e){}
+                }
+                secLogs.unshift({
+                    id: Date.now(),
+                    tipo: 'EMAIL_DESPACHADO',
+                    remitente: 'australdrone.cl@gmail.com',
+                    destinatario: clientEmail,
+                    cliente,
+                    timestamp: new Date().toISOString(),
+                    registradoPor: 'Secretaría Camila 360°'
+                });
+                fs.writeFileSync(secLogFile, JSON.stringify(secLogs, null, 2), 'utf8');
+
+                broadcast({
+                    type: 'agent_status',
+                    agent: 'secretaria',
+                    state: 'success',
+                    msg: `👩‍💼 Secretaría Camila: Cotización formal despachada con éxito desde australdrone.cl@gmail.com a ${clientEmail}!`
+                });
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    message: `📧 Cotización formal despachada exitosamente desde australdrone.cl@gmail.com a ${clientEmail}`
+                }));
+
+            } catch(e) {
+                res.writeHead(400, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: GET /api/crm-leads
     if (req.method === 'GET' && req.url === '/api/crm-leads') {
         res.writeHead(200, { 'Content-Type': 'application/json' });

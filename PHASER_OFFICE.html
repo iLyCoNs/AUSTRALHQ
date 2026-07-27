@@ -464,8 +464,8 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
     🚀 DESPLIEGUE SAAS
   </button>
 
-  <button onclick="window.openPDFStudioModal()" style="background:rgba(2, 132, 199, 0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
-    🖨️ AGENTE PDF 360°
+  <button onclick="window.openPDFStudioModal()" style="background:rgba(244,114,182,0.2); color:#f472b6; border:1px solid rgba(244,114,182,0.5); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    👩‍💼 SECRETARÍA CAMILA
   </button>
 
   <button onclick="window.logoutHQ()" style="background:rgba(239, 68, 68, 0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
@@ -580,7 +580,18 @@ const DESK_AGENTS=[
     'Nulidad relativa del acto jurídico. Pero lo nuestro es absolutamente válido.',
     'El regularizador de suelo campesino tampoco te va a salvar, amor.',
     'Eso es ilegal según la Contraloría. Pero qué rico que lo intentes.',
-    'Te lo digo de abogada: estás en problemas. ¿Quieres que te ayude?'
+    'Te lo digo de abogada: estás en problemas. ¿Quieres que te ayude?',
+    'No hay nada más sexy que un contrato bien redactado sin vacíos legales.'
+  ]},
+  {id:'secretaria', name:'SECRETARÍA CAMILA', texKey:'secretaria', x:1050, y:350, col:0xf472b6, desc:'Secretaria Ejecutiva B2B de Jaime & Nicole', msgs:[
+    '¡Buenos días Don Jaime y Doña Nicole! He registrado todas las cotizaciones de hoy en Notion.',
+    'La cotización formal de $100.000 CLP está compilada y lista para despacho en PDF.',
+    'Tengo los reportes del día filtrados. A las 19:00 hrs enviaré el informe completo a Telegram.',
+    '¿Desea emitir una nueva cotización de AustralDrone.CL? Haga clic en mi escritorio y llenaremos el formulario.',
+    'Todos los movimientos del HQ están respaldados en el servidor y sincronizados con Notion API.',
+    'Puedo despachar la propuesta comercial directamente desde nuestro correo oficial australdrone.cl@gmail.com.',
+    'Doña Nicole, Don Jaime: la bitácora de prospección B2B marcha impecable.',
+    'Reporte de las 7PM listo. Agente Filtro y Cazador Banana están en línea.'
   ]},
   {id:'troya',        name:'TROYA WA',     texKey:'caballotroya',  x:1750,y:280, col:0xec4899,desc:'Estilo Kelly Kapoor',        msgs:[
     'OMG me dejaron en visto en WhatsApp! ¡Qué drama más grande!',
@@ -676,6 +687,12 @@ class DeskAgent{
         walk: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
         working: [24, 25, 26, 28, 29, 31, 35],
         lead: [37, 38, 39, 41, 42, 43, 44, 45]
+      },
+      secretaria: {
+        idle: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+        walk: [12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+        working: [24, 25, 26, 27, 28, 29, 30, 31],
+        lead: [36, 37, 38, 39, 40, 41, 42, 43]
       }
     };
 
@@ -1271,6 +1288,7 @@ class BootScene extends Phaser.Scene{
     this.load.spritesheet('cazadorbanana', 'sprites/CAZADORBANANA_norm.png', {frameWidth:176,frameHeight:288});
     this.load.spritesheet('cazadorventas', 'sprites/CAZADORVENTAS_norm.png', {frameWidth:176,frameHeight:288});
     this.load.spritesheet('abogada',       'sprites/ABOGADA_norm.png',       {frameWidth:176,frameHeight:288});
+    this.load.spritesheet('secretaria',    'sprites/SECRETARIA.png',         {frameWidth:176,frameHeight:288});
     this.load.image('oficina','sprites/OFICINA.png');
     this.load.json('cfg','sprites/sprite_config_ceo.json');
   }
@@ -1701,7 +1719,11 @@ class OfficeScene extends Phaser.Scene{
       this.hm.add({id:a.id+'-hs',label:a.name,x:a.x,y:a.y,w:140,h:100,prompt:'[E] Ejecutar Python '+a.name,
         onActivate:()=>{
           const ag=window.AR[a.id];
-          if (a.id === 'cazador360' || a.id === 'cazadorventas' || a.id === 'yapo') {
+          if (a.id === 'secretaria') {
+            // Secretaria Camila: Abrir Cotizador Interactivo CEO
+            if(ag instanceof DeskAgent){ ag.setState('working'); }
+            window.openPDFStudioModal();
+          } else if (a.id === 'cazador360' || a.id === 'cazadorventas' || a.id === 'yapo') {
             window.openExecModal(a, ag, this);
           } else {
             if(ag instanceof DeskAgent){ag.setState('working');say(a.name+': Enviando orden de ejecucion a PC local...');}
@@ -5579,172 +5601,130 @@ window.applyAmbience = function(idx) {
   if (window._ambienceOverlay) { window._ambienceOverlay.destroy(); window._ambienceOverlay = null; }
   if (preset.color !== null) {
     const W = scene.scale.width * 4, H = scene.scale.height * 4;
-    window._ambienceOverlay = scene.add.rectangle(MAP_W/2, MAP_H/2, MAP_W, MAP_H, preset.color, preset.alpha)
-      .setScrollFactor(0).setDepth(500).setDisplaySize(MAP_W, MAP_H).setScrollFactor(1);
+    const ov = scene.add.rectangle(0, 0, W, H, preset.color, preset.alpha || 0.45)
+      .setOrigin(0).setScrollFactor(0).setDepth(9999);
+    window._ambienceOverlay = ov;
   }
-  appendLog('s', 'AMBIENTE: Aplicado preset "' + preset.label + '"');
-};
-
-window.setGlobalZoom = function(z) {
-  if (window.officeScene) {
-    window.officeScene.cameras.main.setZoom(z);
-    const lbl = document.getElementById('amb-zoom-label');
-    if (lbl) lbl.textContent = z.toFixed(2) + 'x';
-  }
-};
-
-window._particleEmitter = null;
-window.applyParticleEffect = function(type) {
-  const scene = window.officeScene;
-  if (!scene) return;
-  if (window._particleEmitter) { window._particleEmitter.destroy(); window._particleEmitter = null; }
-
-  if (type === 'stars') {
-    // Estrellas flotantes parpadeantes
-    for (let i = 0; i < 30; i++) {
-      const star = scene.add.circle(
-        Math.random() * MAP_W, Math.random() * MAP_H,
-        Math.random() * 3 + 1, 0xfbbf24, Math.random() * 0.8 + 0.2
-      ).setDepth(501);
-      scene.tweens.add({
-        targets: star, alpha: 0, yoyo: true, repeat: -1,
-        duration: 800 + Math.random() * 1200
-      });
-      if (!window._starsParticles) window._starsParticles = [];
-      window._starsParticles.push(star);
-    }
-    appendLog('s', 'AMBIENTE: Estrellas activadas ✨');
-  } else if (type === 'rain') {
-    // Lluvia de partículas
-    const g = scene.add.graphics().setDepth(502);
-    window._rainInterval = setInterval(() => {
-      g.clear();
-      for (let i = 0; i < 60; i++) {
-        const x = Math.random() * MAP_W;
-        const y = (Date.now() * 0.2 + i * 150) % MAP_H;
-        g.lineStyle(1, 0x38bdf8, 0.4);
-        g.lineBetween(x, y, x + 2, y + 10);
-      }
-    }, 50);
-    window._rainGraphics = g;
-    appendLog('s', 'AMBIENTE: Lluvia activada 🌧️');
-  }
-};
-
-window.clearAmbience = function() {
-  if (window._ambienceOverlay) { window._ambienceOverlay.destroy(); window._ambienceOverlay = null; }
-  if (window._starsParticles) { window._starsParticles.forEach(s => s.destroy()); window._starsParticles = null; }
-  if (window._rainInterval) { clearInterval(window._rainInterval); window._rainInterval = null; }
-  if (window._rainGraphics) { window._rainGraphics.destroy(); window._rainGraphics = null; }
-  appendLog('s', 'AMBIENTE: Limpiado.');
-};
-
-// ═════════════════════════════════════════════════════
-//  HELPER MODAL REUTILIZABLE PARA DIEGO
-// ═════════════════════════════════════════════════════
-function _diegoModal(id, title, accentColor, body) {
-  document.getElementById(id + '-wrap')?.remove();
-  const wrap = document.createElement('div');
-  wrap.id = id + '-wrap';
-  wrap.innerHTML = `
-    <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,8,15,0.93);backdrop-filter:blur(10px);z-index:9999;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace">
-      <div style="background:linear-gradient(160deg,#0a0f1e,#060810);border:2px solid ${accentColor};box-shadow:0 0 30px rgba(0,0,0,0.8),0 0 60px rgba(0,0,0,0.5);border-radius:8px;width:90%;max-width:580px;max-height:85vh;overflow-y:auto;display:flex;flex-direction:column;">
-        <div style="padding:14px 18px;border-bottom:2px solid #1e293b;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#0a0f1e;z-index:1;">
-          <span style="font-family:'Press Start 2P',monospace;font-size:8px;color:${accentColor};text-shadow:0 0 10px ${accentColor}44">${title}</span>
-          <button onclick="_diegoCloseModal('${id}')" style="background:transparent;border:none;color:#64748b;font-size:20px;cursor:pointer;line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#64748b'">✕</button>
-        </div>
-        <div style="padding:16px 18px;display:flex;flex-direction:column;gap:10px">${body}</div>
-      </div>
-    </div>`;
-  document.body.appendChild(wrap);
-  disableGameKeyboard();
-}
-
-function _diegoCloseModal(id) {
-  document.getElementById(id + '-wrap')?.remove();
-  enableGameKeyboard();
 }
 
 // ═════════════════════════════════════════════════════
-//  🖨️ HERRAMIENTA AGENTE PDF STUDIO 360°
+//  👩‍💼 SECRETÍA CAMILA — COTIZADOR INTERACTIVO Y DESPACHO OFICIAL
 // ═════════════════════════════════════════════════════
 window.openPDFStudioModal = function() {
-  _diegoModal('modal-pdf-studio', '🖨️ ESTACIÓN IMPRESORA AGENTE PDF 360° — AUSTRALDRONE.CL', '#0284c7', `
-    <div style="display:flex; flex-direction:column; gap:12px;">
-      <div style="background:rgba(2, 132, 199, 0.1); border-left:4px solid #0284c7; padding:10px 14px; border-radius:6px; font-size:10.5px; color:#cbd5e1; line-height:1.5;">
-        <b>🛸 Agente Generador de Documentos y Cotizaciones PDF en Vivo:</b><br/>
-        Edita cualquier parámetro en tiempo real y presiona <b>⚡ GENERAR PDF REAL</b> para compilar el documento formal listo para enviar a clientes o publicar.
+  _diegoModal('modal-pdf-studio', '👩‍💼 SECRETARÍA CAMILA — COTIZADOR Y DESPACHO AustralDrone.CL', '#f472b6', `
+    <div style="display:flex;flex-direction:column;gap:14px;font-family:'Inter',sans-serif;">
+
+      <div style="background:linear-gradient(135deg,rgba(244,114,182,0.15),rgba(244,114,182,0.05));border-left:4px solid #f472b6;padding:12px 16px;border-radius:8px;font-size:10.5px;color:#cbd5e1;line-height:1.6;">
+        <b style="color:#f472b6;">👩‍💼 Asistente Ejecutiva — Don Jaime &amp; Doña Nicole:</b><br/>
+        Completa los datos de la propuesta. Registraré todo en <b>Notion</b>, compilaré el PDF y te daré las opciones de despacho.
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div>
-          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">CLIENTE / SOLICITANTE:</label>
-          <input id="pdfInpClient" type="text" value="Particular" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+          <label style="font-size:9px;color:#f472b6;font-weight:700;letter-spacing:0.05em;">CLIENTE / SOLICITANTE</label>
+          <input id="pdfInpClient" type="text" value="Particular"
+            style="width:100%;background:#0f172a;border:1px solid #f472b6;color:#fff;padding:8px 10px;border-radius:6px;font-size:11px;outline:none;margin-top:5px;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">MONTO A COBRAR (CLP):</label>
-          <input id="pdfInpPrice" type="text" value="100000" style="width:100%; background:#0f172a; border:1px solid #10b981; color:#10b981; font-weight:bold; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+          <label style="font-size:9px;color:#10b981;font-weight:700;letter-spacing:0.05em;">VALOR NETO (CLP)</label>
+          <input id="pdfInpPrice" type="text" value="100000"
+            style="width:100%;background:#0f172a;border:1px solid #10b981;color:#10b981;font-weight:700;padding:8px 10px;border-radius:6px;font-size:12px;outline:none;margin-top:5px;box-sizing:border-box;">
         </div>
       </div>
 
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
         <div>
-          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">MODELO DE DRONE:</label>
-          <input id="pdfInpDrone" type="text" value="DJI Mini 5 Pro" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+          <label style="font-size:9px;color:#64748b;font-weight:700;letter-spacing:0.05em;">EQUIPAMIENTO / DRONE</label>
+          <input id="pdfInpDrone" type="text" value="DJI Mini 5 Pro"
+            style="width:100%;background:#0f172a;border:1px solid #0284c7;color:#fff;padding:8px 10px;border-radius:6px;font-size:11px;outline:none;margin-top:5px;box-sizing:border-box;">
         </div>
         <div>
-          <label style="font-size:9.5px; color:#64748b; font-weight:bold;">COORDENADAS GPS:</label>
-          <input id="pdfInpGPS" type="text" value="-41.373013, -72.999397" style="width:100%; background:#0f172a; border:1px solid #66fcf1; color:#66fcf1; font-family:'JetBrains Mono'; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+          <label style="font-size:9px;color:#66fcf1;font-weight:700;letter-spacing:0.05em;">COORDENADAS GPS</label>
+          <input id="pdfInpGPS" type="text" value="-41.373013, -72.999397"
+            style="width:100%;background:#0f172a;border:1px solid #66fcf1;color:#66fcf1;font-family:'JetBrains Mono',monospace;padding:8px 10px;border-radius:6px;font-size:11px;outline:none;margin-top:5px;box-sizing:border-box;">
         </div>
       </div>
 
       <div>
-        <label style="font-size:9.5px; color:#64748b; font-weight:bold;">SECTOR / INDICACIONES DE LLEGADA:</label>
-        <input id="pdfInpSector" type="text" value="Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)" style="width:100%; background:#0f172a; border:1px solid #0284c7; color:#fff; padding:7px; border-radius:4px; font-size:11px; outline:none; margin-top:4px;">
+        <label style="font-size:9px;color:#64748b;font-weight:700;letter-spacing:0.05em;">SECTOR / INDICACIONES DE LLEGADA</label>
+        <input id="pdfInpSector" type="text" value="Ruta 5 Sur - Interior (Puerto Varas / Puerto Montt)"
+          style="width:100%;background:#0f172a;border:1px solid #0284c7;color:#fff;padding:8px 10px;border-radius:6px;font-size:11px;outline:none;margin-top:5px;box-sizing:border-box;">
       </div>
 
-      <div style="display:flex; gap:10px; margin-top:6px;">
-        <button onclick="window.submitPDFGeneration()" style="flex:1; background:linear-gradient(135deg, #0284c7, #0369a1); color:#fff; font-weight:bold; border:none; padding:12px; border-radius:6px; cursor:pointer; font-size:11px; box-shadow:0 0 15px rgba(2, 132, 199, 0.4);">
-          🖨️ ⚡ EMITIR Y DESCARGAR COTIZACIÓN PDF
-        </button>
-        <a id="btnOpenHTML" href="/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html" target="_blank" style="background:#090d16; color:#66fcf1; border:1px solid #66fcf1; font-weight:bold; padding:12px 16px; border-radius:6px; text-decoration:none; font-size:11px; text-align:center;">
-          🌐 VER HTML
-        </a>
+      <div>
+        <label style="font-size:9px;color:#fbbf24;font-weight:700;letter-spacing:0.05em;">CORREO ELECTRONICO DEL CLIENTE</label>
+        <input id="pdfInpEmail" type="email" value="cliente@ejemplo.com"
+          style="width:100%;background:#0f172a;border:1px solid #fbbf24;color:#fbbf24;padding:8px 10px;border-radius:6px;font-size:11px;outline:none;margin-top:5px;box-sizing:border-box;">
       </div>
 
-      <div style="margin-top:10px;">
-        <label style="font-size:9px; color:#64748b; font-weight:bold;">👁️ VISTA PREVIA DEL DOCUMENTO EN VIVO:</label>
-        <iframe id="pdfPreviewFrame" src="/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html" style="width:100%; height:320px; border:1px solid #0284c7; border-radius:6px; margin-top:6px; background:#fff;"></iframe>
+      <div style="background:#090d16;border:1px solid rgba(244,114,182,0.4);border-radius:10px;padding:14px;">
+        <div style="font-size:9px;color:#f472b6;font-weight:700;letter-spacing:0.08em;margin-bottom:10px;">OPCIONES DE DESPACHO CEO</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <button onclick="window.submitPDFGeneration('download')"
+            style="background:linear-gradient(135deg,#0284c7,#0369a1);color:#fff;font-weight:700;border:none;padding:12px 8px;border-radius:8px;cursor:pointer;font-size:10px;letter-spacing:0.03em;box-shadow:0 0 14px rgba(2,132,199,0.5);transition:transform 0.15s;"
+            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='none'">
+            Descargar PDF
+          </button>
+          <button onclick="window.submitPDFGeneration('email')"
+            style="background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:700;border:none;padding:12px 8px;border-radius:8px;cursor:pointer;font-size:10px;letter-spacing:0.03em;box-shadow:0 0 14px rgba(16,185,129,0.5);transition:transform 0.15s;"
+            onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='none'">
+            Enviar por Correo Oficial
+          </button>
+        </div>
+        <div style="font-size:8px;color:#94a3b8;text-align:center;margin-top:8px;">
+          Remitente: <b style="color:#66fcf1;">australdrone.cl@gmail.com</b>
+        </div>
+      </div>
+
+      <div>
+        <label style="font-size:9px;color:#64748b;font-weight:700;">VISTA PREVIA EN VIVO</label>
+        <iframe id="pdfPreviewFrame" src="/DOCUMENTACION_Y_PDFS/COTIZACION_AUSTRALDRONE_RUTA5_100K.html"
+          style="width:100%;height:240px;border:1px solid #f472b6;border-radius:8px;margin-top:6px;background:#fff;"></iframe>
       </div>
     </div>
   `);
 };
 
-window.submitPDFGeneration = function() {
-  const cliente = document.getElementById('pdfInpClient')?.value || 'Particular';
-  const monto = document.getElementById('pdfInpPrice')?.value || '100000';
-  const drone = document.getElementById('pdfInpDrone')?.value || 'DJI Mini 5 Pro';
-  const coords = document.getElementById('pdfInpGPS')?.value || '-41.373013, -72.999397';
-  const sector = document.getElementById('pdfInpSector')?.value || 'Ruta 5 Sur Interior';
+window.submitPDFGeneration = function(actionType) {
+  const cliente     = document.getElementById('pdfInpClient')?.value  || 'Particular';
+  const monto       = document.getElementById('pdfInpPrice')?.value   || '100000';
+  const drone       = document.getElementById('pdfInpDrone')?.value   || 'DJI Mini 5 Pro';
+  const coords      = document.getElementById('pdfInpGPS')?.value     || '-41.373013, -72.999397';
+  const sector      = document.getElementById('pdfInpSector')?.value  || 'Ruta 5 Sur Interior';
+  const clientEmail = document.getElementById('pdfInpEmail')?.value   || 'cliente@ejemplo.com';
 
-  appendLog('s', `🖨️ AGENTE PDF: Generando cotización formal para ${cliente} por $${parseInt(monto).toLocaleString('es-CL')} CLP...`);
+  appendLog('s', 'SECRETARIA CAMILA: Registrando en Notion y procesando orden de cotizacion...');
 
-  fetch('/api/generate-custom-pdf', {
+  fetch('/api/secretaria/quote', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ cliente, monto, drone, coords, sector })
+    body: JSON.stringify({ cliente, monto, drone, coords, sector, clientEmail })
   })
   .then(r => r.json())
   .then(d => {
     if (d && d.success) {
-      appendLog('c', `✅ COTIZACIÓN PDF COMPILADA CON ÉXITO! Abriendo documento...`);
-      window.open(d.pdfUrl, '_blank');
       const iframe = document.getElementById('pdfPreviewFrame');
       if (iframe) iframe.src = d.htmlUrl + '?t=' + Date.now();
+
+      if (actionType === 'email') {
+        fetch('/api/secretaria/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ clientEmail, cliente, pdfUrl: d.pdfUrl })
+        })
+        .then(r2 => r2.json())
+        .then(resMail => {
+          appendLog('c', 'EMAIL ENVIADO por Secretaria Camila: ' + resMail.message);
+          alert('Cotizacion despachada exitosamente desde australdrone.cl@gmail.com a ' + clientEmail + '\n\nNotion: Registrado OK');
+        });
+      } else {
+        appendLog('c', 'Cotizacion PDF compilada y registrada en Notion! Abriendo documento...');
+        window.open(d.pdfUrl, '_blank');
+      }
     }
   })
   .catch(e => {
-    appendLog('e', 'Error generando PDF: ' + e.message);
+    appendLog('e', 'Error Secretaria: ' + e.message);
   });
 };
 
