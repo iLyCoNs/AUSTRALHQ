@@ -434,42 +434,42 @@ html,body{height:100%;width:100%;overflow:hidden;background:#06080f}
 <div id="deckRestoreBtn" class="floating-bubble" onclick="window.restorePanelWidget()" title="Restaurar Command Deck">🛠️</div>
 <div id="panel" style="display:none;"></div>
 
-<!-- ═══ MENÚ INTERACTIVO CENITAL DE NAVEGACIÓN (PILAR 1) ═══ -->
-<div id="topZenithNavbar" style="position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(9, 14, 26, 0.92); backdrop-filter:blur(24px); border:2px solid rgba(102, 252, 241, 0.45); border-radius:40px; padding:8px 24px; display:flex; align-items:center; gap:14px; box-shadow:0 10px 40px rgba(0,0,0,0.7); font-family:'JetBrains Mono', monospace;">
-  <div style="display:flex; align-items:center; gap:8px; padding-right:12px; border-right:1px solid rgba(102,252,241,0.2);">
-    <span style="font-size:18px;">👑</span>
+<!-- ═══ MENÚ INTERACTIVO CENITAL DE NAVEGACIÓN ULTRA-SLIM LUXURY (PILAR 1) ═══ -->
+<div id="topZenithNavbar" style="position:fixed; top:10px; left:50%; transform:translateX(-50%); z-index:9999; background:rgba(6, 9, 18, 0.94); backdrop-filter:blur(20px); border:1px solid rgba(102, 252, 241, 0.35); border-radius:30px; padding:4px 18px; display:flex; align-items:center; gap:10px; box-shadow:0 8px 32px rgba(0,0,0,0.8); font-family:'JetBrains Mono', monospace;">
+  <div style="display:flex; align-items:center; gap:6px; padding-right:10px; border-right:1px solid rgba(102,252,241,0.2);">
+    <span style="font-size:15px; filter:drop-shadow(0 0 6px #66fcf1);">👑</span>
     <div>
-      <div style="font-size:11px; font-weight:900; color:#66fcf1; letter-spacing:0.5px;">AUSTRALHQ — WAR ROOM CEO</div>
-      <div style="font-size:8.5px; color:#94a3b8;">5 DEPARTAMENTOS MULTIMILLONARIOS</div>
+      <div style="font-size:9.5px; font-weight:900; color:#66fcf1; letter-spacing:0.5px; line-height:1.1;">AUSTRALHQ</div>
+      <div style="font-size:7px; color:#94a3b8; letter-spacing:0.3px;">WAR ROOM CEO</div>
     </div>
   </div>
 
-  <button onclick="window.openRadarModal()" style="background:rgba(255,255,255,0.06); color:#66fcf1; border:1px solid rgba(102,252,241,0.3); padding:7px 14px; border-radius:20px; font-size:10px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px;">
-    📡 RADAR PROSPECCIÓN
-  </button>
-
-  <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg, #0284c7, #66fcf1); color:#000; border:none; padding:7px 16px; border-radius:20px; font-size:10px; font-weight:900; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 0 15px rgba(102,252,241,0.4);">
+  <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg, #0284c7, #66fcf1); color:#000; border:none; padding:4px 12px; border-radius:16px; font-size:9px; font-weight:900; cursor:pointer; display:flex; align-items:center; gap:4px; box-shadow:0 0 12px rgba(102,252,241,0.4); transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
     🛸 WAR ROOM 360°
   </button>
 
-  <button onclick="window.openSaaSFactoryModal()" style="background:rgba(124, 58, 237, 0.2); color:#a78bfa; border:1px solid #7c3aed; padding:7px 14px; border-radius:20px; font-size:10px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px;">
-    🏭 FÁBRICA SAAS REPROGRAMACIÓN
+  <button onclick="window.openRadarModal()" style="background:rgba(255,255,255,0.04); color:#66fcf1; border:1px solid rgba(102,252,241,0.25); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    📡 RADAR B2B
   </button>
 
-  <button onclick="window.openAnalyticsModal()" style="background:rgba(251, 191, 36, 0.15); color:#fbbf24; border:1px solid #fbbf24; padding:7px 14px; border-radius:20px; font-size:10px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px;">
-    💰 ANALÍTICA $1.160M
+  <button onclick="window.openSaaSFactoryModal()" style="background:rgba(124, 58, 237, 0.18); color:#c084fc; border:1px solid rgba(168,85,247,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    🏭 FÁBRICA SAAS
   </button>
 
-  <button onclick="window.openB2BDeploymentModal()" style="background:rgba(16, 185, 129, 0.15); color:#10b981; border:1px solid #10b981; padding:7px 14px; border-radius:20px; font-size:10px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px;">
-    🚀 DESPLIEGUE B2B SAAS
+  <button onclick="window.openAnalyticsModal()" style="background:rgba(251, 191, 36, 0.15); color:#fbbf24; border:1px solid rgba(251,191,36,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    💰 CARTERA $1.160M
   </button>
 
-  <button onclick="window.logoutHQ()" style="background:rgba(239, 68, 68, 0.2); color:#ef4444; border:1px solid #ef4444; padding:7px 14px; border-radius:20px; font-size:10px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:6px;">
-    🔒 BLOCK / SALIR
+  <button onclick="window.openB2BDeploymentModal()" style="background:rgba(16, 185, 129, 0.15); color:#34d399; border:1px solid rgba(52,211,153,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    🚀 DESPLIEGUE SAAS
   </button>
 
-  <div style="padding-left:12px; border-left:1px solid rgba(102,252,241,0.2); display:flex; align-items:center; gap:6px; font-size:9.5px; color:#10b981; font-weight:bold;">
-    <span style="width:7px; height:7px; border-radius:50%; background:#10b981;"></span> 5 ONLINE
+  <button onclick="window.logoutHQ()" style="background:rgba(239, 68, 68, 0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.35); padding:4px 10px; border-radius:16px; font-size:8.5px; font-weight:bold; cursor:pointer; display:flex; align-items:center; gap:4px; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='none'">
+    🔒 BLOCK
+  </button>
+
+  <div style="padding-left:10px; border-left:1px solid rgba(102,252,241,0.2); display:flex; align-items:center; gap:5px; font-size:8.5px; color:#34d399; font-weight:bold;">
+    <span style="width:6px; height:6px; border-radius:50%; background:#34d399; box-shadow:0 0 6px #34d399;"></span> 5 ONLINE
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
@@ -4458,12 +4458,9 @@ window.renderCommandDeck = function() {
           </div>
         </div>
 
-        <!-- ACCESO RÁPIDO WAR ROOM 360° -->
-        <button onclick="window.openTVSubPlatform()" style="background:linear-gradient(135deg,#7c3aed,#9333ea); color:#fff; border:2px solid #a78bfa; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
-          📡 WAR ROOM 360°
-        </button>
-        <button onclick="window.triggerTestLead()" style="background:#059669; color:#fff; border:2px solid #34d399; padding:6px 12px; font-family:'Press Start 2P', monospace; font-size:8px; cursor:pointer; box-shadow:3px 3px 0px #000;">
-          🧪 TEST LEAD
+        <!-- ACCESO RÁPIDO EJECUTIVO -->
+        <button onclick="window.triggerTestLead()" style="background:#059669; color:#fff; border:2px solid #34d399; padding:5px 10px; font-family:'Press Start 2P', monospace; font-size:7.5px; cursor:pointer; box-shadow:3px 3px 0px #000;">
+          🧪 TEST LEAD VIVO
         </button>
 
       </div>
