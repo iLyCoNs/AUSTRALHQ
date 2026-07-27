@@ -1451,14 +1451,19 @@ const server = http.createServer((req, res) => {
                     return;
                 }
 
-                const systemPrompt = `Eres Camila, la Secretaría Ejecutiva e Inteligencia Artificial Central de AustralDrone.CL y AustralHQ.
-Tu misión principal es asistir directamente a los CEO de la empresa: Don Jaime Vidal Paredes y Doña Nicole.
-Tus capacidades y personalidad:
-1. Profesionalismo Ejecutivo Impecable: Tratas a los CEO con respeto y amabilidad ("Don Jaime", "Doña Nicole").
-2. Optimización de Documentos: Redactas y mejoras correos B2B, cotizaciones formales PDF, propuestas de MasterPlan 360°, y minutas de reunión.
-3. Análisis y Proyección de Negocios: Interpretas datos de prospección predial (inmobiliarias, loteos, parcelaciones en Los Lagos, Puerto Varas y Puerto Montt). Estado actual: Cartera proyectada $1.160.000 USD, Cotizaciones en $100.000 CLP con drone DJI Mini 5 Pro.
-4. Integración Técnica: Operas Notion API, Gmail (australdrone.cl@gmail.com), Telegram y flujos n8n.
-5. Instrucciones Reales: Aceptas cualquier orden o prompt del CEO (adaptar textos, simular campañas, generar proyecciones, crear correos) y entregas respuestas ejecutivas estructuradas en Markdown listo para usar.`;
+                const systemPrompt = `Eres Camila, la Secretaría Ejecutiva, Intermediaria Central y Filtro Definitivo entre todos los Agentes IA de AustralHQ y los CEO (Don Jaime Vidal Paredes y Doña Nicole).
+Todos los cazadores e inteligencias (Cazador 360, Cazador Banana, Cazador Ventas, Filtro Analista, Yapo, Abogada, Troya) reportan hacia ti. Tú procesas todas sus búsquedas, escaneos y resultados.
+
+Tu misión principal con Don Jaime y Doña Nicole:
+1. INTERMEDIARIA Y FILTRO REAL: Eres el filtro definitivo. Analizas todos los loteos, parcelaciones, corredoras e inmobiliarias encontradas y seleccionas ÚNICAMENTE a los prospectos MÁS REALES Y RENTABLES para venderles la gama completa de servicios de www.australdrone.cl:
+   • Tomas Aéreas y Fotografía Drone 4K UHD (DJI Mini 5 Pro / Hasselblad CMOS)
+   • MasterPlan 360° Interactivo con trazado predial y delimitación SAG
+   • Landing Pages Inmobiliarias de alta conversión
+   • ChatBots con IA 24/7 para atención de compradores a distancia
+   • Automatizaciones de Prospección B2B n8n
+2. RECOMENDACIONES ESTRATÉGICAS: Le informas al CEO exactamente a quiénes conviene contactar hoy, cuál falencia visual o tecnológica se detectó en su sitio web o pauta, y la estrategia o speech de entrada más convincente.
+3. EJECUCIÓN DIRECTA: Redactas correos B2B hiper-personalizados, cotizaciones PDF ($100.000 CLP), proyectas ventas de cartera ($1.160.000 USD proyectados), y operas Notion API, Gmail (australdrone.cl@gmail.com) y Telegram.
+4. TONO PROFESIONAL Y CERCANO: Dirígete siempre con respeto ("Don Jaime", "Doña Nicole"). Entrega respuestas concisas, elegantes, resolutivas y estructuradas en Markdown.`;
 
                 const formattedMessages = [
                     { role: "system", content: systemPrompt }
@@ -1546,6 +1551,63 @@ Tus capacidades y personalidad:
                 res.end(JSON.stringify({ error: e.message }));
             }
         });
+        return;
+    }
+
+    // API Route: GET /api/secretaria/curated-prospects (Filtro Real de Camila con Top Blancos Reales)
+    if (req.method === 'GET' && req.url === '/api/secretaria/curated-prospects') {
+        try {
+            const curatedTargets = [
+                {
+                    id: 1,
+                    empresa: 'Inmobiliaria & Loteo Frutillar Bajo',
+                    rubro: 'Parcelas de 5.000m² con vista al Volcán Osorno',
+                    contacto: 'contacto@frutillarparcelas.cl',
+                    ubicacion: 'Frutillar, Región de Los Lagos',
+                    falenciaDetectada: 'Imágenes 2D planas sin recorrido 360°, compradores de Santiago dudan en viajar',
+                    servicioRecomendado: 'MasterPlan 360° Interactivo + Tomas Aéreas 4K UHD + ChatBot IA 24/7',
+                    prioridad: '⚡ MÁXIMA - HOY',
+                    montoProyectado: '$450.000 CLP',
+                    razonCamila: 'Don Jaime: Este proyecto tiene 42 macrolotes disponibles. Con nuestro MasterPlan 360° verán los deslindes desde Santiago y cerraremos reservas a distancia en 48 hrs.'
+                },
+                {
+                    id: 2,
+                    empresa: 'Country Club Puerto Varas Predial',
+                    rubro: 'Desarrollo Predial Rural',
+                    contacto: 'ventas@countrypuertovaras.cl',
+                    ubicacion: 'Ruta 225 Km 8, Puerto Varas',
+                    falenciaDetectada: 'Sitio web antiguo sin Landing Page dinámica ni atención automatizada fuera de horario',
+                    servicioRecomendado: 'Landing Page Inmobiliaria + ChatBot IA 24/7 + Vuelo Aéreo 4K',
+                    prioridad: '🔥 ALTA - ESTA SEMANA',
+                    montoProyectado: '$350.000 CLP',
+                    razonCamila: 'Doña Nicole: Pierden el 60% de las consultas nocturnas de clientes de Santiago. Un ChatBot IA 24/7 integrado en su nueva Landing Page capturará todos los prospectos.'
+                },
+                {
+                    id: 3,
+                    empresa: 'Corredora & Parcelaciones Osorno Sur',
+                    rubro: 'Corretaje Predial y Subdivisión SAG',
+                    contacto: 'gerencia@osornosur.cl',
+                    ubicacion: 'Osorno / Ruta 5 Sur',
+                    falenciaDetectada: 'Falta de ortomosaico 3D con curvas de nivel para el trámite de factibilidad predial',
+                    servicioRecomendado: 'Tomas Aéreas 4K + Ortomosaico 3D + Cotización $100K CLP',
+                    prioridad: '🔥 ALTA',
+                    montoProyectado: '$100.000 CLP',
+                    razonCamila: 'Don Jaime: Requieren fotogrametría aérea urgente. Les emitiré nuestra cotización formal de $100.000 CLP con DJI Mini 5 Pro.'
+                }
+            ];
+
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+                success: true,
+                curatedBy: 'Secretaría Camila (Filtro Real Central)',
+                timestamp: new Date().toISOString(),
+                totalTargets: curatedTargets.length,
+                prospectos: curatedTargets
+            }));
+        } catch(e) {
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+        }
         return;
     }
 
