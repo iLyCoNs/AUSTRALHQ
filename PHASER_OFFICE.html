@@ -5650,6 +5650,50 @@ window.applyAmbience = function(idx) {
 // ═════════════════════════════════════════════════════
 window._isListeningCamila = false;
 
+
+// ═════════════════════════════════════════════════════
+//  🚶‍♀️ ACERCAMIENTO EN VIVO DE SECRETARÍA CAMILA AL CEO AL LLAMARLA POR CHAT O VOZ
+// ═════════════════════════════════════════════════════
+window.camilaApproachCEO = function(onArrivedCallback) {
+  const sec = window.AR ? window.AR['secretaria'] : null;
+  if (!sec || !(sec instanceof DeskAgent)) {
+    if (onArrivedCallback) onArrivedCallback();
+    return;
+  }
+
+  // Buscar posición del CEO activo (Jaime o Nicole) en la escena Phaser
+  const scene = window.officeScene;
+  let targetX = 450;
+  let targetY = 320;
+
+  if (scene) {
+    const ceo = scene.ceo;
+    const nicole = scene.nicole;
+    if (ceo && ceo.active) {
+      targetX = ceo.x + 45;
+      targetY = ceo.y + 10;
+    } else if (nicole && nicole.active) {
+      targetX = nicole.x + 45;
+      targetY = nicole.y + 10;
+    }
+  }
+
+  // Camila camina en vivo hacia la posición del CEO
+  sec._showBubble('👩‍💼 ¡Voy enseguida Don Jaime!');
+  sec.moveTo(targetX, targetY, () => {
+    sec._setStateSilent('working');
+    if (onArrivedCallback) onArrivedCallback();
+  });
+};
+
+window.camilaReturnToDesk = function() {
+  const sec = window.AR ? window.AR['secretaria'] : null;
+  if (!sec || !(sec instanceof DeskAgent)) return;
+  setTimeout(() => {
+    sec.moveTo(sec.homeX, sec.homeY, () => sec._setStateSilent('working'));
+  }, 4000);
+};
+
 window.toggleSecretariaVoiceDictation = function() {
   const btn = document.getElementById('btnVoiceDictation');
   const inp = document.getElementById('secChatInput');
@@ -5679,6 +5723,7 @@ window.toggleSecretariaVoiceDictation = function() {
 
     rec.onstart = function() {
       window._isListeningCamila = true;
+      window.camilaApproachCEO();
       if (btn) {
         btn.style.background = '#ef4444';
         btn.style.color = '#fff';
@@ -5911,6 +5956,7 @@ window.setSecretariaPrompt = function(txt) {
 
 window.submitSecretariaAIChat = function() {
   const inp = document.getElementById('secChatInput');
+  window.camilaApproachCEO();
   const txt = inp?.value?.trim();
   if (!txt) return;
 
@@ -5955,6 +6001,7 @@ window.submitSecretariaAIChat = function() {
     const botDiv = document.createElement('div');
     botDiv.style.cssText = 'display:flex; gap:8px;';
     window.speakCamilaResponse(reply);
+    window.camilaReturnToDesk();
     botDiv.innerHTML = `
       <div style="background:#f472b6; color:#000; font-weight:bold; font-size:10px; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;">C</div>
       <div style="background:#1e293b; color:#fff; padding:10px 12px; border-radius:8px; font-size:11px; max-width:85%; line-height:1.6; white-space:pre-wrap; border-left:3px solid #f472b6;">
