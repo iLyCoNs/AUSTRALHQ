@@ -1492,6 +1492,7 @@ Tu misión principal con Don Jaime y Doña Nicole:
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${nvKey}`,
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
                         'Content-Length': Buffer.byteLength(postData)
                     }
                 };

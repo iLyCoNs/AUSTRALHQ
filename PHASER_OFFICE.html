@@ -6018,7 +6018,9 @@ window.openSecretariaAIChatModal = function(initialPrompt = '') {
       <div style="display:flex; gap:8px;">
         <textarea id="secChatInput" placeholder="Escribe o dicta aquí tu orden o instrucción para Camila..." 
           style="flex:1; height:45px; background:#0f172a; border:1px solid #f472b6; color:#fff; padding:8px; border-radius:6px; font-size:11px; outline:none; resize:none;"
-          onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); window.submitSecretariaAIChat(); }"></textarea>
+          onfocus="disableGameKeyboard()"
+          onblur="enableGameKeyboard()"
+          onkeydown="event.stopPropagation(); if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); window.submitSecretariaAIChat(); }"></textarea>
         <button onclick="window.submitSecretariaAIChat()" 
           style="background:linear-gradient(135deg, #f472b6, #ec4899); color:#fff; font-weight:bold; border:none; padding:0 18px; border-radius:6px; cursor:pointer; font-size:11px; box-shadow:0 0 12px rgba(244,114,182,0.4);">
           ⚡ ENVIAR
@@ -6027,6 +6029,11 @@ window.openSecretariaAIChatModal = function(initialPrompt = '') {
 
     </div>
   `);
+
+  setTimeout(() => {
+    const inp = document.getElementById('secChatInput');
+    if (inp) { inp.focus(); disableGameKeyboard(); }
+  }, 100);
 
   if (initialPrompt) {
     window.setSecretariaPrompt(initialPrompt);
