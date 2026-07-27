@@ -2732,64 +2732,98 @@ Web: https://australdrone.cl</textarea>
           </div>
 
           <div style="display:flex; flex-direction:column; gap:16px;">
-            <div style="background:rgba(9, 13, 22, 0.85); backdrop-filter:blur(16px); border:1px solid rgba(167, 139, 250, 0.25); border-radius:12px; padding:18px;">
-              <div style="font-size:12px; font-weight:900; color:#a78bfa; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
-                <span>🤖 FUERZA DE TRABAJO IA</span>
-                <span style="font-size:9px; background:#10b981; color:#000; padding:2px 6px; border-radius:4px; font-weight:bold;">5 ACTIVOS</span>
+            
+            <!-- UI-UX PRO MAX: AGENT WORKFORCE CONTROL PANEL -->
+            <div style="background:rgba(13, 19, 32, 0.85); backdrop-filter:blur(20px); border:1px solid rgba(167, 139, 250, 0.35); border-radius:14px; padding:20px; box-shadow:0 12px 32px rgba(0,0,0,0.6), 0 0 25px rgba(167,139,250,0.15);">
+              <div style="font-size:13px; font-weight:900; color:#c084fc; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; letter-spacing:0.5px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-size:16px;">🤖</span>
+                  <span>FUERZA DE TRABAJO AGÉNTICA IA (5/5)</span>
+                </div>
+                <span style="font-size:9.5px; background:rgba(34,197,94,0.18); color:#4ade80; border:1px solid #22c55e; padding:3px 10px; border-radius:20px; font-weight:800; display:flex; align-items:center; gap:5px;">
+                  <span style="width:6px; height:6px; border-radius:50%; background:#4ade80; box-shadow:0 0 8px #4ade80;"></span> 5 ONLINE
+                </span>
               </div>
 
-              <div style="display:flex; flex-direction:column; gap:10px; font-size:11px;">
+              <div style="display:flex; flex-direction:column; gap:10px;">
                 
-                <button onclick="window.runScraplingCaceria()" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:900; border:1px solid #34d399; padding:10px 14px; border-radius:8px; font-size:11px; cursor:pointer; box-shadow:0 0 15px rgba(16,185,129,0.4); display:flex; align-items:center; justify-content:center; gap:8px;">
+                <!-- CTA RUNNER PRO MAX -->
+                <button onclick="window.runScraplingCaceria()" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff; font-weight:900; border:1px solid #34d399; padding:12px 16px; border-radius:10px; font-size:11px; cursor:pointer; box-shadow:0 0 20px rgba(16,185,129,0.45); display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s ease; letter-spacing:0.5px;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)'" onmouseout="this.style.transform='none'">
                   ⚡ EJECUTAR CACERÍA AGÉNTICA (SCRAPLING + SUPERPOWERS)
                 </button>
 
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; display:flex; flex-direction:column; gap:4px;">
-                  <div style="display:flex; justify-content:space-between; color:#66fcf1; font-weight:bold;">
-                    <span>CAZADOR 360 (Scrapling + Meta API)</span>
-                    <span style="color:#10b981;">ONLINE</span>
+                <!-- AGENTE 1: CAZADOR 360 -->
+                <div style="background:rgba(15, 23, 42, 0.7); border:1px solid rgba(102, 252, 241, 0.25); border-radius:10px; padding:12px 14px; transition:border-color 0.2s;" onmouseover="this.style.borderColor='#66fcf1'" onmouseout="this.style.borderColor='rgba(102, 252, 241, 0.25)'">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="font-size:11px; font-weight:800; color:#66fcf1; display:flex; align-items:center; gap:6px;">
+                      <span>🎯</span> <span>CAZADOR 360 (Meta Ads & Scrapling)</span>
+                    </div>
+                    <span style="color:#34d399; font-size:9px; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:12px; font-weight:800;">● ONLINE</span>
                   </div>
-                  <div style="font-size:9.5px; color:#94a3b8;">Escaneando Meta Ads Library v19.0</div>
-                  <button onclick="window.openAgentConfigEditor('cazador360')" style="margin-top:4px; background:rgba(102, 252, 241, 0.15); color:#66fcf1; border:1px solid #66fcf1; padding:4px 8px; border-radius:4px; font-size:9.5px; font-weight:bold; cursor:pointer; align-self:flex-start;">
+                  <div style="font-size:9.5px; color:#94a3b8; line-height:1.4;">Escaneo sigiloso anti-bot de Meta Ads v19.0 & loteos de macrolotes.</div>
+                  <button onclick="window.openAgentConfigEditor('cazador360')" style="margin-top:6px; background:rgba(102, 252, 241, 0.12); color:#66fcf1; border:1px solid rgba(102,252,241,0.4); padding:4px 10px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">
                     ⚙️ Configurar Agente (Meta API)
                   </button>
                 </div>
 
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:10px; border-radius:6px; display:flex; flex-direction:column; gap:4px;">
-                  <div style="display:flex; justify-content:space-between; color:#fbbf24; font-weight:bold;">
-                    <span>FILTRO ANALISTA (Llama 3.1 70B)</span>
-                    <span style="color:#10b981;">ONLINE</span>
+                <!-- AGENTE 2: CAZADOR BANANA -->
+                <div style="background:rgba(15, 23, 42, 0.7); border:1px solid rgba(250, 204, 21, 0.25); border-radius:10px; padding:12px 14px; transition:border-color 0.2s;" onmouseover="this.style.borderColor='#facc15'" onmouseout="this.style.borderColor='rgba(250, 204, 21, 0.25)'">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="font-size:11px; font-weight:800; color:#facc15; display:flex; align-items:center; gap:6px;">
+                      <span>🍌</span> <span>CAZADOR BANANA (B2B High-Ticket)</span>
+                    </div>
+                    <span style="color:#34d399; font-size:9px; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:12px; font-weight:800;">● ACTIVE</span>
                   </div>
-                  <div style="font-size:9.5px; color:#94a3b8;">Scoring determinista + Enriquecimiento IA</div>
-                  <button onclick="window.openAgentConfigEditor('filtro_analista')" style="margin-top:4px; background:rgba(251, 191, 36, 0.15); color:#fbbf24; border:1px solid #fbbf24; padding:4px 8px; border-radius:4px; font-size:9.5px; font-weight:bold; cursor:pointer; align-self:flex-start;">
+                  <div style="font-size:9.5px; color:#94a3b8; line-height:1.4;">Rastreo profundo de ejecutivos y macrolotes prediales en la Patagonia.</div>
+                  <button onclick="window.openAgentConfigEditor('cazadorbanana')" style="margin-top:6px; background:rgba(250, 204, 21, 0.12); color:#facc15; border:1px solid rgba(250,204,21,0.4); padding:4px 10px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">
+                    ⚙️ Configurar Cacería B2B
+                  </button>
+                </div>
+
+                <!-- AGENTE 3: FILTRO ANALISTA -->
+                <div style="background:rgba(15, 23, 42, 0.7); border:1px solid rgba(167, 139, 250, 0.25); border-radius:10px; padding:12px 14px; transition:border-color 0.2s;" onmouseover="this.style.borderColor='#a78bfa'" onmouseout="this.style.borderColor='rgba(167, 139, 250, 0.25)'">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="font-size:11px; font-weight:800; color:#a78bfa; display:flex; align-items:center; gap:6px;">
+                      <span>🧠</span> <span>FILTRO ANALISTA (Meta Llama 3.1 70B)</span>
+                    </div>
+                    <span style="color:#34d399; font-size:9px; background:rgba(52,211,153,0.12); padding:2px 8px; border-radius:12px; font-weight:800;">● ONLINE</span>
+                  </div>
+                  <div style="font-size:9.5px; color:#94a3b8; line-height:1.4;">Scoring determinista (0-100 pts) & diagnóstico comercial automático.</div>
+                  <button onclick="window.openAgentConfigEditor('filtro_analista')" style="margin-top:6px; background:rgba(167, 139, 250, 0.12); color:#a78bfa; border:1px solid rgba(167,139,250,0.4); padding:4px 10px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">
                     ⚙️ Configurar Algoritmo & Llama
                   </button>
                 </div>
 
-                <div style="background:rgba(236, 72, 153, 0.08); border:1px solid rgba(236, 72, 153, 0.3); padding:10px; border-radius:6px; display:flex; flex-direction:column; gap:4px;">
-                  <div style="display:flex; justify-content:space-between; color:#ec4899; font-weight:bold;">
-                    <span>TROYA WA (Asistente Comercial)</span>
-                    <span style="color:#fbbf24; font-size:9px; background:rgba(251,191,36,0.15); padding:2px 6px; border-radius:4px;">📱 LISTO PARA CHIP SIM</span>
+                <!-- AGENTE 4: TROYA WA SIM -->
+                <div style="background:rgba(236, 72, 153, 0.08); border:1px solid rgba(236, 72, 153, 0.3); border-radius:10px; padding:12px 14px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <div style="font-size:11px; font-weight:800; color:#ec4899; display:flex; align-items:center; gap:6px;">
+                      <span>🐴</span> <span>TROYA WA SIM (Outreach WhatsApp 24/7)</span>
+                    </div>
+                    <span style="color:#fbbf24; font-size:8.5px; background:rgba(251,191,36,0.15); padding:2px 8px; border-radius:12px; font-weight:800;">📱 CHIP LISTO</span>
                   </div>
-                  <div style="font-size:9.5px; color:#94a3b8;">Motor Llama 3.1 70B listo para enviar pitches y responder 24/7</div>
-                  <div style="display:flex; gap:6px; margin-top:4px;">
-                    <button onclick="window.openAgentConfigEditor('troya')" style="background:rgba(236, 72, 153, 0.2); color:#ec4899; border:1px solid #ec4899; padding:4px 8px; border-radius:4px; font-size:9.5px; font-weight:bold; cursor:pointer;">
+                  <div style="font-size:9.5px; color:#94a3b8; line-height:1.4;">Motor Llama 3.1 70B listo para enviar pitches y responder 24/7 por WhatsApp.</div>
+                  <div style="display:flex; gap:6px; margin-top:6px;">
+                    <button onclick="window.openAgentConfigEditor('troya')" style="background:rgba(236, 72, 153, 0.15); color:#ec4899; border:1px solid #ec4899; padding:4px 10px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">
                       ⚙️ Configurar Prompt
                     </button>
-                    <button onclick="window.openTroyaSIMModal()" style="background:#ec4899; color:#000; border:none; padding:4px 8px; border-radius:4px; font-size:9.5px; font-weight:bold; cursor:pointer;">
+                    <button onclick="window.openTroyaSIMModal()" style="background:#ec4899; color:#000; border:none; padding:4px 10px; border-radius:6px; font-size:9px; font-weight:bold; cursor:pointer;">
                       📱 Vincular Chip SIM
                     </button>
                   </div>
                 </div>
+
               </div>
             </div>
 
+            <!-- EVENTOS CONSOLA EN TIEMPO REAL -->
             <div style="background:rgba(9, 13, 22, 0.9); border:1px solid rgba(255,255,255,0.1); border-radius:12px; padding:14px; flex:1; display:flex; flex-direction:column;">
               <div style="font-size:10px; font-weight:bold; color:#94a3b8; margin-bottom:8px;">📟 EVENTOS MULTI-AGENTE EN TIEMPO REAL</div>
-              <div id="wrConsoleLogs" style="font-size:10px; color:#cbd5e1; height:240px; overflow-y:auto; display:flex; flex-direction:column; gap:4px;">
-                <div style="color:#10b981;">[SYSTEM] War Room 360° Inicializado. Conectado a WebSockets.</div>
+              <div id="wrConsoleLogs" style="font-size:10px; color:#cbd5e1; height:220px; overflow-y:auto; display:flex; flex-direction:column; gap:4px;">
+                <div style="color:#10b981;">[SYSTEM] War Room 360° Pro Max Inicializado. Conectado a WebSockets.</div>
               </div>
             </div>
+
           </div>
 
         </div>
