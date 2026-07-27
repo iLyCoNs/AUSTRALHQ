@@ -69,7 +69,7 @@ loc_text = '''
 elements.append(Paragraph(loc_text, body_style))
 elements.append(Spacer(1, 14))
 
-# 4. SERVICES TABLE (Drone DJI Mini 5 Pro)
+# 4. SERVICES TABLE
 elements.append(Paragraph('🚁 <b>DETALLE DE SERVICIOS Y EQUIPAMIENTO TÉCNICO</b>', ParagraphStyle('SecTitle2', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10.5, textColor=primary)))
 elements.append(Spacer(1, 6))
 
@@ -95,10 +95,9 @@ t_services.setStyle(TableStyle([
 elements.append(t_services)
 elements.append(Spacer(1, 10))
 
-# 5. TOTALS
+# 5. TOTALS (Sin IVA)
 totals_data = [
     [Paragraph('<b>SUBTOTAL NETO:</b>', ParagraphStyle('R1', parent=body_style, alignment=2)), Paragraph('<b>$100.000 CLP</b>', ParagraphStyle('R2', parent=bold_style, alignment=2))],
-    [Paragraph('<b>IVA (EXENTO / MONTO ACORDADO):</b>', ParagraphStyle('R3', parent=body_style, alignment=2)), Paragraph('<b>$0 CLP</b>', ParagraphStyle('R4', parent=bold_style, alignment=2))],
     [Paragraph('<font size=11 color="#10b981"><b>TOTAL A PAGAR:</b></font>', ParagraphStyle('R5', parent=body_style, alignment=2)), Paragraph('<font size=11 color="#10b981"><b>$100.000 CLP</b></font>', ParagraphStyle('R6', parent=bold_style, alignment=2))]
 ]
 t_totals = Table(totals_data, colWidths=[380, 160])
@@ -131,7 +130,7 @@ t_promo.setStyle(TableStyle([
 elements.append(t_promo)
 elements.append(Spacer(1, 12))
 
-# 7. TERMS & SIGNATURE (Edicion de pie de pagina: AustralDrone.CL — Innovación Aérea en Puerto Montt.)
+# 7. TERMS & SIGNATURE
 terms_text = '''
 <b>Condiciones Comerciales:</b> Validez de cotización: 15 días corridos. Forma de pago: 50% al confirmar vuelo y 50% a la entrega del material final. Vuelo sujeto a condiciones meteorológicas favorables.<br/>
 <b>AustralDrone.CL — Innovación Aérea en Puerto Montt.</b>
@@ -139,4 +138,4 @@ terms_text = '''
 elements.append(Paragraph(terms_text, ParagraphStyle('Terms', parent=styles['Normal'], fontName='Helvetica', fontSize=7.5, leading=9.5, textColor=colors.HexColor('#64748b'), alignment=1)))
 
 doc.build(elements)
-print("PDF actualizado con DJI MINI 5 PRO y nuevo pie de pagina.")
+print("PDF sin linea de IVA generado con exito.")
