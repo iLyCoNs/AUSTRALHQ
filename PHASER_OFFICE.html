@@ -1741,17 +1741,14 @@ class OfficeScene extends Phaser.Scene{
     this.hm.add({id:'drones-lab',label:'Taller Drones 4K',x:980,y:850,w:320,h:220,prompt:'[E] Inspección Drones',onActivate:()=>{this.ceo.startWork(6000);say('Flota drone 4K calibrada...');send({action:'webhook_received',location:'drones'});}});
     this.hm.add({id:'server-room',label:'Rack Servidores GPU',x:2550,y:1150,w:300,h:300,prompt:'[E] Servidores LLM',onActivate:()=>{say('Servidores NVIDIA GPU: 45ms latencia OK');}});
 
-            DESK_AGENTS.forEach(a=>{
+    DESK_AGENTS.forEach(a=>{
       const promptTxt = '[E] Interactuar con ' + a.name;
       this.hm.add({id:a.id+'-hs',label:a.name,x:a.x,y:a.y,w:140,h:100,prompt:promptTxt,
         onActivate:()=>{
           const ag=window.AR[a.id];
-          // Todos los Agentes caminan en vivo hacia el CEO Don Jaime al presionar [E]
           window.agentApproachCEO(a.id, ()=>{
             if (a.id === 'secretaria') {
               window.openSecretariaAIChatModal();
-            } else if (a.id === 'cazador360' || a.id === 'cazadorventas' || a.id === 'yapo') {
-              window.openExecModal(a, ag, this);
             } else {
               window.openExecModal(a, ag, this);
             }
@@ -1773,7 +1770,7 @@ class OfficeScene extends Phaser.Scene{
         }return;
       }
       const da=window.AR[who];
-      if(da instanceof DeskAgent){const s=ev.action==='lead_qualified'?'lead':ev.action==='scraping_active'?'working':'idle';da.setState(s);}
+      if(da instanceof DeskAgent){const s=ev.action==='lead_qualified'?'lead':ev.action==='scraping_active'?'working':'idle';da.setState(s,ev.message||null);this.sendParticle(350,280,da.x,da.y,da.col);}
     };
     window.ceoGo    =(a,e)=>_dispatch(Object.assign({action:a,target:'ceo'},e||{}),'API');
     window.nicoleGo =(a,e)=>_dispatch(Object.assign({action:a,target:'nicole'},e||{}),'API');
@@ -1782,7 +1779,169 @@ class OfficeScene extends Phaser.Scene{
   }
 }
 
-window.saveCurrentTVEditorConfig
+// ═══ PHASER GAME ═══
+// roundPixels:false + SPRITE_SCALE=0.5 = sin sub-pixel ghosting
+// Scale.FIT previene el doble create() que ocurre con RESIZE en algunos browsers
+window.phaserGame=new Phaser.Game({
+  type:Phaser.AUTO,parent:'game',backgroundColor:'#06080f',
+  pixelArt:true,antialias:false,roundPixels:false,
+  physics:{default:'arcade',arcade:{gravity:{y:0},debug:false}},
+  scene:[BootScene,OfficeScene],
+  scale:{mode:Phaser.Scale.RESIZE,autoCenter:Phaser.Scale.CENTER_BOTH,
+    width:1280,height:720}
+});
+
+// ═══ WEBHOOK & REAL-TIME MULTIPLAYER BRIDGE ═══
+const SERVER_WS='ws://'+window.location.host;
+const N8N_WS='ws://localhost:5678/webhook-ws/ceo-avatar';
+const N8N_POLL='http://localhost:5678/webhook/ceo-avatar-state';
+const N8N_SEND='http://localhost:5678/webhook/office-events';
+let _ws=null,_wsOk=false,_poll=null,_lastEvId=null;
+
+window.getTVConfig = function() {
+  const saved = localStorage.getItem('AR_TV_CONFIG');
+  if (saved) {
+    try { return JSON.parse(saved); } catch(e) {}
+  }
+  return { top: 70, right: 20, left: 'auto', scale: 1.0 };
+};
+
+window.saveTVConfig = function(cfg, broadcast = true) {
+  localStorage.setItem('AR_TV_CONFIG', JSON.stringify(cfg));
+  window.applyTVConfig(cfg);
+  if (broadcast && window._hqWs && window._hqWs.readyState === WebSocket.OPEN) {
+    window._hqWs.send(JSON.stringify({ type: 'tv_config_sync', config: cfg }));
+  }
+};
+
+window.applyTVConfig = function(cfg) {
+  let toastContainer = document.getElementById('liveLeadToastContainer');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'liveLeadToastContainer';
+    document.body.appendChild(toastContainer);
+  }
+  
+  toastContainer.style.cssText = `
+    position: fixed;
+    top: ${typeof cfg.top === 'number' ? cfg.top + 'px' : cfg.top};
+    left: ${typeof cfg.left === 'number' ? cfg.left + 'px' : cfg.left};
+    right: ${typeof cfg.right === 'number' ? cfg.right + 'px' : cfg.right};
+    transform: scale(${cfg.scale || 1.0});
+    transform-origin: top right;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    transition: transform 0.2s ease, top 0.2s ease, left 0.2s ease, right 0.2s ease;
+  `;
+};
+
+function showLiveLeadToast(lead) {
+  if(!lead) return;
+  const cfg = window.getTVConfig();
+  let toastContainer = document.getElementById('liveLeadToastContainer');
+  if (!toastContainer) {
+    window.applyTVConfig(cfg);
+    toastContainer = document.getElementById('liveLeadToastContainer');
+  }
+
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    width: 320px;
+    background: rgba(9, 14, 26, 0.95);
+    backdrop-filter: blur(12px);
+    border: 2px solid #66fcf1;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    box-shadow: 0 0 25px rgba(102, 252, 241, 0.35);
+    pointer-events: auto;
+    transition: all 0.3s ease;
+  `;
+
+  const link = lead.link_post || lead.link_perfil || '';
+  toast.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+      <span style="font-weight:900; color:#66fcf1; font-size:10px; letter-spacing:0.5px;">📺 TELE HQ — LEAD VIVO</span>
+      <span style="background:#10b981; color:#000; font-weight:bold; padding:2px 6px; border-radius:4px; font-size:9px;">SCORE ${lead.score || lead.score_final || 90}/100</span>
+    </div>
+    <div style="font-size:13px; font-weight:bold; color:#fff; margin-bottom:4px;">🏢 ${lead.nombre || 'Vendedor B2B'}</div>
+    <div style="color:#94a3b8; margin-bottom:4px;">📍 ${lead.ubicacion || 'Zona Sur'} | 🌾 ${lead.superficie || 'Macrolote'}</div>
+    <div style="color:#fbbf24; margin-bottom:8px;">📞 ${lead.telefono || 'Ver Anuncio'}</div>
+    <div style="background:rgba(255,255,255,0.06); padding:6px 8px; border-radius:4px; margin-bottom:8px; font-size:10px; color:#cbd5e1;">
+      💡 <b>IA:</b> ${lead.motivo_top || lead.diagnostico || 'Prospecto calificado B2B'}
+    </div>
+    <div style="display:flex; gap:6px;">
+      ${link ? `<a href="${link}" target="_blank" style="flex:1; text-align:center; background:#1e3a5f; color:#66fcf1; text-decoration:none; padding:4px 6px; border-radius:4px; font-weight:bold; border:1px solid #66fcf1;">🔗 Ver Anuncio</a>` : ''}
+      <button onclick="window.location.href='/api/download-master-csv'" style="flex:1; background:#10b981; color:#000; border:none; padding:4px 6px; border-radius:4px; font-weight:bold; cursor:pointer;">📥 Exportar Excel</button>
+    </div>
+  `;
+
+  toastContainer.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(50px)';
+    setTimeout(() => toast.remove(), 300);
+  }, 12000);
+}
+
+window.openTVDisplayEditor = function() {
+  const cfg = window.getTVConfig();
+  let modal = document.getElementById('tvEditorModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'tvEditorModal';
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+      z-index: 10000; display: flex; align-items: center; justify-content: center;
+    `;
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="width: 380px; background: #090d16; border: 2px solid #a78bfa; border-radius: 12px; padding: 20px; color: #fff; font-family: 'JetBrains Mono', monospace; box-shadow: 0 0 30px rgba(167, 139, 250, 0.3);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <h3 style="margin:0; font-size:13px; color:#a78bfa;">📺 EDITOR TELE LEAD DISPLAY (CEO JAIME)</h3>
+        <button onclick="document.getElementById('tvEditorModal').style.display='none'" style="background:transparent; border:none; color:#94a3b8; font-size:16px; cursor:pointer;">✕</button>
+      </div>
+
+      <p style="font-size:10px; color:#94a3b8; margin-bottom:15px; line-height:1.4;">
+        Ajusta la posición exacta y el tamaño de escala de las alertas sobre la Tele Gigante de la Oficina. Se guardará y transmitirá automáticamente para todos.
+      </p>
+
+      <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; margin-bottom:20px;">
+        <label style="display:flex; justify-content:space-between;"><span>Distancia Superior (Top):</span> <span id="valTop" style="color:#a78bfa; font-weight:bold;">${cfg.top}px</span></label>
+        <input type="range" id="inputTop" min="10" max="800" value="${parseInt(cfg.top) || 70}" oninput="document.getElementById('valTop').innerText=this.value + 'px'; window.previewTVConfig()">
+
+        <label style="display:flex; justify-content:space-between;"><span>Distancia Derecha (Right):</span> <span id="valRight" style="color:#a78bfa; font-weight:bold;">${cfg.right}px</span></label>
+        <input type="range" id="inputRight" min="10" max="1400" value="${parseInt(cfg.right) || 20}" oninput="document.getElementById('valRight').innerText=this.value + 'px'; window.previewTVConfig()">
+
+        <label style="display:flex; justify-content:space-between;"><span>Tamaño / Escala:</span> <span id="valScale" style="color:#a78bfa; font-weight:bold;">${cfg.scale}x</span></label>
+        <input type="range" id="inputScale" min="0.5" max="2.2" step="0.05" value="${cfg.scale || 1.0}" oninput="document.getElementById('valScale').innerText=this.value + 'x'; window.previewTVConfig()">
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button onclick="window.saveCurrentTVEditorConfig()" style="flex:1; background:#a78bfa; color:#000; font-weight:bold; border:none; padding:10px; border-radius:6px; cursor:pointer; font-size:10px;">💾 GUARDAR & TRANSMITIR</button>
+        <button onclick="window.triggerTestLead()" style="background:#10b981; color:#000; font-weight:bold; border:none; padding:10px; border-radius:6px; cursor:pointer; font-size:10px;">🧪 TEST EN VIVO</button>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+};
+
+window.previewTVConfig = function() {
+  const top = parseInt(document.getElementById('inputTop').value);
+  const right = parseInt(document.getElementById('inputRight').value);
+  const scale = parseFloat(document.getElementById('inputScale').value);
+  window.applyTVConfig({ top, right, left: 'auto', scale });
+};
 
 window.saveCurrentTVEditorConfig = function() {
   const top = parseInt(document.getElementById('inputTop').value);
@@ -5507,7 +5666,6 @@ window.agentApproachCEO = function(agentId, onArrivedCallback) {
 
   if (scene) {
     if (scene.ceo && scene.ceo.sprite) {
-      // Posicionarse a un lado del CEO Jaime
       const offsetX = (ag.homeX > scene.ceo.sprite.x) ? 55 : -55;
       targetX = scene.ceo.sprite.x + offsetX;
       targetY = scene.ceo.sprite.y + 10;
