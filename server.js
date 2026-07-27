@@ -1425,6 +1425,130 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // API Route: POST /api/secretaria/chat (Chatbot IA Ejecutiva Secretaría Camila vía NVIDIA Llama 3.1 70B)
+    if (req.method === 'POST' && req.url === '/api/secretaria/chat') {
+        let body = '';
+        req.on('data', chunk => body += chunk.toString());
+        req.on('end', async () => {
+            try {
+                const data = JSON.parse(body || '{}');
+                const userMessages = data.messages || [];
+                const userPrompt = data.prompt || (userMessages.length > 0 ? userMessages[userMessages.length - 1].content : '');
+
+                // Obtener credenciales de secretos
+                let nvKey = process.env.NVIDIA_API_KEY || '';
+                const secretsFile = path.join(ROOT, 'config_secrets.json');
+                if (fs.existsSync(secretsFile)) {
+                    try {
+                        const s = JSON.parse(fs.readFileSync(secretsFile, 'utf8'));
+                        if (s.NVIDIA_API_KEY) nvKey = s.NVIDIA_API_KEY;
+                    } catch(e){}
+                }
+
+                if (!nvKey) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ error: 'NVIDIA_API_KEY no encontrada en config_secrets.json' }));
+                    return;
+                }
+
+                const systemPrompt = `Eres Camila, la Secretaría Ejecutiva e Inteligencia Artificial Central de AustralDrone.CL y AustralHQ.
+Tu misión principal es asistir directamente a los CEO de la empresa: Don Jaime Vidal Paredes y Doña Nicole.
+Tus capacidades y personalidad:
+1. Profesionalismo Ejecutivo Impecable: Tratas a los CEO con respeto y amabilidad ("Don Jaime", "Doña Nicole").
+2. Optimización de Documentos: Redactas y mejoras correos B2B, cotizaciones formales PDF, propuestas de MasterPlan 360°, y minutas de reunión.
+3. Análisis y Proyección de Negocios: Interpretas datos de prospección predial (inmobiliarias, loteos, parcelaciones en Los Lagos, Puerto Varas y Puerto Montt). Estado actual: Cartera proyectada $1.160.000 USD, Cotizaciones en $100.000 CLP con drone DJI Mini 5 Pro.
+4. Integración Técnica: Operas Notion API, Gmail (australdrone.cl@gmail.com), Telegram y flujos n8n.
+5. Instrucciones Reales: Aceptas cualquier orden o prompt del CEO (adaptar textos, simular campañas, generar proyecciones, crear correos) y entregas respuestas ejecutivas estructuradas en Markdown listo para usar.`;
+
+                const formattedMessages = [
+                    { role: "system", content: systemPrompt }
+                ];
+
+                if (Array.isArray(userMessages) && userMessages.length > 0) {
+                    userMessages.forEach(m => {
+                        if (m.role && m.content) formattedMessages.push({ role: m.role, content: m.content });
+                    });
+                } else if (userPrompt) {
+                    formattedMessages.push({ role: "user", content: userPrompt });
+                }
+
+                const postData = JSON.stringify({
+                    model: "meta/llama-3.1-70b-instruct",
+                    messages: formattedMessages,
+                    max_tokens: 1024,
+                    temperature: 0.65
+                });
+
+                const https = require('https');
+                const reqOpts = {
+                    hostname: 'integrate.api.nvidia.com',
+                    path: '/v1/chat/completions',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${nvKey}`,
+                        'Content-Length': Buffer.byteLength(postData)
+                    }
+                };
+
+                const replyText = await new Promise((resolve, reject) => {
+                    const apiReq = https.request(reqOpts, (apiRes) => {
+                        let dataStr = '';
+                        apiRes.on('data', chunk => dataStr += chunk);
+                        apiRes.on('end', () => {
+                            try {
+                                const json = JSON.parse(dataStr);
+                                if (json.choices && json.choices[0] && json.choices[0].message) {
+                                    resolve(json.choices[0].message.content);
+                                } else {
+                                    resolve("Don Jaime, he recibido su instrucción pero la API de NVIDIA retornó una respuesta vacía. Por favor reintente.");
+                                }
+                            } catch (e) {
+                                resolve("Don Jaime, ocurrió un error interpretando la respuesta de la IA NVIDIA: " + e.message);
+                            }
+                        });
+                    });
+                    apiReq.on('error', (err) => resolve("Error de red conectando con NVIDIA API: " + err.message));
+                    apiReq.write(postData);
+                    apiReq.end();
+                });
+
+                // Guardar interacción en la memoria de chat de la Secretaría
+                const secMemoryFile = path.join(ROOT, 'SECRETARIA_CHAT_MEMORY.json');
+                let chatHistory = [];
+                if (fs.existsSync(secMemoryFile)) {
+                    try { chatHistory = JSON.parse(fs.readFileSync(secMemoryFile, 'utf8')); } catch(e){}
+                }
+                chatHistory.push({
+                    timestamp: new Date().toISOString(),
+                    prompt: userPrompt,
+                    reply: replyText
+                });
+                fs.writeFileSync(secMemoryFile, JSON.stringify(chatHistory.slice(-50), null, 2), 'utf8');
+
+                // Notificar en el mapa 2D Phaser (burbuja de voz)
+                broadcast({
+                    type: 'agent_status',
+                    agent: 'secretaria',
+                    state: 'success',
+                    msg: `👩‍💼 Secretaría Camila (NVIDIA 70B): "${replyText.substring(0, 80).replace(/[*#]/g, '')}..."`
+                });
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({
+                    success: true,
+                    reply: replyText,
+                    model: "meta/llama-3.1-70b-instruct (NVIDIA AI)"
+                }));
+
+            } catch(e) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: e.message }));
+            }
+        });
+        return;
+    }
+
     // API Route: GET /api/crm-leads
     if (req.method === 'GET' && req.url === '/api/crm-leads') {
         res.writeHead(200, { 'Content-Type': 'application/json' });
