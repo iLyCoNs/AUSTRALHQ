@@ -1742,13 +1742,13 @@ class OfficeScene extends Phaser.Scene{
     this.hm.add({id:'server-room',label:'Rack Servidores GPU',x:2550,y:1150,w:300,h:300,prompt:'[E] Servidores LLM',onActivate:()=>{say('Servidores NVIDIA GPU: 45ms latencia OK');}});
 
     DESK_AGENTS.forEach(a=>{
-      this.hm.add({id:a.id+'-hs',label:a.name,x:a.x,y:a.y,w:140,h:100,prompt:'[E] Ejecutar Python '+a.name,
+      this.hm.add({id:a.id+'-hs',label:a.name,x:a.x,y:a.y,w:140,h:100,prompt:(a.id === 'secretaria' ? '[E] Hablar con Secretaría Camila (Nube IA)' : '[E] Ejecutar Python ' + a.name),
         onActivate:()=>{
           const ag=window.AR[a.id];
           if (a.id === 'secretaria') {
             // Secretaria Camila: Abrir Cotizador Interactivo CEO
             if(ag instanceof DeskAgent){ ag.setState('working'); }
-            window.openPDFStudioModal();
+            window.openSecretariaAIChatModal();
           } else if (a.id === 'cazador360' || a.id === 'cazadorventas' || a.id === 'yapo') {
             window.openExecModal(a, ag, this);
           } else {
