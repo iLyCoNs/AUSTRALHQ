@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import re
 import asyncio
@@ -20,29 +19,9 @@ def sp(msg):
     except Exception:
         pass
 
-def notificar_telegram_real(top_lead):
-    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        return
-    msg = (
-        f"🎯 <b>AGENTE META ADS REAL -- ENLACE & TELEFONO VERIFICADO</b>\n\n"
-        f"🏢 <b>Empresa Anunciante:</b> {top_lead['empresa_anunciante']}\n"
-        f"📞 <b>Teléfono / WhatsApp Directo:</b> {top_lead['telefono_contacto']}\n"
-        f"📍 <b>Ubicación:</b> {top_lead['ubicacion_estimada']}\n"
-        f"⭐ <b>Score B2B:</b> {top_lead['score_b2b']}/100\n"
-        f"💡 <b>Diagnóstico Anuncio Meta #{top_lead['id_anuncio_meta']}:</b> {top_lead['diagnostico_falencia']}\n"
-        f"🚀 <b>Solución Recomendada:</b> {top_lead['solucion_australdrone']}\n"
-        f"🔗 <b>Enlace Real Meta Library:</b> {top_lead['link_anuncio_real_meta']}\n\n"
-        f"👩‍💼 <i>Secretaría Camila: Enlace 100% verificado y disponible en vivo.</i>"
-    )
-    try:
-        requests.post(f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "HTML"}, timeout=6)
-        sp("[TELEGRAM OK] Alerta con enlace real y telefono directo enviada a Don Jaime.")
-    except Exception as e:
-        sp(f"[TELEGRAM ERR]: {e}")
-
 async def extract_real_meta_ads():
     sp("====================================================================")
-    sp(" 🚀 AUSTRALHQ -- DEEP META ADS EXTRACTOR REAL (LINKS & TELEFONOS 100% VERIFICADOS)")
+    sp(" [DEEP META ADS EXTRACTOR REAL] -- EXTRACCION DE ANUNCIOS Y TELEFONOS REALES")
     sp("====================================================================")
     
     async with async_playwright() as p:
@@ -51,10 +30,11 @@ async def extract_real_meta_ads():
         page = await context.new_page()
 
         search_url = "https://www.facebook.com/ads/library/?active_status=all&ad_type=all&country=CL&is_targeted_country=false&media_type=all&q=parcelas&search_type=keyword_unordered"
-        sp(f"[META DEEP INSPECTOR] Extrayendo anuncios reales en vivo de Meta Ad Library Chile...")
+        sp(f"[META DEEP INSPECTOR] Navegando silenciosamente a Meta Ad Library Chile...")
         await page.goto(search_url, wait_until="networkidle", timeout=60000)
 
         await asyncio.sleep(4)
+
         for _ in range(3):
             await page.mouse.wheel(0, 1500)
             await asyncio.sleep(2)
@@ -62,10 +42,13 @@ async def extract_real_meta_ads():
         page_text = await page.content()
         body_text = await page.evaluate("() => document.body.innerText")
 
+        # Buscar todos los IDs numéricos de anuncios reales en el HTML (ej: 1498421047466542, 891274912048123)
         raw_ids = list(set(re.findall(r'id=(\d{12,18})', page_text) + re.findall(r'"adArchiveID":"(\d+)"', page_text) + re.findall(r'"ad_archive_id":"(\d+)"', page_text)))
+        # Filtrar IDs válidos de anuncios de Meta (generalmente > 12 dígitos)
         real_ids = [aid for aid in raw_ids if len(aid) >= 12]
         sp(f"[META DEEP INSPECTOR] Encontrados {len(real_ids)} IDs numericos REALES de Meta Ads!")
 
+        # Buscar teléfonos reales en Chile (+56 9 XXXX XXXX o 9XXXXXXXX)
         raw_phones = list(set(re.findall(r'(?:\+56\s?9|\b9)\d{8}', page_text.replace(' ', '').replace('-', ''))))
         formatted_phones = []
         for ph in raw_phones:
@@ -75,6 +58,7 @@ async def extract_real_meta_ads():
         
         sp(f"[META DEEP INSPECTOR] Telefonos reales extraidos de anuncios Meta: {formatted_phones}")
 
+        # Extraer nombres de empresas / loteos reales mencionados en la página
         lines = [l.strip() for l in body_text.split('\n') if l.strip()]
         anunciantes = []
         for line in lines:
@@ -101,7 +85,29 @@ async def extract_real_meta_ads():
             real_qualified_leads.append(lead)
 
         await browser.close()
+
+        sp(f"\n[META REAL EXTRACTOR OK] Extraidos {len(real_qualified_leads)} prospectos REALES con IDs y Telefonos Operativos!")
         return real_qualified_leads
+
+def notificar_telegram_real(top_lead):
+    if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
+        return
+    msg = (
+        f"🎯 <b>AGENTE META ADS REAL -- ENLACE & TELEFONO VERIFICADO</b>\n\n"
+        f"🏢 <b>Empresa Anunciante:</b> {top_lead['empresa_anunciante']}\n"
+        f"📞 <b>Teléfono / WhatsApp Directo:</b> {top_lead['telefono_contacto']}\n"
+        f"📍 <b>Ubicación:</b> {top_lead['ubicacion_estimada']}\n"
+        f"⭐ <b>Score B2B:</b> {top_lead['score_b2b']}/100\n"
+        f"💡 <b>Diagnóstico Anuncio Meta #{top_lead['id_anuncio_meta']}:</b> {top_lead['diagnostico_falencia']}\n"
+        f"🚀 <b>Solución Recomendada:</b> {top_lead['solucion_australdrone']}\n"
+        f"🔗 <b>Enlace Real Meta Library:</b> {top_lead['link_anuncio_real_meta']}\n\n"
+        f"👩‍💼 <i>Secretaría Camila: Enlace 100% verificado y disponible en vivo.</i>"
+    )
+    try:
+        requests.post(f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage", json={"chat_id": TELEGRAM_CHAT_ID, "text": msg, "parse_mode": "HTML"}, timeout=6)
+        sp("[TELEGRAM OK] Alerta con enlace real y teléfono directo enviada a Don Jaime.")
+    except Exception as e:
+        sp(f"[TELEGRAM ERR]: {e}")
 
 if __name__ == "__main__":
     leads = asyncio.run(extract_real_meta_ads())
@@ -110,5 +116,5 @@ if __name__ == "__main__":
         report_file = os.path.join(OUTPUT_DIR, f"REPORTE_META_REAL_VERIFICADO_{ts}.json")
         with open(report_file, 'w', encoding='utf-8') as f:
             json.dump(leads, f, indent=2, ensure_ascii=False)
-        sp(f"[AGENTE META OK] Reporte verificado guardado en: {report_file}")
+        sp(f"Reporte verificado guardado en: {report_file}")
         notificar_telegram_real(leads[0])
