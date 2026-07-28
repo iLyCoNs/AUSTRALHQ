@@ -5871,7 +5871,7 @@ window.speakCamilaResponse = function(text) {
   const esVoice = voices.find(v => v.lang && v.lang.includes('es'));
   if (esVoice) utter.voice = esVoice;
 
-  window.speechSynthesis.speak(utter);
+  // window.speechSynthesis.speak(utter); // Desactivado por solicitud del CEO (Solo escuchar dictado)
 };
 
 window.openSecretariaCuratedProspectsModal = function() {

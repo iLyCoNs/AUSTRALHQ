@@ -791,7 +791,7 @@
       window.speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(txt.replace(/[*#_`]/g, '').substring(0, 200));
       utter.lang = 'es-CL';
-      window.speechSynthesis.speak(utter);
+      // window.speechSynthesis.speak(utter); // Desactivado por solicitud del CEO (Solo escuchar dictado)
     };
 
     // PDF Quote & Email Dispatch
