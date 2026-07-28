@@ -1,5 +1,14 @@
 [
   {
+    "timestamp": "2026-07-28T08:56:14.430Z",
+    "event": "telegram_contact_captured",
+    "businessName": "Austral Drone",
+    "capturedPhone": "+56987491964",
+    "leadScore": 100,
+    "lastMessage": "Jaime solicitó llamada directa del CEO sobre su proyecto en Puerto Varas ('que me llame')",
+    "estado": "REGISTRADO POR SECRETARIA CAMILA"
+  },
+  {
     "timestamp": "2026-07-28T08:20:50.037Z",
     "event": "telegram_contact_captured",
     "businessName": "Austral Drone",
