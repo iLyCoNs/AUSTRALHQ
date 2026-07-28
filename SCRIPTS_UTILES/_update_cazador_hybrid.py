@@ -1,4 +1,6 @@
 import os
+
+cazador_code = '''import os
 import sys
 import json
 import csv
@@ -9,7 +11,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Configuración de Rutas
-ROOT_DIR = r"c:\Users\LyCoNs\Desktop\AGENTES IA"
+ROOT_DIR = r"c:\\Users\\LyCoNs\\Desktop\\AGENTES IA"
 CSV_PATH = os.path.join(ROOT_DIR, "VENDEDORES_MACROLOTES_MASTERPLAN_360.csv")
 MASTER_CSV_PATH = os.path.join(ROOT_DIR, "MASTER_LEADS_CALIFICADOS_AUSTRALDRONE.csv")
 OUTPUT_DIR = os.path.join(ROOT_DIR, "REPORTES_AGENTES", "CAZADOR360")
@@ -142,12 +144,12 @@ def main():
     if leads:
         top_lead = leads[0]
         tg_text = (
-            f"🎯 <b>CAZADOR META ADS -- BLANCO CALIFICADO</b>\n\n"
-            f"🏢 <b>Empresa:</b> {top_lead['nombre']}\n"
-            f"📍 <b>Ubicación:</b> {top_lead['ubicacion']}\n"
-            f"⭐ <b>Score:</b> {top_lead['score']}/100\n"
-            f"💡 <b>Diagnóstico:</b> {top_lead['motivo_top']}\n"
-            f"🔗 <b>Anuncio Meta:</b> {top_lead['link_post']}\n\n"
+            f"🎯 <b>CAZADOR META ADS -- BLANCO CALIFICADO</b>\\n\\n"
+            f"🏢 <b>Empresa:</b> {top_lead['nombre']}\\n"
+            f"📍 <b>Ubicación:</b> {top_lead['ubicacion']}\\n"
+            f"⭐ <b>Score:</b> {top_lead['score']}/100\\n"
+            f"💡 <b>Diagnóstico:</b> {top_lead['motivo_top']}\\n"
+            f"🔗 <b>Anuncio Meta:</b> {top_lead['link_post']}\\n\\n"
             f"👩‍💼 <i>Secretaría Camila: Propuesta comercial lista para despacho.</i>"
         )
         notificar_telegram(tg_text)
@@ -155,3 +157,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+'''
+
+with open('cazador_meta_api.py', 'w', encoding='utf-8') as f:
+    f.write(cazador_code)
+
+print("SUCCESS: Updated cazador_meta_api.py with hybrid Meta API + Web Scrapling failover engine!")
