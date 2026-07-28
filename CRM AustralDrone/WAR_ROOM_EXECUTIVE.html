@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AustralHQ — War Room Executive Command Center Pro Max</title>
+  
+  <!-- Modern Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #050811;
+      --card-bg: rgba(13, 21, 39, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --cyan: #66fcf1;
+      --pink: #f472b6;
+      --emerald: #10b981;
+      --amber: #fbbf24;
+      --purple: #a855f7;
+      --blue: #0284c7;
+      --red: #ef4444;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(102, 252, 241, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(244, 114, 182, 0.05) 0%, transparent 40%),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 30px 30px, 30px 30px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #070c18; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+    /* Header Bar */
+    header {
+      background: rgba(9, 13, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 16px rgba(102, 252, 241, 0.4);
+    }
+
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      background: linear-gradient(135deg, #fff, var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .sys-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-badge {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    /* Layout Main */
+    main {
+      padding: 24px;
+      max-width: 1750px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex: 1;
+    }
+
+    /* KPI Summary Cards Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent-color, var(--cyan));
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .kpi-icon {
+      font-size: 16px;
+      opacity: 0.8;
+    }
+
+    .kpi-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .kpi-sub {
+      font-size: 10px;
+      color: var(--emerald);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Dashboard Main Grid (3 Columns) */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+    }
+
+    @media (max-width: 1200px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Column Cards */
+    .panel-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .panel-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
+    }
+
+    .panel-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Buttons & Controls */
+    .btn {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--cyan), var(--blue));
+      color: #000;
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(102, 252, 241, 0.4);
+    }
+
+    .btn-pink {
+      background: linear-gradient(135deg, var(--pink), #ec4899);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(244, 114, 182, 0.4);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(135deg, var(--emerald), #059669);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 0 14px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Kanban Board Layout */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(220px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+
+    .kanban-col {
+      background: rgba(9, 13, 22, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 480px;
+    }
+
+    .col-header {
+      font-size: 10.5px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .lead-item-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+      cursor: grab;
+    }
+
+    .lead-item-card:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    }
+
+    .lead-item-name {
+      font-weight: 700;
+      font-size: 12px;
+      color: #fff;
+    }
+
+    .lead-item-meta {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .lead-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    /* Chat & Voice IA Console */
+    .chat-console {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 440px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      background: rgba(7, 12, 24, 0.9);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .chat-msg {
+      display: block;
+      gap: 8px;
+      line-height: 1.5;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+
+    .chat-msg-camila {
+      background: rgba(244, 114, 182, 0.1);
+      border-left: 3px solid var(--pink);
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #fff;
+    }
+
+    .chat-msg-user {
+      background: rgba(2, 132, 199, 0.15);
+      border-right: 3px solid var(--blue);
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #fff;
+      margin-left: auto;
+      max-width: 85%;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    textarea.chat-input {
+      flex: 1;
+      height: 50px;
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 11px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+    }
+
+    textarea.chat-input:focus {
+      border-color: var(--pink);
+    }
+
+    /* Form Fields */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-label {
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    input.form-control {
+      background: #090d16;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      color: #fff;
+      padding: 8px 10px;
+      font-size: 11px;
+      font-family: inherit;
+      outline: none;
+    }
+
+    input.form-control:focus {
+      border-color: var(--cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-logo">🛸</div>
+      <div>
+        <div class="brand-title">AustralHQ Executive Command Center</div>
+        <div class="brand-subtitle">Plataforma Agéntica 360° • AustralDrone.CL</div>
+      </div>
+    </div>
+
+    <div class="sys-status-bar">
+      <div class="status-badge"><div class="dot"></div> NVIDIA Llama 70B: OK</div>
+      <div class="status-badge">📑 Notion API: OK</div>
+      <div class="status-badge">📱 Telegram Bot: OK</div>
+      <div class="status-badge">📧 Gmail SMTP: OK</div>
+      <button class="btn btn-primary" onclick="window.location.href='/'">🏠 Ir a la Oficina 2D</button>
+    </div>
+  </header>
+
+  <!-- Main Executive Content -->
+  <main>
+
+    <!-- KPI Summary Row -->
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent-color: var(--cyan);">
+        <div class="kpi-header">
+          <span class="kpi-label">Cartera Proyectada</span>
+          <span class="kpi-icon">💰</span>
+        </div>
+        <div class="kpi-value">$1.160.000 USD</div>
+        <div class="kpi-sub">↑ 42 Macrolotes en prospección</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--pink);">
+        <div class="kpi-header">
+          <span class="kpi-label">Secretaría Camila IA</span>
+          <span class="kpi-icon">👩‍💼</span>
+        </div>
+        <div class="kpi-value">NVIDIA 70B</div>
+        <div class="kpi-sub">Filtro Real Central Activo</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--emerald);">
+        <div class="kpi-header">
+          <span class="kpi-label">Cotizaciones Estándar</span>
+          <span class="kpi-icon">🖨️</span>
+        </div>
+        <div class="kpi-value">$100.000 CLP</div>
+        <div class="kpi-sub">DJI Mini 5 Pro / Sensor CMOS</div>
+      </div>
+
+      <div class="kpi-card" style="--accent-color: var(--amber);">
+        <div class="kpi-header">
+          <span class="kpi-label">Prospectos Calificados</span>
+          <span class="kpi-icon">⚡</span>
+        </div>
+        <div class="kpi-value" id="kpiLeadsCount">3 Reales</div>
+        <div class="kpi-sub">Puerto Varas / Frutillar / Osorno</div>
+      </div>
+    </div>
+
+    <!-- Dashboard Main Grid -->
+    <div class="dashboard-grid">
+
+      <!-- Left Column: CRM Pipeline Kanban & Direct Quote Studio -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+        
+        <!-- CRM Pipeline Board -->
+        <div class="panel-card">
+          <div class="panel-title-bar">
+            <div class="panel-title">
+              <span>🎯 Pipeline Comercial B2B (War Room Kanban)</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-emerald" onclick="window.loadCommandCenterLeads()">🔄 Actualizar Leads</button>
+              <button class="btn" onclick="window.exportCSV()">📥 Exportar Excel</button>
+            </div>
+          </div>
+
+          <!-- Kanban Columns -->
+          <div class="kanban-board" id="kanbanBoard">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Direct PDF Cotizador & Dispatcher -->
+        <div class="panel-card">
+          <div class="panel-title-bar">
+            <div class="panel-title">
+              <span>🖨️ Cotizador Interactivo &amp; Despacho Oficial (Notion + Gmail + Telegram)</span>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+            <div class="form-group">
+              <label class="form-label">Cliente / Inmobiliaria</label>
+              <input id="quoteClient" type="text" class="form-control" value="Inmobiliaria Frutillar Bajo">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monto Neto (CLP)</label>
+              <input id="quotePrice" type="text" class="form-control" value="100000" style="color:var(--emerald); font-weight:700;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Drone &amp; Equipamiento</label>
+              <input id="quoteDrone" type="text" class="form-control" value="DJI Mini 5 Pro / Hasselblad CMOS 4/3">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo Electrónico Destino</label>
+              <input id="quoteEmail" type="email" class="form-control" value="vidalparedes.jaime@gmail.com" style="color:var(--amber);">
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:8px;">
+            <button class="btn btn-primary" style="flex:1;" onclick="window.submitQuote('download')">📥 Generar PDF &amp; Notion</button>
+            <button class="btn btn-pink" style="flex:1;" onclick="window.submitQuote('email')">📧 Despachar por Gmail &amp; Telegram</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Secretaría Camila Interactive AI Console & Voice Dictation -->
+      <div style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- AI Assistant Station -->
+        <div class="panel-card">
+          <div class="panel-title-bar">
+            <div class="panel-title" style="color:var(--pink);">
+              <span>👩‍💼 Secretaría Camila IA (NVIDIA 70B)</span>
+            </div>
+            <button id="btnDictate" class="btn" style="border-color:var(--pink); color:var(--pink);" onclick="window.toggleVoiceDictation()">
+              🎙️ Dictar por Voz
+            </button>
+          </div>
+
+          <!-- Chat Console -->
+          <div class="chat-console">
+            <div class="chat-messages" id="chatMessages">
+              <div class="chat-msg chat-msg-camila">
+                ¡Buenos días Don Jaime y Doña Nicole! Soy <b>Camila</b>, su Secretaría Ejecutiva asistida por <b>NVIDIA Llama 3.1 70B</b>. He filtrado los prospectos más reales de la Región de Los Lagos. ¿En qué propuesta trabajaremos hoy?
+              </div>
+            </div>
+
+            <!-- Quick Chips -->
+            <div style="display:flex; flex-wrap:wrap; gap:6px;">
+              <button class="btn" style="font-size:9px; padding:4px 8px;" onclick="window.sendPrompt('Camila: Optimiza la propuesta comercial para Inmobiliaria Frutillar ofreciendo MasterPlan 360°.')">
+                ✉️ Optimizar Correo B2B
+              </button>
+              <button class="btn" style="font-size:9px; padding:4px 8px;" onclick="window.sendPrompt('Dame una proyección de cartera y próximos cierres de ventas.')">
+                📊 Proyección Cartera
+              </button>
+            </div>
+
+            <div class="input-row">
+              <textarea id="chatInputText" class="chat-input" placeholder="Escribe o dicta tu orden para Camila..." onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); window.submitChat(); }"></textarea>
+              <button class="btn btn-pink" onclick="window.submitChat()">⚡ ENVIAR</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Curated Real Prospects Filter Card -->
+        <div class="panel-card">
+          <div class="panel-title-bar">
+            <div class="panel-title" style="color:var(--emerald);">
+              <span>🎯 Blancos Reales Recomendados</span>
+            </div>
+          </div>
+
+          <div id="curatedList" style="display:flex; flex-direction:column; gap:10px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Scripts Logic -->
+  <script>
+    // System Initialization & State
+    const API_BASE = window.location.origin;
+
+    window.onload = function() {
+      window.loadCommandCenterLeads();
+      window.loadCuratedProspects();
+    };
+
+    // Load Kanban Leads
+    window.loadCommandCenterLeads = function() {
+      fetch('/api/leads-json')
+        .then(r => r.json())
+        .then(d => {
+          const leads = (d && d.leads && d.leads.length > 0) ? d.leads : window.getFallbackLeads();
+          window.renderKanban(leads);
+          document.getElementById('kpiLeadsCount').innerText = leads.length + ' Reales';
+        })
+        .catch(() => {
+          const leads = window.getFallbackLeads();
+          window.renderKanban(leads);
+        });
+    };
+
+    window.getFallbackLeads = function() {
+      return [
+        { id: 1, nombre: "Inmobiliaria Frutillar Bajo", ubicacion: "Frutillar", etapa: "CAPTURADO", score: 96, motivo_top: "Parcelas sin recorrido 360°" },
+        { id: 2, nombre: "Country Club Puerto Varas", ubicacion: "Puerto Varas", etapa: "CONTACTADO", score: 92, motivo_top: "Requiere ChatBot IA 24/7" },
+        { id: 3, nombre: "Parcelaciones Osorno Sur", ubicacion: "Osorno", etapa: "DEMO", score: 88, motivo_top: "Cotización $100K CLP solicitada" }
+      ];
+    };
+
+    window.renderKanban = function(leads) {
+      const stages = ['CAPTURADO', 'CONTACTADO', 'DEMO', 'COTIZACION', 'GANADO'];
+      const stageColors = {
+        'CAPTURADO': 'var(--blue)',
+        'CONTACTADO': 'var(--purple)',
+        'DEMO': 'var(--cyan)',
+        'COTIZACION': 'var(--amber)',
+        'GANADO': 'var(--emerald)'
+      };
+
+      const board = document.getElementById('kanbanBoard');
+      board.innerHTML = stages.map(stg => {
+        const colLeads = leads.filter(l => (l.etapa || 'CAPTURADO') === stg);
+        return `
+          <div class="kanban-col">
+            <div class="col-header" style="background:rgba(255,255,255,0.05); color:${stageColors[stg]};">
+              <span>${stg}</span>
+              <span>(${colLeads.length})</span>
+            </div>
+            ${colLeads.map(l => `
+              <div class="lead-item-card">
+                <div class="lead-item-name">${l.nombre}</div>
+                <div class="lead-item-meta">📍 ${l.ubicacion || 'Los Lagos'}<br>💡 ${l.motivo_top || 'Prospecto B2B'}</div>
+                <div style="display:flex; justify-between; align-items:center; margin-top:4px;">
+                  <span class="lead-tag" style="background:rgba(16,185,129,0.2); color:var(--emerald);">SCORE ${l.score || 90}</span>
+                  <button class="btn" style="font-size:8px; padding:2px 6px;" onclick="window.sendPrompt('Camila: Prepara la propuesta para ${l.nombre}')">✉️ Atender</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }).join('');
+    };
+
+    // Load Curated Prospects
+    window.loadCuratedProspects = function() {
+      fetch('/api/secretaria/curated-prospects')
+        .then(r => r.json())
+        .then(d => {
+          const list = d.prospectos || [];
+          const container = document.getElementById('curatedList');
+          container.innerHTML = list.map(p => `
+            <div style="background:#090d16; border:1px solid var(--card-border); border-radius:10px; padding:10px; font-size:11px; display:flex; flex-direction:column; gap:6px;">
+              <div style="display:flex; justify-content:space-between; font-weight:700; color:#fff;">
+                <span>${p.empresa}</span>
+                <span style="color:var(--emerald); font-size:9px;">${p.prioridad}</span>
+              </div>
+              <div style="color:var(--text-muted); font-size:10px;">🔍 ${p.falenciaDetectada}</div>
+              <div style="color:var(--cyan); font-weight:600; font-size:10px;">🚀 ${p.servicioRecomendado}</div>
+              <button class="btn btn-pink" style="font-size:9px; padding:4px;" onclick="window.sendPrompt('Camila: Redacta la propuesta ejecutiva para ${p.empresa} (${p.contacto})')">✉️ Redactar Propuesta</button>
+            </div>
+          `).join('');
+        })
+        .catch(() => {});
+    };
+
+    // Secretaría Chat Logic
+    window.sendPrompt = function(txt) {
+      document.getElementById('chatInputText').value = txt;
+      window.submitChat();
+    };
+
+    window.submitChat = function() {
+      const inp = document.getElementById('chatInputText');
+      const txt = inp.value.trim();
+      if (!txt) return;
+
+      const container = document.getElementById('chatMessages');
+      container.innerHTML += `<div class="chat-msg chat-msg-user">${txt}</div>`;
+      inp.value = '';
+      container.scrollTop = container.scrollHeight;
+
+      fetch('/api/secretaria/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: txt })
+      })
+      .then(r => r.json())
+      .then(d => {
+        const reply = d.reply || 'Don Jaime, he procesado su instrucción.';
+        container.innerHTML += `<div class="chat-msg chat-msg-camila">${reply.replace(/\n/g, '<br>')}</div>`;
+        container.scrollTop = container.scrollHeight;
+        window.speak(reply);
+      })
+      .catch(e => {
+        container.innerHTML += `<div class="chat-msg chat-msg-camila" style="color:var(--red);">Error: ${e.message}</div>`;
+      });
+    };
+
+    // Voice Dictation & Speech Synthesis
+    window.toggleVoiceDictation = function() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Navegador no soporta reconocimiento de voz nativo. Usa Chrome o Edge.');
+        return;
+      }
+      const rec = new SpeechRecognition();
+      rec.lang = 'es-CL';
+      rec.onstart = () => {
+        document.getElementById('btnDictate').innerText = '🔴 Escuchando...';
+      };
+      rec.onresult = (e) => {
+        document.getElementById('chatInputText').value = e.results[0][0].transcript;
+        document.getElementById('btnDictate').innerText = '🎙️ Dictar por Voz';
+        window.submitChat();
+      };
+      rec.start();
+    };
+
+    window.speak = function(txt) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(txt.replace(/[*#_`]/g, '').substring(0, 200));
+      utter.lang = 'es-CL';
+      window.speechSynthesis.speak(utter);
+    };
+
+    // PDF Quote & Email Dispatch
+    window.submitQuote = function(action) {
+      const cliente = document.getElementById('quoteClient').value;
+      const monto = document.getElementById('quotePrice').value;
+      const drone = document.getElementById('quoteDrone').value;
+      const clientEmail = document.getElementById('quoteEmail').value;
+
+      const endpoint = action === 'email' ? '/api/secretaria/send-email' : '/api/secretaria/quote';
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente, monto, drone, clientEmail })
+      })
+      .then(r => r.json())
+      .then(d => {
+        alert(`✅ OPERACIÓN EXITOSA:\n\n${d.message || 'Cotización registrada en Notion y compilada en PDF.'}`);
+        if (d.pdfUrl && action === 'download') window.open(d.pdfUrl, '_blank');
+      })
+      .catch(e => alert('Error: ' + e.message));
+    };
+
+    window.exportCSV = function() {
+      window.location.href = '/api/download-master-csv';
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AustralHQ Enterprise CRM — macOS Glassmorphism Suite</title>
+  
+  <!-- Modern Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --glass-bg: rgba(18, 24, 38, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.09);
+      --glass-hover: rgba(255, 255, 255, 0.14);
+      --cyan: #66fcf1;
+      --pink: #f472b6;
+      --purple: #c084fc;
+      --emerald: #34d399;
+      --amber: #fbbf24;
+      --coral: #f87171;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 26px;
+      --radius-md: 18px;
+      --radius-sm: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(244, 114, 182, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 90% 20%, rgba(102, 252, 241, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(192, 132, 252, 0.06) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(7, 9, 14, 0.5); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--pink); }
+
+    /* macOS Native Custom Titlebar */
+    .app-titlebar {
+      height: 38px;
+      background: rgba(10, 14, 24, 0.7);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      -webkit-app-region: drag;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .mac-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .mac-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+    }
+    .mac-close { background: #ff5f56; border: 1px solid #e0443e; }
+    .mac-min   { background: #ffbd2e; border: 1px solid #dea123; }
+    .mac-max   { background: #27c93f; border: 1px solid #1aab29; }
+
+    .titlebar-text {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* App Header / Navigation Bar */
+    header.glass-header {
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(15, 21, 36, 0.35);
+      backdrop-filter: blur(30px) saturate(180%);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.8), rgba(192, 132, 252, 0.8));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 8px 24px rgba(244, 114, 182, 0.35);
+    }
+
+    .brand-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ffffff, #f472b6, #66fcf1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Nav Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(9, 13, 22, 0.5);
+      padding: 4px;
+      border-radius: 16px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .nav-tab {
+      padding: 8px 16px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-tab.active, .nav-tab:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .nav-tab.active {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Main Container */
+    main.content-area {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Glass Panels */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(40px) saturate(190%);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .glass-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Hero KPI Grid */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) 1.4fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 1300px) {
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .metric-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 140px;
+    }
+
+    .metric-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.03em;
+    }
+
+    .badge-pill {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-emerald { background: rgba(52, 211, 153, 0.18); color: var(--emerald); border: 1px solid rgba(52, 211, 153, 0.3); }
+    .badge-pink    { background: rgba(244, 114, 182, 0.18); color: var(--pink); border: 1px solid rgba(244, 114, 182, 0.3); }
+    .badge-cyan    { background: rgba(102, 252, 241, 0.18); color: var(--cyan); border: 1px solid rgba(102, 252, 241, 0.3); }
+
+    /* Mesh Gradient Insight Card (Hero Banner) */
+    .mesh-insight-card {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.85), rgba(192, 132, 252, 0.75), rgba(102, 252, 241, 0.85));
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      color: #050811;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 20px 50px rgba(244, 114, 182, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mesh-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.85;
+    }
+
+    .mesh-body {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 10px 0;
+    }
+
+    /* Main Multi-Column View Grid */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Divided Kanban / Data Columns */
+    .columns-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .data-column {
+      background: rgba(10, 14, 26, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .col-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 800;
+      font-size: 12px;
+      color: #fff;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 10px;
+    }
+
+    .prospect-tile {
+      background: rgba(21, 29, 48, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .prospect-tile:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .prospect-name {
+      font-weight: 700;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .prospect-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Buttons & Interactive Controls */
+    .glass-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .glass-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: translateY(-1px);
+    }
+
+    .glass-btn-pink {
+      background: linear-gradient(135deg, var(--pink), #ec4899);
+      border: none;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(244, 114, 182, 0.35);
+    }
+
+    .glass-btn-emerald {
+      background: linear-gradient(135deg, var(--emerald), #059669);
+      border: none;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(52, 211, 153, 0.35);
+    }
+
+    /* Chat & Voice IA Terminal */
+    .camila-terminal {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      height: 480px;
+    }
+
+    .terminal-messages {
+      flex: 1;
+      background: rgba(6, 9, 16, 0.7);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 11.5px;
+    }
+
+    .msg-bubble {
+      padding: 12px 14px;
+      border-radius: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+    .msg-camila {
+      background: rgba(244, 114, 182, 0.12);
+      border-left: 3.5px solid var(--pink);
+      color: #fff;
+    }
+    .msg-user {
+      background: rgba(102, 252, 241, 0.12);
+      border-right: 3.5px solid var(--cyan);
+      color: #fff;
+      margin-left: auto;
+      max-width: 85%;
+    }
+
+    textarea.terminal-input {
+      width: 100%;
+      height: 54px;
+      background: rgba(9, 13, 22, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      color: #fff;
+      padding: 10px 14px;
+      font-size: 11.5px;
+      font-family: inherit;
+      outline: none;
+      resize: none;
+    }
+
+    textarea.terminal-input:focus {
+      border-color: var(--pink);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- macOS Native Window Titlebar -->
+  <div class="app-titlebar">
+    <div class="mac-controls">
+      <span class="mac-btn mac-close" title="Cerrar"></span>
+      <span class="mac-btn mac-min" title="Minimizar"></span>
+      <span class="mac-btn mac-max" title="Maximizar"></span>
+    </div>
+    <div class="titlebar-text">AustralHQ Enterprise Suite v1.0 • macOS Glassmorphism Engine</div>
+    <div style="font-size:10px; color:var(--emerald); font-weight:700;">🟢 CONECTADO AL HQ</div>
+  </div>
+
+  <!-- App Glass Header Navigation -->
+  <header class="glass-header">
+    <div class="brand-group">
+      <div class="brand-icon">🛸</div>
+      <div>
+        <div class="brand-name">AustralHQ Executive Suite</div>
+        <div class="brand-tag">Plataforma Agéntica B2B • AustralDrone.CL</div>
+      </div>
+    </div>
+
+    <div class="nav-tabs">
+      <div class="nav-tab active">📊 Dashboard</div>
+      <div class="nav-tab" onclick="window.location.href='/'">🎮 Oficina 2D Live</div>
+      <div class="nav-tab" onclick="window.exportCSV()">📥 Exportar Excel</div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="content-area">
+
+    <!-- KPI Metric Cards Grid -->
+    <div class="kpi-row">
+      
+      <!-- Metric 1: Cartera -->
+      <div class="glass-card metric-card">
+        <div class="metric-title">
+          <span>CARTERA PROYECTADA</span>
+          <span class="badge-pill badge-cyan">+42% este año</span>
+        </div>
+        <div class="metric-value">$1.160.000 USD</div>
+        <div style="font-size:10.5px; color:var(--text-muted);">42 Macrolotes en prospección activa</div>
+      </div>
+
+      <!-- Metric 2: Prospectos Reales -->
+      <div class="glass-card metric-card">
+        <div class="metric-title">
+          <span>PROSPECTOS REALES</span>
+          <span class="badge-pill badge-emerald">78% Conversión</span>
+        </div>
+        <div class="metric-value">48 Reales</div>
+        <div style="font-size:10.5px; color:var(--text-muted);">Puerto Varas / Frutillar / Osorno</div>
+      </div>
+
+      <!-- Metric 3: Cotización Base -->
+      <div class="glass-card metric-card">
+        <div class="metric-title">
+          <span>COTIZACIÓN BASE</span>
+          <span class="badge-pill badge-pink">$100.000 CLP</span>
+        </div>
+        <div class="metric-value">DJI Mini 5</div>
+        <div style="font-size:10.5px; color:var(--text-muted);">Hasselblad 4K UHD / Ortomosaico SAG</div>
+      </div>
+
+      <!-- Hero Mesh Gradient Insight Banner -->
+      <div class="mesh-insight-card">
+        <div class="mesh-title">👩‍💼 Insights Secretaría Camila (NVIDIA 70B)</div>
+        <div class="mesh-body">
+          "Don Jaime, he seleccionado 3 parcelaciones en Frutillar Bajo con pauta activa. Recomiendo enviar propuesta de MasterPlan 360° hoy."
+        </div>
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <button class="glass-btn" style="background:rgba(0,0,0,0.3); color:#fff; border:none;" onclick="window.sendPrompt('Camila: Prepara la propuesta ejecutiva de Frutillar.')">
+            ⚡ Ejecutar Propuesta
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Main Grid: Data Columns & AI Assistant -->
+    <div class="main-grid">
+      
+      <!-- Left: Divided Data Grid Columns -->
+      <div class="glass-card" style="display:flex; flex-direction:column; gap:18px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h3 style="font-family:'Outfit',sans-serif; font-size:16px; font-weight:800; color:#fff;">🎯 Prospección B2B Dividida por Zonas</h3>
+          <button class="glass-btn glass-btn-emerald" onclick="window.loadLeads()">🔄 Actualizar Datos</button>
+        </div>
+
+        <div class="columns-row">
+          
+          <!-- Column 1: Puerto Varas -->
+          <div class="data-column">
+            <div class="col-title-bar">
+              <span>📍 Puerto Varas</span>
+              <span style="color:var(--cyan);">(16 Leads)</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Inmobiliaria Los Lagos SpA</div>
+              <div class="prospect-desc">14.8 Has • Loteo privado sin MasterPlan 360° en su sitio web.</div>
+              <span class="badge-pill badge-cyan" style="align-self:flex-start;">SCORE 96/100</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Country Club Llanquihue</div>
+              <div class="prospect-desc">22.0 Has • Pauta activa Meta Ads sin video drone 4K.</div>
+              <span class="badge-pill badge-emerald" style="align-self:flex-start;">SCORE 92/100</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Frutillar -->
+          <div class="data-column">
+            <div class="col-title-bar">
+              <span>📍 Frutillar</span>
+              <span style="color:var(--pink);">(14 Leads)</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Inversiones Frutillar Bajo</div>
+              <div class="prospect-desc">8.5 Has • Requiere ChatBot IA 24/7 y Landing Inmobiliaria.</div>
+              <span class="badge-pill badge-pink" style="align-self:flex-start;">SCORE 95/100</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Fundo Rincón Frutillar</div>
+              <div class="prospect-desc">31.0 Has • Macrolote con delimitación predial SAG.</div>
+              <span class="badge-pill badge-emerald" style="align-self:flex-start;">SCORE 90/100</span>
+            </div>
+          </div>
+
+          <!-- Column 3: Osorno -->
+          <div class="data-column">
+            <div class="col-title-bar">
+              <span>📍 Osorno / Sur</span>
+              <span style="color:var(--purple);">(18 Leads)</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Parcelaciones Osorno Campo</div>
+              <div class="prospect-desc">12.0 Has • Cotización PDF de $100.000 CLP solicitada.</div>
+              <span class="badge-pill badge-cyan" style="align-self:flex-start;">SCORE 88/100</span>
+            </div>
+            <div class="prospect-tile">
+              <div class="prospect-name">Agrícola Puyehue SpA</div>
+              <div class="prospect-desc">45.0 Has • Levantamiento fotogramétrico requerido.</div>
+              <span class="badge-pill badge-emerald" style="align-self:flex-start;">SCORE 94/100</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- PDF Cotizador Form -->
+        <div style="border-top:1px solid var(--glass-border); padding-top:16px; margin-top:8px;">
+          <h4 style="font-family:'Outfit',sans-serif; font-size:14px; font-weight:800; color:var(--pink); margin-bottom:12px;">🖨️ Despacho de Cotizaciones PDF &amp; Notion API</h4>
+          <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+            <input id="qClient" type="text" class="terminal-input" style="height:38px;" value="Inmobiliaria Frutillar Bajo">
+            <input id="qPrice" type="text" class="terminal-input" style="height:38px; color:var(--emerald);" value="100000">
+            <input id="qEmail" type="email" class="terminal-input" style="height:38px; color:var(--cyan);" value="vidalparedes.jaime@gmail.com">
+          </div>
+          <div style="display:flex; gap:10px; margin-top:12px;">
+            <button class="glass-btn glass-btn-pink" style="flex:1;" onclick="window.sendQuote('email')">📧 Despachar por Gmail &amp; Telegram</button>
+            <button class="glass-btn" style="flex:1;" onclick="window.sendQuote('download')">📥 Generar PDF &amp; Registrar en Notion</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right: Secretaría Camila IA Assistant Panel -->
+      <div class="glass-card" style="display:flex; flex-direction:column; gap:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--glass-border); padding-bottom:12px;">
+          <h3 style="font-family:'Outfit',sans-serif; font-size:15px; font-weight:800; color:var(--pink);">👩‍💼 Secretaría Camila (NVIDIA 70B)</h3>
+          <button id="btnVoice" class="glass-btn" style="padding:6px 12px; font-size:10px; border-color:var(--pink); color:var(--pink);" onclick="window.toggleVoice()">🎙️ Dictar por Voz</button>
+        </div>
+
+        <div class="camila-terminal">
+          <div class="terminal-messages" id="chatBox">
+            <div class="msg-bubble msg-camila">
+              ¡Buenos días Don Jaime! Soy <b>Camila</b>, su Secretaría Ejecutiva asistida por <b>NVIDIA Llama 3.1 70B</b>. He sincronizado la base de datos de Notion y los bots de Telegram. ¿En qué propuesta comercial trabajamos hoy?
+            </div>
+          </div>
+
+          <div style="display:flex; gap:8px;">
+            <textarea id="chatInput" class="terminal-input" placeholder="Escribe o dicta tu orden para Camila..." onkeydown="if(event.key==='Enter' && !event.shiftKey){ event.preventDefault(); window.submitChat(); }"></textarea>
+            <button class="glass-btn glass-btn-pink" style="padding:0 18px;" onclick="window.submitChat()">⚡ ENVIAR</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Logic Scripts -->
+  <script>
+    window.onload = function() {
+      window.loadLeads();
+    };
+
+    window.loadLeads = function() {
+      fetch('/api/leads-json')
+        .then(r => r.json())
+        .catch(() => {});
+    };
+
+    window.sendPrompt = function(txt) {
+      document.getElementById('chatInput').value = txt;
+      window.submitChat();
+    };
+
+    window.submitChat = function() {
+      const inp = document.getElementById('chatInput');
+      const txt = inp.value.trim();
+      if (!txt) return;
+
+      const box = document.getElementById('chatBox');
+      box.innerHTML += `<div class="msg-bubble msg-user">${txt}</div>`;
+      inp.value = '';
+      box.scrollTop = box.scrollHeight;
+
+      fetch('/api/secretaria/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: txt })
+      })
+      .then(r => r.json())
+      .then(d => {
+        const reply = d.reply || 'Don Jaime, he procesado su instrucción.';
+        box.innerHTML += `<div class="msg-bubble msg-camila">${reply.replace(/\n/g, '<br>')}</div>`;
+        box.scrollTop = box.scrollHeight;
+        window.speak(reply);
+      })
+      .catch(e => {
+        box.innerHTML += `<div class="msg-bubble msg-camila" style="color:var(--coral);">Error de conexión: ${e.message}</div>`;
+      });
+    };
+
+    window.toggleVoice = function() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return alert('Usar navegador Chrome o Edge.');
+      const rec = new SpeechRecognition();
+      rec.lang = 'es-CL';
+      rec.onstart = () => document.getElementById('btnVoice').innerText = '🔴 Escuchando...';
+      rec.onresult = (e) => {
+        document.getElementById('chatInput').value = e.results[0][0].transcript;
+        document.getElementById('btnVoice').innerText = '🎙️ Dictar por Voz';
+        window.submitChat();
+      };
+      rec.start();
+    };
+
+    window.speak = function(txt) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(txt.replace(/[*#_`]/g, '').substring(0, 200));
+      utter.lang = 'es-CL';
+      window.speechSynthesis.speak(utter);
+    };
+
+    window.sendQuote = function(action) {
+      const cliente = document.getElementById('qClient').value;
+      const monto = document.getElementById('qPrice').value;
+      const clientEmail = document.getElementById('qEmail').value;
+      const endpoint = action === 'email' ? '/api/secretaria/send-email' : '/api/secretaria/quote';
+
+      fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente, monto, clientEmail })
+      })
+      .then(r => r.json())
+      .then(d => alert(`✅ ${d.message || 'Cotización procesada exitosamente.'}`))
+      .catch(e => alert('Error: ' + e.message));
+    };
+
+    window.exportCSV = function() {
+      window.location.href = '/api/download-master-csv';
+    };
+  </script>
+</body>
+</html>
