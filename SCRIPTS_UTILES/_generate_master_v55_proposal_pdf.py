@@ -18,7 +18,7 @@ def build_pdf(filename):
 
     styles = getSampleStyleSheet()
     
-    # Palette Elegante Executive Enterprise
+    # Palette Elegante Executive Enterprise v5.5
     COLOR_PRIMARY = colors.HexColor('#0f172a')   # Deep Slate / Onyx
     COLOR_ACCENT = colors.HexColor('#6366f1')    # Indigo / Royal Violet
     COLOR_TEAL = colors.HexColor('#0d9488')      # Deep Emerald Teal
@@ -68,10 +68,10 @@ def build_pdf(filename):
     # PÁGINA 1: PORTADA & BENCHMARKING DE MERCADO INTERNACIONAL + DIAGNÓSTICO
     # =============================================================
     header_data = [[
-        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN EN 2 OPCIONES DE PAGO ÚNICO (LICENCIA PERPETUA)", cover_title_style),
+        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN DE AGENTE DE VENTAS AUTÓNOMO CON PIZARRA ELECTRÓNICA", cover_title_style),
     ], [
         Paragraph("<b>SECRETARÍA CAMILA™ + CHATBOT AI GENERATIVO 24/7 EN CASCADA 70B</b><br/>"
-                  "La primera Plataforma Autónoma de Ventas, Calificación BANT, Motor SQL y Atribución ROI Inmobiliaria<br/>"
+                  "Pizarra Electrónica Autónoma, Reactivador de Leads Dormidos, Motor SQL y Atribución ROI Inmobiliaria<br/>"
                   "<i>Diseñada para Inmobiliarias, Corredoras y Loteos de la Región de Los Lagos (Puerto Varas, Frutillar, Puerto Montt)</i>", cover_sub_style)
     ]]
 
@@ -117,7 +117,7 @@ def build_pdf(filename):
             Paragraph("<b>Secretaría Camila™ (Nuestra Solución)</b>", table_cell_style),
             Paragraph("Pago Único / Licencia Perpetua", table_cell_style),
             Paragraph("<b>$590.000 - $1.290.000 CLP (Pago Único)</b><br/>(~$630 - $1.380 USD Pago Único)", table_cell_style),
-            Paragraph("<b>Sin cobros mensuales recurrentes, cliente dueño absoluto del software.</b>", table_cell_style)
+            Paragraph("<b>Sin cobros mensuales recurrentes, Pizarra Autónoma, dictado por voz 🎙️ y Base de Datos SQL.</b>", table_cell_style)
         ]
     ]
 
@@ -188,7 +188,7 @@ def build_pdf(filename):
     story.append(Paragraph("3. CÓMO FUNCIONA EL CHATBOT WEB & LA SECRETARÍA CAMILA (PARTE I)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
-    p_func1 = ("Secretaría Camila™ opera como una arquitectura de doble motor en tiempo real: el **Chatbot Web 24/7** que reside en el sitio comercial del cliente como antena receptora, y la **Plataforma Autónoma del CEO**, el centro de mando donde se concentran los leads, el CRM y la inteligencia de ventas. A continuación se detallan sus primeras 4 habilidades principales:")
+    p_func1 = ("Secretaría Camila™ opera como una arquitectura de doble motor en tiempo real: el **Chatbot Web 24/7** que reside en el sitio comercial del cliente como antena receptora, y la **Plataforma Autónoma del CEO**, el centro de mando donde se concentran los leads, la Pizarra Electrónica y la inteligencia de ventas. A continuación se detallan sus habilidades principales de atención:")
     story.append(Paragraph(p_func1, body_style))
 
     story.append(Paragraph("<b>SKILL 1: Calificación Conversacional BANT & Scoring en Tiempo Real (0-100 Pts)</b>", h2_style))
@@ -228,8 +228,8 @@ def build_pdf(filename):
         ],
         [
             Paragraph("<b>PLATAFORMA AUTÓNOMA</b><br/>(El Cerebro del CEO)", table_cell_style),
-            Paragraph("Es el Centro de Mando privado del dueño o gerente comercial (<code>https://camila.sucorredora.cl</code>). Contiene el CRM, proyecciones e inteligencia de ventas.", table_cell_style),
-            Paragraph("El corredor habla con Camila por dictado de voz 🎙️, gestiona el pipeline de prospectos y dispara conversaciones por WhatsApp.", table_cell_style)
+            Paragraph("Es el Centro de Mando privado del dueño o gerente comercial (<code>https://camila.sucorredora.cl</code>). Contiene la Pizarra Electrónica, CRM y dictado por voz.", table_cell_style),
+            Paragraph("El corredor habla con Camila por dictado de voz 🎙️, gestiona el pipeline de prospectos y proyecta diagramas en la Pizarra.", table_cell_style)
         ]
     ]
 
@@ -246,38 +246,38 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 3 COMPLETA
 
     # =============================================================
-    # PÁGINA 3: MATRIZ DE SKILLS Y COMPETENCIAS AUTÓNOMAS (PARTE II)
+    # PÁGINA 3: PIZARRA ELECTRÓNICA & REACTIVADOR DE LEADS DORMIDOS (NUEVA DINÁMICA)
     # =============================================================
-    story.append(Paragraph("4. MATRIZ DE SKILLS Y COMPETENCIAS AUTÓNOMAS DE CAMILA (PARTE II)", h1_style))
+    story.append(Paragraph("4. PIZARRA ELECTRÓNICA AUTÓNOMA & REACTIVADOR DE LEADS DORMIDOS (PARTE II)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
-    p_func2 = ("Complementando la atención conversacional en la web, la Plataforma Autónoma proporciona al CEO y al equipo comercial 4 habilidades ejecutivas avanzadas para la gestión diaria del negocio inmobiliario:")
+    p_func2 = ("La versión v5.5 transforma la experiencia de gestión del CEO mediante la incorporación de dos herramientas autónomas de última generación:")
     story.append(Paragraph(p_func2, body_style))
 
-    story.append(Paragraph("<b>SKILL 5: Importador Universal Multi-Formato (CSV / XML / JSON)</b>", h2_style))
-    p_s5 = ("La plataforma permite a la corredora **subir su cartera histórica de clientes en 1 click**. "
-            "El parser universal detecta automáticamente archivos **CSV** (exportados de Excel), **XML** (`<lead><name>...</name></lead>`) y **JSON**, "
-            "incorporando miles de contactos a la base de datos SQL de Secretaría Camila sin costo adicional ni límite de volumen.")
+    story.append(Paragraph("<b>SKILL 5: Pizarra Electrónica & Diagramador de Flujo Autónomo de Camila</b>", h2_style))
+    p_s5 = ("Camila posee **control autónomo sobre una Pizarra Electrónica Visual**. Dibuja diagramas de flujo del embudo inmobiliario (`funnelDiagramNodes`), "
+            "construye gráficos estadísticos de conversión en tiempo real y redacta cajas de discurso estratégico (`camilaExplanation`) evaluando el rendimiento del negocio. "
+            "El CEO o corredor puede presionar **'Regenerar Diagramas de Pizarra'** para actualizar instantáneamente las proyecciones visuales de ventas.")
     story.append(Paragraph(p_s5, body_style))
     story.append(Spacer(1, 3))
 
-    story.append(Paragraph("<b>SKILL 6: Auto-Entrenamiento y Analítica de Patrones Inmobiliarios en Vivo</b>", h2_style))
-    p_s6 = ("Camila analiza continuamente los datos almacenados en SQL para calcular métricas clave: precio promedio de parcelas en catálogo, "
-            "porcentaje real de prospectos capturados fuera de horario laboral y sectores de mayor demanda en la Región de Los Lagos. "
-            "Genera automáticamente su propio System Prompt actualizado con los datos del catálogo en vivo (`/api/secretaria/ai-training-sync`).")
+    story.append(Paragraph("<b>SKILL 6: Motor Inteligente Reactivador de Leads Dormidos & Copywriting WhatsApp</b>", h2_style))
+    p_s6 = ("Camila escanea automáticamente la base de datos SQL identificando prospectos inactivos con **alto puntaje de compra BANT (Score 50+)**. "
+            "Para cada cliente dormido, Camila analiza sus notas y **redacta una estrategia de reactivación personalizada con copywriting de Neuromarketing**. "
+            "Genera botones directos de **Reactivación a 1 Click por WhatsApp Web** con el mensaje pre-cargado listo para disparar.")
     story.append(Paragraph(p_s6, body_style))
     story.append(Spacer(1, 3))
 
-    story.append(Paragraph("<b>SKILL 7: Dictado de Voz 🎙️ y Consola Ejecutiva 100% Editable (3 Temas Ultra-Blur)</b>", h2_style))
-    p_s7 = ("El dueño o corredor puede interactuar por **dictado de voz directo** con Camila para pedirle resúmenes de inventario y prospectos. "
-            "Además, **todos los registros pasados y futuros son 100% editables** (modificar títulos de parcelas, ubicaciones, precios $ CLP, metrajes m², notas y estados comerciales). "
-            "Cuenta con un selector de 3 estilos visuales ejecutivos sin emojis (Gris Claro Platinum por defecto, Oscuro Onyx y Esmeralda Corporativo).")
+    story.append(Paragraph("<b>SKILL 7: Dictado de Voz 🎙️, Edición 100% Total & 3 Temas Ultra-Blur (Sin Emojis)</b>", h2_style))
+    p_s7 = ("El CEO interactúa por **dictado de voz directo** con Camila para pedirle reportes. Además, **todos los registros pasados y futuros son 100% editables** "
+            "(modificar títulos de parcelas, ubicaciones, precios $ CLP, metrajes m², notas y estados comerciales). "
+            "Posee un diseño ejecutivo sin emojis con selector de 3 estilos visuales Ultra-Blur Glassmorphism (Gris Claro Platinum, Oscuro Onyx y Esmeralda Corporativo).")
     story.append(Paragraph(p_s7, body_style))
     story.append(Spacer(1, 3))
 
-    story.append(Paragraph("<b>SKILL 8: Medición Fidedigna de Atribución de Ventas e Impresión de Reportes ROI</b>", h2_style))
-    p_s8 = ("Cada prospecto capturado recibe un ID de atribución único que rastrea su ciclo de venta completo desde la primera interacción. "
-            "El sistema calcula el retorno de inversión real obtenido por las ventas cerradas y permite imprimir un **Reporte Certificado de ROI** para la gerencia.")
+    story.append(Paragraph("<b>SKILL 8: Importador Universal (CSV/XML/JSON) & Medición ROI Certificada</b>", h2_style))
+    p_s8 = ("Permite subir la cartera histórica de clientes exportada de Excel en 1 click sin límite. Cada prospecto recibe un ID de atribución único "
+            "que rastrea su ciclo de venta completo, permitiendo imprimir un **Reporte Certificado de ROI** para la gerencia.")
     story.append(Paragraph(p_s8, body_style))
 
     story.append(Spacer(1, 8))
@@ -304,14 +304,14 @@ def build_pdf(filename):
             Paragraph("Despacha fichas de prospectos al celular del corredor en tiempo real.", table_cell_style)
         ],
         [
-            Paragraph("<b>Skill 5: Importador Universal</b>", table_cell_style),
+            Paragraph("<b>Skill 5: Pizarra Electrónica IA</b>", table_cell_style),
             Paragraph("Plataforma Autónoma CEO", table_cell_style),
-            Paragraph("Sube bases de datos históricas de Excel (CSV/XML/JSON) en 1 click.", table_cell_style)
+            Paragraph("Camila dibuja diagramas de flujo y explicaciones estratégicas visuales.", table_cell_style)
         ],
         [
-            Paragraph("<b>Skill 6: Auto-Entrenamiento SQL</b>", table_cell_style),
+            Paragraph("<b>Skill 6: Reactivador de Leads</b>", table_cell_style),
             Paragraph("Motor Inteligente Backend", table_cell_style),
-            Paragraph("Genera prompts dinámicos y analiza patrones de demanda automáticamente.", table_cell_style)
+            Paragraph("Revive prospectos inactivos con copywriting personalizado a WhatsApp.", table_cell_style)
         ],
         [
             Paragraph("<b>Skill 7: Dictado 🎙️ & Edición Total</b>", table_cell_style),
@@ -319,9 +319,9 @@ def build_pdf(filename):
             Paragraph("Permite hablarle a Camila y editar cualquier campo de prospectos y parcelas.", table_cell_style)
         ],
         [
-            Paragraph("<b>Skill 8: Atribución de Ventas ROI</b>", table_cell_style),
+            Paragraph("<b>Skill 8: Importador & Atribución ROI</b>", table_cell_style),
             Paragraph("Plataforma Autónoma CEO", table_cell_style),
-            Paragraph("Mide ingresos exactos aportados por Camila e imprime reportes en PDF.", table_cell_style)
+            Paragraph("Sube bases de datos masivas (CSV/XML/JSON) e imprime reportes ROI.", table_cell_style)
         ]
     ]
 
@@ -355,14 +355,19 @@ def build_pdf(filename):
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
     comp_data = [
-        [Paragraph("Característica", table_header_style), Paragraph("Chatbot Tradicional / WhatsApp Bot Rígido", table_header_style), Paragraph("Secretaría Camila™ IA 24/7", table_header_style)],
+        [Paragraph("Característica", table_header_style), Paragraph("Chatbot Tradicional / WhatsApp Bot Rígido", table_header_style), Paragraph("Secretaría Camila™ IA 24/7 v5.5", table_header_style)],
         [
             Paragraph("<b>Fluidez Conversacional</b>", table_cell_style),
             Paragraph("Menús rígidos molestos (<i>'Marca 1 para parcelas, 2 para casas'</i>). El cliente se frustra.", table_cell_style),
             Paragraph("<b>Conversación humana fluida.</b> Comprende lenguaje natural y responde en 2 párrafos.", table_cell_style)
         ],
         [
-            Paragraph("<b>Conocimiento de Propiedades</b>", table_cell_style),
+            Paragraph("<b>Pizarra & Reactivador</b>", table_cell_style),
+            Paragraph("No posee pizarra ni reactiva clientes inactivos.", table_cell_style),
+            Paragraph("<b>Pizarra Electrónica Autónoma</b> con reactivador de prospectos a WhatsApp.", table_cell_style)
+        ],
+        [
+            Paragraph("<b>Conocimiento SQL</b>", table_cell_style),
             Paragraph("Solo responde texto estático preprogramado en listas fijas.", table_cell_style),
             Paragraph("<b>Consulta la base de datos SQL</b> y recomienda parcelas disponibles en vivo.", table_cell_style)
         ],
@@ -375,11 +380,6 @@ def build_pdf(filename):
             Paragraph("<b>Consola para el CEO</b>", table_cell_style),
             Paragraph("No tiene consola. Solo entrega una planilla Excel a fin de mes.", table_cell_style),
             Paragraph("<b>Plataforma Autónoma 100% Editable con dictado 🎙️</b>, CRM y WhatsApp.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>Atribución de Ventas ROI</b>", table_cell_style),
-            Paragraph("Imposible saber qué ventas provinieron del bot.", table_cell_style),
-            Paragraph("<b>Medición de Atribución ROI fidedigna</b> con reporte exportable en PDF.", table_cell_style)
         ]
     ]
 
@@ -411,12 +411,12 @@ def build_pdf(filename):
         [
             Paragraph("<b>OPCIÓN 1: PLAN CORREDORA PRO</b><br/><i>Para Corredoras de Propiedades de la zona</i>", table_cell_style),
             Paragraph("<b>$590.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$630 USD Pago Único)</i>", table_cell_style),
-            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram Bot y/o WhatsApp Business en &lt;3s.<br/>• Plataforma Autónoma Ejecutiva 100% Editable con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.<br/>• Licencia perpetua 'Llave en Mano' instalada en servidor.", table_cell_style)
+            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram Bot y/o WhatsApp Business en &lt;3s.<br/>• Plataforma Autónoma Ejecutiva 100% Editable con Pizarra y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.<br/>• Licencia perpetua 'Llave en Mano' instalada en servidor.", table_cell_style)
         ],
         [
             Paragraph("<b>OPCIÓN 2: PLAN INMOBILIARIA MULTI-PROYECTO ENTERPRISE</b><br/><i>(Incluye Capacidades Enterprise + Setup Instalación)</i>", table_cell_style),
             Paragraph("<b>$1.290.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$1.380 USD Pago Único)</i>", table_cell_style),
-            Paragraph("• **Todo lo de la Opción 1 + Servidor Dedicado Autónomo en Render.com**.<br/>• **Puesta en Marcha & Setup Inicial de Instalación Incluido**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA Entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
+            Paragraph("• **Todo lo de la Opción 1 + Servidor Dedicado Autónomo en Render.com**.<br/>• **Puesta en Marcha & Setup Inicial de Instalación Incluido**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Pizarra Electrónica Autónoma & Reactivador de Leads Dormidos a WhatsApp.<br/>• Cobertura multi-proyecto e Importador Universal (CSV/XML/JSON).<br/>• IA Entrenada con data propia de la empresa y catálogo dinámico.", table_cell_style)
         ]
     ]
 
@@ -452,7 +452,7 @@ def build_pdf(filename):
     story.append(t_footer)
 
     doc.build(story)
-    print(f"Dossier Maestro PDF (5 Páginas Perfectas - 2 Opciones Pago Único) generado exitosamente en: {filename}")
+    print(f"Dossier Maestro PDF v5.5 Enterprise (Con Pizarra & Reactivación) generado exitosamente en: {filename}")
 
 if __name__ == '__main__':
     out_dir = r"c:\Users\LyCoNs\Desktop\Secretaria Camila+CHATBOTAI"
