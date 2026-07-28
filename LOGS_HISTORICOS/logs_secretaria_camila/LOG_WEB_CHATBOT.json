@@ -1,0 +1,11 @@
+[
+  {
+    "timestamp": "2026-07-28T08:20:50.037Z",
+    "event": "telegram_contact_captured",
+    "businessName": "Austral Drone",
+    "capturedPhone": "+56987491964",
+    "leadScore": 85,
+    "lastMessage": "Cliente solicitó agendar reunión para MasterPlan 360 en Frutillar",
+    "estado": "REGISTRADO POR SECRETARIA CAMILA"
+  }
+]
