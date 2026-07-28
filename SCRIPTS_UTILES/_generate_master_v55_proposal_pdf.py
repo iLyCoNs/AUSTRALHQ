@@ -8,7 +8,7 @@ from reportlab.platypus import (
 )
 
 def build_pdf(filename):
-    # Printable area: 612 x 792 pt. Margins: 30pt. Width = 552 pt.
+    # Printable area: 612 x 792 pt. Margins: 30pt. Width = 552 pt. Height = 732 pt.
     doc = SimpleDocTemplate(
         filename,
         pagesize=letter,
@@ -18,7 +18,7 @@ def build_pdf(filename):
 
     styles = getSampleStyleSheet()
     
-    # Palette Elegante Executive Enterprise v5.5
+    # Palette Elegante Executive Enterprise
     COLOR_PRIMARY = colors.HexColor('#0f172a')   # Deep Slate / Onyx
     COLOR_ACCENT = colors.HexColor('#6366f1')    # Indigo / Royal Violet
     COLOR_TEAL = colors.HexColor('#0d9488')      # Deep Emerald Teal
@@ -47,28 +47,28 @@ def build_pdf(filename):
     )
     body_style = ParagraphStyle(
         'Body', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=8, leading=11.2, textColor=COLOR_TEXT, spaceAfter=3.5
+        fontName='Helvetica', fontSize=8.2, leading=11.5, textColor=COLOR_TEXT, spaceAfter=4
     )
     bullet_style = ParagraphStyle(
         'Bullet', parent=body_style,
-        leftIndent=8, firstLineIndent=-5, spaceAfter=2.5
+        leftIndent=8, firstLineIndent=-5, spaceAfter=3
     )
     table_header_style = ParagraphStyle(
         'TH', parent=styles['Normal'],
-        fontName='Helvetica-Bold', fontSize=7.5, leading=9.5, textColor=colors.white
+        fontName='Helvetica-Bold', fontSize=7.8, leading=9.8, textColor=colors.white
     )
     table_cell_style = ParagraphStyle(
         'TC', parent=styles['Normal'],
-        fontName='Helvetica', fontSize=7.2, leading=9.8, textColor=COLOR_TEXT
+        fontName='Helvetica', fontSize=7.5, leading=10, textColor=COLOR_TEXT
     )
 
     story = []
 
     # =============================================================
-    # PÁGINA 1: PORTADA & BENCHMARKING DE MERCADO INTERNACIONAL
+    # PÁGINA 1: PORTADA & BENCHMARKING DE MERCADO INTERNACIONAL + DIAGNÓSTICO
     # =============================================================
     header_data = [[
-        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA v5.5 ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN ENTERPRISE PAGO ÚNICO (LICENCIA PERPETUA)", cover_title_style),
+        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN EN 2 OPCIONES DE PAGO ÚNICO (LICENCIA PERPETUA)", cover_title_style),
     ], [
         Paragraph("<b>SECRETARÍA CAMILA™ + CHATBOT AI GENERATIVO 24/7 EN CASCADA 70B</b><br/>"
                   "La primera Plataforma Autónoma de Ventas, Calificación BANT, Motor SQL y Atribución ROI Inmobiliaria<br/>"
@@ -83,10 +83,10 @@ def build_pdf(filename):
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
     ]))
     story.append(header_table)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 8))
 
     story.append(Paragraph("1. BENCHMARKING DE MERCADO INTERNACIONAL & VALOR REAL DE LA TECNOLOGÍA", h1_style))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=4))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
     p_bench = ("A nivel mundial en los mercados inmobiliarios más avanzados de Estados Unidos y Latinoamérica, las soluciones de "
                "<b>Agentes de Ventas Autónomos con Inteligencia Artificial (AI Sales SDRs)</b> representan la tecnología de mayor retorno comercial. "
@@ -114,7 +114,7 @@ def build_pdf(filename):
             Paragraph("Costos impredecibles que aumentan con el tráfico.", table_cell_style)
         ],
         [
-            Paragraph("<b>Secretaría Camila™ (Nuestra Solución v5.5)</b>", table_cell_style),
+            Paragraph("<b>Secretaría Camila™ (Nuestra Solución)</b>", table_cell_style),
             Paragraph("Pago Único / Licencia Perpetua", table_cell_style),
             Paragraph("<b>$590.000 - $1.290.000 CLP (Pago Único)</b><br/>(~$630 - $1.380 USD Pago Único)", table_cell_style),
             Paragraph("<b>Sin cobros mensuales recurrentes, cliente dueño absoluto del software.</b>", table_cell_style)
@@ -124,16 +124,16 @@ def build_pdf(filename):
     t_bench = Table(bench_data, colWidths=[120, 110, 150, 172])
     t_bench.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 4.5),
+        ('PADDING', (0,0), (-1,-1), 5),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
     ]))
     story.append(t_bench)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 8))
 
     story.append(Paragraph("2. DIAGNÓSTICO DEL MERCADO EN LA REGIÓN DE LOS LAGOS", h1_style))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=4))
+    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
     p1 = ("En la Región de Los Lagos (Puerto Varas, Puerto Montt, Frutillar, Llanquihue, Osorno y Chiloé), el 68% del tráfico web ocurre "
           "<b>fuera de horario de oficina (20:00 a 01:00 hrs y fines de semana)</b>. Compradores de Santiago o Concepción buscan parcelas de 5.000m² "
@@ -173,7 +173,7 @@ def build_pdf(filename):
     t_steps = Table(steps_data, colWidths=[45, 235, 272])
     t_steps.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), COLOR_ACCENT),
-        ('PADDING', (0,0), (-1,-1), 4.5),
+        ('PADDING', (0,0), (-1,-1), 5),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
@@ -196,21 +196,21 @@ def build_pdf(filename):
             "Descubre la capacidad de compra del visitante indagando sutilmente cuatro pilares (Presupuesto, Autoridad de Decisión, Necesidad de Metraje m² y Tiempo de Compra). "
             "Asigna automáticamente un **Lead Score BANT de 0 a 100 puntos**, permitiendo al equipo comercial priorizar de inmediato a los clientes de mayor valor.")
     story.append(Paragraph(p_s1, body_style))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     story.append(Paragraph("<b>SKILL 2: Inyección Dinámica y Consulta de Catálogo SQL en Tiempo Real</b>", h2_style))
     p_s2 = ("Camila no responde con textos genéricos pregrabados. Está conectada directamente a la **Base de Datos SQL de Propiedades**. "
             "Cuando un usuario pregunta por parcelas en Frutillar o departamentos en Puerto Montt, Camila ejecuta una consulta SQL en vivo e inyecta "
             "las parcelas disponibles en el prompt de la IA, respondiendo con superficies exactas en m², ubicaciones precisas y precios en $ CLP.")
     story.append(Paragraph(p_s2, body_style))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     story.append(Paragraph("<b>SKILL 3: Captura Inteligente de WhatsApp / Teléfono & Detector de Intención</b>", h2_style))
     p_s3 = ("El motor conversacional detecta patrones numéricos telefónicos chilenos e internacionales (`+569...`) durante el diálogo. "
             "Al identificar la intención de compra del cliente, Camila solicita de forma elegante su WhatsApp para enviarle la ficha técnica del loteo. "
             "El teléfono es validado, etiquetado y registrado en la base de datos de manera instantánea.")
     story.append(Paragraph(p_s3, body_style))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 4))
 
     story.append(Paragraph("<b>SKILL 4: Disparo Instantáneo de Alertas Duales (&lt;3s) a Telegram Bot / WhatsApp Business</b>", h2_style))
     p_s4 = ("Al momento en que se captura el teléfono o se concreta una solicitud de cita, Camila despacha una **Notificación Dual en menos de 3 segundos** "
@@ -218,7 +218,7 @@ def build_pdf(filename):
             "el requerimiento específico y una etiqueta de horario para llamada de rescate inmediata.")
     story.append(Paragraph(p_s4, body_style))
 
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 8))
     symbiosis_data = [
         [Paragraph("Componente", table_header_style), Paragraph("Rol en el Negocio Inmobiliario", table_header_style), Paragraph("Interacción Práctica del Equipo", table_header_style)],
         [
@@ -236,7 +236,7 @@ def build_pdf(filename):
     t_symbiosis = Table(symbiosis_data, colWidths=[130, 205, 217])
     t_symbiosis.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 5),
+        ('PADDING', (0,0), (-1,-1), 6),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
@@ -246,7 +246,7 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 3 COMPLETA
 
     # =============================================================
-    # PÁGINA 3: CÓMO FUNCIONA EL CHATBOT WEB + SECRETARÍA CAMILA (PARTE II - MATRIZ DE SKILLS)
+    # PÁGINA 3: MATRIZ DE SKILLS Y COMPETENCIAS AUTÓNOMAS (PARTE II)
     # =============================================================
     story.append(Paragraph("4. MATRIZ DE SKILLS Y COMPETENCIAS AUTÓNOMAS DE CAMILA (PARTE II)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
@@ -280,7 +280,7 @@ def build_pdf(filename):
             "El sistema calcula el retorno de inversión real obtenido por las ventas cerradas y permite imprimir un **Reporte Certificado de ROI** para la gerencia.")
     story.append(Paragraph(p_s8, body_style))
 
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 8))
     skills_matrix_data = [
         [Paragraph("Habilidad Autónoma (Skill)", table_header_style), Paragraph("Entorno de Operación", table_header_style), Paragraph("Valor Comercial Inmobiliario", table_header_style)],
         [
@@ -328,7 +328,7 @@ def build_pdf(filename):
     t_skills = Table(skills_matrix_data, colWidths=[140, 150, 262])
     t_skills.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 4),
+        ('PADDING', (0,0), (-1,-1), 4.5),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
@@ -338,7 +338,7 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 4 COMPLETA
 
     # =============================================================
-    # PÁGINA 4: ARQUITECTURA TÉCNICA SQL, CASCADA 70B & EFICIENCIA n8n
+    # PÁGINA 4: ARQUITECTURA TÉCNICA SQL, CASCADA 70B & VENTAJA COMPETITIVA
     # =============================================================
     story.append(Paragraph("5. ARQUITECTURA TÉCNICA DE BASE DE DATOS Y CASCADA LLM 70B", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
@@ -355,7 +355,7 @@ def build_pdf(filename):
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
     comp_data = [
-        [Paragraph("Característica", table_header_style), Paragraph("Chatbot Tradicional / WhatsApp Bot Rígido", table_header_style), Paragraph("Secretaría Camila™ IA 24/7 v5.5", table_header_style)],
+        [Paragraph("Característica", table_header_style), Paragraph("Chatbot Tradicional / WhatsApp Bot Rígido", table_header_style), Paragraph("Secretaría Camila™ IA 24/7", table_header_style)],
         [
             Paragraph("<b>Fluidez Conversacional</b>", table_cell_style),
             Paragraph("Menús rígidos molestos (<i>'Marca 1 para parcelas, 2 para casas'</i>). El cliente se frustra.", table_cell_style),
@@ -396,109 +396,63 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 5 COMPLETA
 
     # =============================================================
-    # PÁGINA 5: MODELO COMERCIAL PAGO ÚNICO (LICENCIA PERPETUA LLAVE EN MANO)
+    # PÁGINA 5: PROPUESTA COMERCIAL DE 2 OPCIONES DE PAGO ÚNICO & CIERRE
     # =============================================================
-    story.append(Paragraph("7. MODELO COMERCIAL ENTERPRISE 100% PAGO ÚNICO (LICENCIA PERPETUA)", h1_style))
+    story.append(Paragraph("7. PROPUESTA COMERCIAL ENTERPRISE DE PAGO ÚNICO (LICENCIA PERPETUA)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
-    p_mod_intro = ("Nuestra propuesta comercial se basa en un **Modelo de Licencia Perpetua 'Llave en Mano' (100% Pago Único)**, "
-                   "sin cobros mensuales ni suscripciones recurrentes cobradas por nuestra empresa. La inmobiliaria es dueña absoluta de su software:")
-    story.append(Paragraph(p_mod_intro, body_style))
-
-    modalities_data = [
-        [Paragraph("Modalidad Comercial", table_header_style), Paragraph("Estructura de Cobro", table_header_style), Paragraph("Servicios Incluidos & Alcance Corporativo", table_header_style)],
-        [
-            Paragraph("<b>LICENCIA PERPETUA PRO</b><br/><i>(Para Corredoras de Propiedades)</i>", table_cell_style),
-            Paragraph("<b>$590.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
-            Paragraph("• El cliente es dueño absoluto de su software instalado.<br/>• ChatBot IA 24/7 en sitio web + Alertas a Telegram/WhatsApp Business.<br/>• Plataforma Autónoma 100% Editable con micrófono de voz y CRM.<br/>• Sin suscripciones mensuales recurrentes.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>LICENCIA PERPETUA ENTERPRISE MULTI-PROYECTO</b><br/><i>(Incluye Capacidades Enterprise)</i>", table_cell_style),
-            Paragraph("<b>$1.290.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
-            Paragraph("• **Todo lo del Plan Pro + Servidor Dedicado Autónomo en Render.com**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
-        ]
-    ]
-
-    t_modalities = Table(modalities_data, colWidths=[150, 140, 262])
-    t_modalities.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 6),
-        ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
-    ]))
-    story.append(t_modalities)
-    story.append(Spacer(1, 8))
-
-    story.append(Paragraph("<b>Detalle del Servicio de Setup Inicial & Puesta en Marcha ($490.000 CLP):</b>", h2_style))
-    story.append(Paragraph("• <b>Configuración del Servidor Autónomo:</b> Creación de la instancia en Render.com del cliente, asignación del subdominio corporativo (`camila.sucorredora.cl`) con certificado SSL HTTPS y vinculación de UptimeRobot para keep-alive 24/7.", bullet_style))
-    story.append(Paragraph("• <b>Entrenamiento del Prompt y Carga de Cartera:</b> Carga masiva de la cartera de parcelas y proyectos en la base de datos SQL e integración de las reglas de negocio en la IA.", bullet_style))
-    story.append(Paragraph("• <b>Verificación de Notificaciones & Prueba Incógnito:</b> Configuración del Telegram Bot / WhatsApp Business y prueba de carga en vivo antes de la entrega final.", bullet_style))
-
-    story.append(PageBreak()) # PÁGINA 6 COMPLETA
-
-    # =============================================================
-    # PÁGINA 6: PLANES DE INVERSIÓN CORPORATIVA & CIERRE COMERCIAL
-    # =============================================================
-    story.append(Paragraph("8. ESTRUCTURA DE INVERSIÓN COMERCIAL ENTERPRISE EN CHILE ($ CLP)", h1_style))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
-
-    p_pricing_intro = ("Considerando el valor real de mercado internacional ($30.000 USD/año en plataformas como Conversica o Qualified) "
-                       "y la potencia de la Inteligencia Artificial Generativa 70B incorporada, la estructura de inversión corporativa 100% Pago Único se establece en:")
+    p_pricing_intro = ("Nuestra propuesta comercial se estructura en **dos opciones exclusivas de Pago Único (Licencia Perpetua 'Llave en Mano')**, "
+                       "sin mensualidades ni cobros recurrentes. La empresa es dueña absoluta de su infraestructura de software:")
     story.append(Paragraph(p_pricing_intro, body_style))
+    story.append(Spacer(1, 4))
 
     planes_data = [
-        [Paragraph("Paquete Comercial Enterprise", table_header_style), Paragraph("Inversión (Pago Único)", table_header_style), Paragraph("Incluye & Alcance Corporativo", table_header_style)],
+        [Paragraph("Opción de Pago Único", table_header_style), Paragraph("Inversión (Pago Único)", table_header_style), Paragraph("Incluye & Alcance Corporativo Completo", table_header_style)],
         [
-            Paragraph("<b>PLAN CORREDORA PRO</b><br/><i>Para corredoras de propiedades de la zona</i>", table_cell_style),
+            Paragraph("<b>OPCIÓN 1: PLAN CORREDORA PRO</b><br/><i>Para Corredoras de Propiedades de la zona</i>", table_cell_style),
             Paragraph("<b>$590.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$630 USD Pago Único)</i>", table_cell_style),
-            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram y/o WhatsApp Business.<br/>• Plataforma Autónoma 100% Editable con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.<br/>• Licencia perpetua 'Llave en Mano'.", table_cell_style)
+            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram Bot y/o WhatsApp Business en &lt;3s.<br/>• Plataforma Autónoma Ejecutiva 100% Editable con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.<br/>• Licencia perpetua 'Llave en Mano' instalada en servidor.", table_cell_style)
         ],
         [
-            Paragraph("<b>PLAN INMOBILIARIA MULTI-PROYECTO ENTERPRISE</b><br/><i>(Incluye Capacidades Enterprise)</i>", table_cell_style),
+            Paragraph("<b>OPCIÓN 2: PLAN INMOBILIARIA MULTI-PROYECTO ENTERPRISE</b><br/><i>(Incluye Capacidades Enterprise + Setup Instalación)</i>", table_cell_style),
             Paragraph("<b>$1.290.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$1.380 USD Pago Único)</i>", table_cell_style),
-            Paragraph("• **Todo lo del Plan Pro + Servidor Dedicado Autónomo en Render.com**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA Entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
-        ],
-        [
-            Paragraph("<b>SETUP INICIAL & PUESTA EN MARCHA</b><br/><i>Pago único por única vez</i>", table_cell_style),
-            Paragraph("<b>$490.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
-            Paragraph("• Configuración de servidor autónomo en Render.com.<br/>• Entrenamiento del prompt con la cartera de propiedades del cliente.<br/>• Prueba de carga y verificación de notificaciones.", table_cell_style)
+            Paragraph("• **Todo lo de la Opción 1 + Servidor Dedicado Autónomo en Render.com**.<br/>• **Puesta en Marcha & Setup Inicial de Instalación Incluido**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA Entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
         ]
     ]
 
     t_planes = Table(planes_data, colWidths=[150, 130, 272])
     t_planes.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 6),
+        ('PADDING', (0,0), (-1,-1), 8),
         ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
     ]))
     story.append(t_planes)
-    story.append(Spacer(1, 8))
+    story.append(Spacer(1, 10))
 
     # JUSTIFICACIÓN FINANCIERA DE ALTO IMPACTO
     story.append(Paragraph("<b>Justificación Financiera e Insuperable Retorno de Inversión (ROI):</b>", h2_style))
-    story.append(Paragraph("1. <b>Comparativa contra Personal Humano:</b> Contratar ejecutivos humanos para cubrir turnos nocturnos y fines de semana cuesta más de <b>$1.200.000 CLP mensuales</b> por turno (más leyes sociales e imposiciones). Camila cuesta un solo pago, trabaja los 365 días del año, jamás pide licencias y atiende a 100 clientes en paralelo.", bullet_style))
+    story.append(Paragraph("1. <b>Comparativa contra Personal Humano:</b> Contratar ejecutivos humanos para cubrir turnos nocturnos y fines de semana cuesta más de <b>$1.200.000 CLP mensuales</b> por turno (más leyes sociales e imposiciones). Camila cuesta un solo pago único, trabaja los 365 días del año, jamás pide licencias y atiende a 100 clientes en paralelo.", bullet_style))
     story.append(Paragraph("2. <b>Retorno de Inversión Inmediato:</b> Con <b>UNA SOLA parcela o departamento vendido al año</b> rescatado un domingo a las 11 PM, la corredora recupera el costo total de la inversión de por vida. Todo lo demás es utilidad neta para la empresa.", bullet_style))
 
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 16))
 
     # FOOTER CLOSING
     footer_data = [[
         Paragraph("<b>¿Listo para dotar a tu inmobiliaria con la mejor tecnología de IA del mercado mundial?</b><br/>"
-                  "Contáctanos hoy para activar tu Licencia Perpetua de Secretaría Camila™ v5.5 Enterprise.", ParagraphStyle('FText5', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white, alignment=1))
+                  "Contáctanos hoy para activar tu Licencia Perpetua de Secretaría Camila™ Enterprise.", ParagraphStyle('FText5', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white, alignment=1))
     ]]
     t_footer = Table(footer_data, colWidths=[552])
     t_footer.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 10),
+        ('PADDING', (0,0), (-1,-1), 11),
         ('ALIGN', (0,0), (-1,-1), 'CENTER')
     ]))
     story.append(t_footer)
 
     doc.build(story)
-    print(f"Dossier Maestro v5.5 Enterprise (Pago Único $1.290.000) PDF generado exitosamente en: {filename}")
+    print(f"Dossier Maestro PDF (5 Páginas Perfectas - 2 Opciones Pago Único) generado exitosamente en: {filename}")
 
 if __name__ == '__main__':
     out_dir = r"c:\Users\LyCoNs\Desktop\Secretaria Camila+CHATBOTAI"
