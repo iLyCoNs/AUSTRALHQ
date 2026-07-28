@@ -1490,20 +1490,25 @@ const server = http.createServer((req, res) => {
                     try { logs = JSON.parse(fs.readFileSync(logFile, 'utf8')); } catch(e){}
                 }
 
+                const capturedPhone = (payload.data && payload.data.capturedPhone) || payload.capturedPhone || payload.phone || 'Sin número aún';
+                const lastMsg = (payload.data && payload.data.lastMessage) || payload.lastMessage || payload.message || 'Cliente activo en el sitio web';
+                const leadScore = (payload.data && payload.data.leadScore) || payload.leadScore || 85;
+                const eventName = payload.event || 'cliente_activo_web';
+
                 const newEntry = {
                     timestamp: new Date().toISOString(),
-                    event: payload.event || 'web_chat_interaction',
+                    event: eventName,
                     businessName: payload.businessName || 'Austral Drone',
-                    capturedPhone: (payload.data && payload.data.capturedPhone) || payload.capturedPhone || 'N/A',
-                    leadScore: (payload.data && payload.data.leadScore) || payload.leadScore || 75,
-                    lastMessage: (payload.data && payload.data.lastMessage) || payload.lastMessage || 'Interacción en sitio web',
-                    estado: 'REGISTRADO POR SECRETARIA CAMILA'
+                    capturedPhone: capturedPhone,
+                    leadScore: leadScore,
+                    lastMessage: lastMsg,
+                    estado: 'NOTIFICADO A TELEGRAM POR CAMILA'
                 };
 
                 logs.unshift(newEntry);
-                fs.writeFileSync(logFile, JSON.stringify(logs.slice(0, 100), null, 2), 'utf8');
+                fs.writeFileSync(logFile, JSON.stringify(logs.slice(0, 150), null, 2), 'utf8');
 
-                // Notificar a Telegram
+                // ENVIAR ALERTA INSTANTÁNEA A TELEGRAM (DON JAIME)
                 const secretsFile = path.join(ROOT, 'config_secrets.json');
                 let tgToken = '8977196047:AAFpxQRS__g4pG0HetNk22vgOjqud5Ki9EA';
                 let tgChatId = '1024898120';
@@ -1511,23 +1516,26 @@ const server = http.createServer((req, res) => {
                     try {
                         const s = JSON.parse(fs.readFileSync(secretsFile, 'utf8'));
                         if (s.TELEGRAM_BOT_TOKEN) tgToken = s.TELEGRAM_BOT_TOKEN;
+                        if (s.TELEGRAM_CEO_CHAT_ID) tgChatId = s.TELEGRAM_CEO_CHAT_ID;
                     } catch(e){}
                 }
 
-                const msgText = `🌐 <b>SECRETARÍA CAMILA -- CAPTURA CHATBOT WEB</b>\n\n` +
-                                `📞 <b>Teléfono Capturado:</b> ${newEntry.capturedPhone}\n` +
-                                `⭐ <b>Score Lead:</b> ${newEntry.leadScore}/100\n` +
-                                `💬 <b>Detalle:</b> ${newEntry.lastMessage}\n\n` +
-                                `👩‍💼 <i>Secretaría Camila: Registrado en historial y derivado a CEO Jaime & Nicole.</i>`;
+                const telegramAlertText = `🟢 <b>SECRETARÍA CAMILA -- ALERTA DE CLIENTE ACTIVO EN VIVO</b>\n\n` +
+                                          `💬 <b>Mensaje / Acción:</b> ${lastMsg}\n` +
+                                          `📞 <b>Teléfono / Contacto:</b> ${capturedPhone}\n` +
+                                          `⭐ <b>Score Lead:</b> ${leadScore}/100\n` +
+                                          `🌐 <b>Origen:</b> Chatbot Web (www.australdrone.cl)\n\n` +
+                                          `👩‍💼 <i>Secretaría Camila: Cliente interactuando en vivo. Ficha registrada en historial.</i>`;
 
                 fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: tgChatId, text: msgText, parse_mode: 'HTML' })
-                }).catch(err => console.error('[TELEGRAM ERR]:', err));
+                    body: JSON.stringify({ chat_id: tgChatId, text: telegramAlertText, parse_mode: 'HTML' })
+                }).then(r => console.log('[TELEGRAM ALERT NOTIFIED OK]'))
+                  .catch(err => console.error('[TELEGRAM ALERT ERR]:', err));
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ status: "SUCCESS", message: "Evento registrado exitosamente por Secretaría Camila.", log: newEntry }));
+                res.end(JSON.stringify({ status: "SUCCESS", message: "Cliente activo notificado a Telegram por Secretaría Camila.", log: newEntry }));
             } catch(err) {
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: err.message }));

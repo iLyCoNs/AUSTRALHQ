@@ -1,5 +1,14 @@
 [
   {
+    "timestamp": "2026-07-28T09:00:00.483Z",
+    "event": "cliente_activo_web",
+    "businessName": "Austral Drone",
+    "capturedPhone": "+56987491964",
+    "leadScore": 95,
+    "lastMessage": "Jaime interactuando en vivo en www.australdrone.cl: 'que me llame'",
+    "estado": "NOTIFICADO A TELEGRAM POR CAMILA"
+  },
+  {
     "timestamp": "2026-07-28T08:56:14.430Z",
     "event": "telegram_contact_captured",
     "businessName": "Austral Drone",
