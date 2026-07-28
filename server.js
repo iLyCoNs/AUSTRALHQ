@@ -366,13 +366,13 @@ const server = http.createServer((req, res) => {
                 const data = JSON.parse(body);
                 const agentId = data.agent || 'cazador360';
                 const scriptMap = {
-                    'cazador360': 'cazador_360_vendedores.py',
+                    'cazador360': 'AGENTES/vendedores_360/cazador_360_vendedores.py',
                     'cazadorbanana': 'simular_email_360.py',
                     'cazadorventas': 'cazador_facebook.py',
                     'yapo': 'yapo_scanner.py',
                     'troya': 'core/agente_14_caballo_troya.py'
                 };
-                const script = scriptMap[agentId] || 'cazador_360_vendedores.py';
+                const script = scriptMap[agentId] || 'AGENTES/vendedores_360/cazador_360_vendedores.py';
                 const scriptPath = path.join(ROOT, script);
             if (req.url === '/api/run-agent' && req.method === 'POST') {
                 const data = JSON.parse(body || '{}');
@@ -546,14 +546,14 @@ const server = http.createServer((req, res) => {
                 let params = {};
                 if (body) params = JSON.parse(body);
                 
-                let scriptName = 'agente_filtro_leads.py';
+                let scriptName = 'AGENTES/filtro_analista/agente_filtro_leads.py';
                 let targetAgent = 'filtro_analista';
 
                 if (params.agent === 'cazador_ads_local') {
-                    scriptName = 'cazador_ads_local.py';
+                    scriptName = 'AGENTES/cazador_360/cazador_ads_local.py';
                     targetAgent = 'cazador360';
                 } else if (params.mode === 'meta' || params.agent === 'cazador360') {
-                    scriptName = 'cazador_meta_api.py';
+                    scriptName = 'AGENTES/cazador_meta/cazador_meta_api.py';
                     targetAgent = 'cazador360';
                 } else if (params.agent === 'cazadorventas') {
                     scriptName = 'cazador_facebook.py';
@@ -1520,7 +1520,7 @@ Tu misión principal con Don Jaime y Doña Nicole:
                 });
 
                 // Guardar interacción en la memoria de chat de la Secretaría
-                const secMemoryFile = path.join(ROOT, 'SECRETARIA_CHAT_MEMORY.json');
+                const secMemoryFile = path.join(ROOT, 'AGENTES/secretaria_camila/SECRETARIA_CHAT_MEMORY.json');
                 let chatHistory = [];
                 if (fs.existsSync(secMemoryFile)) {
                     try { chatHistory = JSON.parse(fs.readFileSync(secMemoryFile, 'utf8')); } catch(e){}
