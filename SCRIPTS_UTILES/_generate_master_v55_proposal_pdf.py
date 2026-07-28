@@ -8,7 +8,7 @@ from reportlab.platypus import (
 )
 
 def build_pdf(filename):
-    # Printable area: 612 x 792 pt. Margins: 30pt left/right/top/bottom. Width = 552 pt.
+    # Printable area: 612 x 792 pt. Margins: 30pt. Width = 552 pt.
     doc = SimpleDocTemplate(
         filename,
         pagesize=letter,
@@ -68,7 +68,7 @@ def build_pdf(filename):
     # PÁGINA 1: PORTADA & BENCHMARKING DE MERCADO INTERNACIONAL
     # =============================================================
     header_data = [[
-        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA v5.5 ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN DE AGENTE DE VENTAS AUTÓNOMO CON IA", cover_title_style),
+        Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA v5.5 ENTERPRISE</b><br/>PROPUESTA DE INTEGRACIÓN ENTERPRISE PAGO ÚNICO (LICENCIA PERPETUA)", cover_title_style),
     ], [
         Paragraph("<b>SECRETARÍA CAMILA™ + CHATBOT AI GENERATIVO 24/7 EN CASCADA 70B</b><br/>"
                   "La primera Plataforma Autónoma de Ventas, Calificación BANT, Motor SQL y Atribución ROI Inmobiliaria<br/>"
@@ -90,7 +90,7 @@ def build_pdf(filename):
 
     p_bench = ("A nivel mundial en los mercados inmobiliarios más avanzados de Estados Unidos y Latinoamérica, las soluciones de "
                "<b>Agentes de Ventas Autónomos con Inteligencia Artificial (AI Sales SDRs)</b> representan la tecnología de mayor retorno comercial. "
-               "Plataformas internacionales como <b>Conversica, Qualified (Piper AI) o Intercom Fin AI</b> registran los siguientes valores reales de mercado:")
+               "Plataformas internacionales como <b>Conversica, Qualified (Piper AI) o Intercom Fin AI</b> registran los siguientes valores de mercado:")
     story.append(Paragraph(p_bench, body_style))
 
     bench_data = [
@@ -115,9 +115,9 @@ def build_pdf(filename):
         ],
         [
             Paragraph("<b>Secretaría Camila™ (Nuestra Solución v5.5)</b>", table_cell_style),
-            Paragraph("Suscripción Plana LATAM", table_cell_style),
-            Paragraph("<b>$590.000 - $1.290.000 CLP / mes</b><br/>(~$630 - $1.380 USD / mes)", table_cell_style),
-            Paragraph("<b>Cero costo por resolución, dictado por voz 🎙️ y Base de Datos SQL.</b>", table_cell_style)
+            Paragraph("Pago Único / Licencia Perpetua", table_cell_style),
+            Paragraph("<b>$590.000 - $1.290.000 CLP (Pago Único)</b><br/>(~$630 - $1.380 USD Pago Único)", table_cell_style),
+            Paragraph("<b>Sin cobros mensuales recurrentes, cliente dueño absoluto del software.</b>", table_cell_style)
         ]
     ]
 
@@ -183,7 +183,7 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 2 COMPLETA
 
     # =============================================================
-    # PÁGINA 2: CÓMO FUNCIONA EL CHATBOT WEB + SECRETARÍA CAMILA (HOJA 1)
+    # PÁGINA 2: CÓMO FUNCIONA EL CHATBOT WEB + SECRETARÍA CAMILA (PARTE I)
     # =============================================================
     story.append(Paragraph("3. CÓMO FUNCIONA EL CHATBOT WEB & LA SECRETARÍA CAMILA (PARTE I)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
@@ -396,25 +396,26 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 5 COMPLETA
 
     # =============================================================
-    # PÁGINA 5: MODALIDADES DE ADQUISICIÓN COMERCIAL Y SERVICIOS
+    # PÁGINA 5: MODELO COMERCIAL PAGO ÚNICO (LICENCIA PERPETUA LLAVE EN MANO)
     # =============================================================
-    story.append(Paragraph("7. MODALIDADES DE ADQUISICIÓN COMERCIAL & SERVICIOS GESTIONADOS", h1_style))
+    story.append(Paragraph("7. MODELO COMERCIAL ENTERPRISE 100% PAGO ÚNICO (LICENCIA PERPETUA)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
-    p_mod_intro = ("Nuestra empresa ofrece dos modalidades flexibles de contratación adaptadas a las necesidades operativas de la inmobiliaria o corredora de propiedades:")
+    p_mod_intro = ("Nuestra propuesta comercial se basa en un **Modelo de Licencia Perpetua 'Llave en Mano' (100% Pago Único)**, "
+                   "sin cobros mensuales ni suscripciones recurrentes cobradas por nuestra empresa. La inmobiliaria es dueña absoluta de su software:")
     story.append(Paragraph(p_mod_intro, body_style))
 
     modalities_data = [
-        [Paragraph("Modalidad Comercial", table_header_style), Paragraph("Estructura de Cobro", table_header_style), Paragraph("Servicios Incluidos & Alcance", table_header_style)],
+        [Paragraph("Modalidad Comercial", table_header_style), Paragraph("Estructura de Cobro", table_header_style), Paragraph("Servicios Incluidos & Alcance Corporativo", table_header_style)],
         [
-            Paragraph("<b>MODALIDAD 1: SaaS GESTIONADO 24/7</b><br/><i>(Servicio Recurrente Gestionado - Recomendado)</i>", table_cell_style),
-            Paragraph("<b>Setup Inicial: $490.000 CLP</b> (Pago único)<br/>+ <b>Suscripción: $590.000 CLP / mes</b>", table_cell_style),
-            Paragraph("• Hosting y servidores 24/7 en Render.com incluidos.<br/>• Consumo ilimitado de APIs de IA Generativa 70B.<br/>• Soporte técnico continuo, actualizaciones y mantenimiento.<br/>• Respaldo y sincronización en Base de Datos SQL.", table_cell_style)
+            Paragraph("<b>LICENCIA PERPETUA PRO</b><br/><i>(Para Corredoras de Propiedades)</i>", table_cell_style),
+            Paragraph("<b>$590.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
+            Paragraph("• El cliente es dueño absoluto de su software instalado.<br/>• ChatBot IA 24/7 en sitio web + Alertas a Telegram/WhatsApp Business.<br/>• Plataforma Autónoma 100% Editable con micrófono de voz y CRM.<br/>• Sin suscripciones mensuales recurrentes.", table_cell_style)
         ],
         [
-            Paragraph("<b>MODALIDAD 2: LICENCIA PERPETUA</b><br/><i>(Venta de Paquete 'Llave en Mano')</i>", table_cell_style),
+            Paragraph("<b>LICENCIA PERPETUA ENTERPRISE MULTI-PROYECTO</b><br/><i>(Incluye Capacidades Enterprise)</i>", table_cell_style),
             Paragraph("<b>$1.290.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
-            Paragraph("• El cliente es dueño absoluto de su plataforma instalada.<br/>• Se instala en las cuentas de Render y Vercel del cliente.<br/>• Incluye 30 días de garantía de instalación y entrenamiento.<br/>• Sin pagos mensuales recurrentes a nuestra empresa (los costos de servidores de $0-$7 USD/mes los paga el cliente directo).", table_cell_style)
+            Paragraph("• **Todo lo del Plan Pro + Servidor Dedicado Autónomo en Render.com**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
         ]
     ]
 
@@ -430,7 +431,7 @@ def build_pdf(filename):
     story.append(Spacer(1, 8))
 
     story.append(Paragraph("<b>Detalle del Servicio de Setup Inicial & Puesta en Marcha ($490.000 CLP):</b>", h2_style))
-    story.append(Paragraph("• <b>Configuración del Servidor Autónomo:</b> Creación de la instancia en Render.com, asignación del subdominio corporativo (`camila.sucorredora.cl`) con certificado SSL HTTPS y vinculación de UptimeRobot para keep-alive 24/7.", bullet_style))
+    story.append(Paragraph("• <b>Configuración del Servidor Autónomo:</b> Creación de la instancia en Render.com del cliente, asignación del subdominio corporativo (`camila.sucorredora.cl`) con certificado SSL HTTPS y vinculación de UptimeRobot para keep-alive 24/7.", bullet_style))
     story.append(Paragraph("• <b>Entrenamiento del Prompt y Carga de Cartera:</b> Carga masiva de la cartera de parcelas y proyectos en la base de datos SQL e integración de las reglas de negocio en la IA.", bullet_style))
     story.append(Paragraph("• <b>Verificación de Notificaciones & Prueba Incógnito:</b> Configuración del Telegram Bot / WhatsApp Business y prueba de carga en vivo antes de la entrega final.", bullet_style))
 
@@ -443,29 +444,24 @@ def build_pdf(filename):
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_ACCENT, spaceAfter=5))
 
     p_pricing_intro = ("Considerando el valor real de mercado internacional ($30.000 USD/año en plataformas como Conversica o Qualified) "
-                       "y la potencia de la Inteligencia Artificial Generativa 70B incorporada, la estructura de inversión corporativa se establece en:")
+                       "y la potencia de la Inteligencia Artificial Generativa 70B incorporada, la estructura de inversión corporativa 100% Pago Único se establece en:")
     story.append(Paragraph(p_pricing_intro, body_style))
 
     planes_data = [
-        [Paragraph("Plan Comercial", table_header_style), Paragraph("Inversión Mensual ($ CLP)", table_header_style), Paragraph("Incluye & Alcance Corporativo", table_header_style)],
+        [Paragraph("Paquete Comercial Enterprise", table_header_style), Paragraph("Inversión (Pago Único)", table_header_style), Paragraph("Incluye & Alcance Corporativo", table_header_style)],
         [
             Paragraph("<b>PLAN CORREDORA PRO</b><br/><i>Para corredoras de propiedades de la zona</i>", table_cell_style),
-            Paragraph("<b>$590.000 CLP</b><br/>+ IVA / mes<br/><i>(~$630 USD/mes)</i>", table_cell_style),
-            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram y/o WhatsApp Business.<br/>• Plataforma Autónoma 100% Editable con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.", table_cell_style)
+            Paragraph("<b>$590.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$630 USD Pago Único)</i>", table_cell_style),
+            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram y/o WhatsApp Business.<br/>• Plataforma Autónoma 100% Editable con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.<br/>• Licencia perpetua 'Llave en Mano'.", table_cell_style)
         ],
         [
-            Paragraph("<b>PLAN INMOBILIARIA MULTI-PROYECTO</b><br/><i>Para desarrolladores inmobiliarios y loteos</i>", table_cell_style),
-            Paragraph("<b>$1.290.000 CLP</b><br/>+ IVA / mes<br/><i>(~$1.380 USD/mes)</i>", table_cell_style),
-            Paragraph("• Todo lo del Plan Pro.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).<br/>• Capacitación a ejecutivos + Prompt a medida.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>PLAN ENTERPRISE DEDICADO</b><br/><i>Para grandes corporativos o franquicias</i>", table_cell_style),
-            Paragraph("<b>$2.490.000 CLP</b><br/>+ IVA / mes<br/><i>(~$2.650 USD/mes)</i>", table_cell_style),
-            Paragraph("• Servidor dedicado autónomo en Render.com.<br/>• Base de Datos Turso Cloud SQLite dedicada.<br/>• IA entrenada con data propia de la empresa.<br/>• API exclusiva y soporte prioritario 24/7.", table_cell_style)
+            Paragraph("<b>PLAN INMOBILIARIA MULTI-PROYECTO ENTERPRISE</b><br/><i>(Incluye Capacidades Enterprise)</i>", table_cell_style),
+            Paragraph("<b>$1.290.000 CLP</b><br/>(Pago Único por única vez)<br/><i>(~$1.380 USD Pago Único)</i>", table_cell_style),
+            Paragraph("• **Todo lo del Plan Pro + Servidor Dedicado Autónomo en Render.com**.<br/>• **Base de Datos Turso Cloud SQLite dedicada (9 GB / +2.000.000 registros)**.<br/>• Cobertura multi-proyecto y loteos ilimitados.<br/>• Importador Universal de Cartera (CSV/XML/JSON).<br/>• IA Entrenada con data propia de la empresa y catálogo dinámico.<br/>• Integración con CRM (HubSpot, Salesforce, Tokko).", table_cell_style)
         ],
         [
             Paragraph("<b>SETUP INICIAL & PUESTA EN MARCHA</b><br/><i>Pago único por única vez</i>", table_cell_style),
-            Paragraph("<b>$490.000 CLP</b><br/>(Pago Único)", table_cell_style),
+            Paragraph("<b>$490.000 CLP</b><br/>(Pago Único por única vez)", table_cell_style),
             Paragraph("• Configuración de servidor autónomo en Render.com.<br/>• Entrenamiento del prompt con la cartera de propiedades del cliente.<br/>• Prueba de carga y verificación de notificaciones.", table_cell_style)
         ]
     ]
@@ -483,15 +479,15 @@ def build_pdf(filename):
 
     # JUSTIFICACIÓN FINANCIERA DE ALTO IMPACTO
     story.append(Paragraph("<b>Justificación Financiera e Insuperable Retorno de Inversión (ROI):</b>", h2_style))
-    story.append(Paragraph("1. <b>Comparativa contra Personal Humano:</b> Contratar ejecutivos humanos para cubrir turnos nocturnos y fines de semana cuesta más de <b>$1.200.000 CLP mensuales</b> por turno (más leyes sociales e imposiciones). Camila cuesta la mitad, trabaja los 365 días del año, jamás pide licencias y atiende a 100 clientes en paralelo.", bullet_style))
-    story.append(Paragraph("2. <b>Retorno de Inversión Inmediato:</b> Con <b>UNA SOLA parcela o departamento vendido al año</b> rescatado un domingo a las 11 PM, la corredora recupera el costo de <b>2 a 3 años completos del servicio de Camila</b>. Todo lo demás es utilidad neta para la empresa.", bullet_style))
+    story.append(Paragraph("1. <b>Comparativa contra Personal Humano:</b> Contratar ejecutivos humanos para cubrir turnos nocturnos y fines de semana cuesta más de <b>$1.200.000 CLP mensuales</b> por turno (más leyes sociales e imposiciones). Camila cuesta un solo pago, trabaja los 365 días del año, jamás pide licencias y atiende a 100 clientes en paralelo.", bullet_style))
+    story.append(Paragraph("2. <b>Retorno de Inversión Inmediato:</b> Con <b>UNA SOLA parcela o departamento vendido al año</b> rescatado un domingo a las 11 PM, la corredora recupera el costo total de la inversión de por vida. Todo lo demás es utilidad neta para la empresa.", bullet_style))
 
     story.append(Spacer(1, 10))
 
     # FOOTER CLOSING
     footer_data = [[
         Paragraph("<b>¿Listo para dotar a tu inmobiliaria con la mejor tecnología de IA del mercado mundial?</b><br/>"
-                  "Contáctanos hoy para activar la versión de prueba de Secretaría Camila™ v5.5 en tu sitio web.", ParagraphStyle('FText5', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white, alignment=1))
+                  "Contáctanos hoy para activar tu Licencia Perpetua de Secretaría Camila™ v5.5 Enterprise.", ParagraphStyle('FText5', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white, alignment=1))
     ]]
     t_footer = Table(footer_data, colWidths=[552])
     t_footer.setStyle(TableStyle([
@@ -502,7 +498,7 @@ def build_pdf(filename):
     story.append(t_footer)
 
     doc.build(story)
-    print(f"Dossier Maestro v5.5 Enterprise PDF generado exitosamente en: {filename}")
+    print(f"Dossier Maestro v5.5 Enterprise (Pago Único $1.290.000) PDF generado exitosamente en: {filename}")
 
 if __name__ == '__main__':
     out_dir = r"c:\Users\LyCoNs\Desktop\Secretaria Camila+CHATBOTAI"
