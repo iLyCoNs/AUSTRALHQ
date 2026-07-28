@@ -1,46 +1,47 @@
 @echo off
-title INSTALADOR Y COMPILADOR CRM AUSTRALDRONE ENTERPRISE
+title CRM AUSTRALDRONE ENTERPRISE -- EJECUTABLE WINDOWS
 color 0B
 cls
 echo ====================================================================
-echo        🛸 AUSTRALDRONE.CL -- INSTALADOR CRM ENTERPRISE (EXE)
+echo        🛸 AUSTRALDRONE.CL -- ENTERPRISE CRM WINDOWS SUITE
 echo ====================================================================
 echo.
-echo [1/3] Verificando entorno Node.js y dependencias...
-call npm install --no-audit --no-fund
 
-echo.
 echo ====================================================================
-echo  SELECCIONA UNA OPCION DE EJECUCION:
+echo  SELECCIONA UNA OPCION:
 echo ====================================================================
 echo [1] Iniciar Programa Nativo de Escritorio (Modo Electron)
-echo [2] Compilar Instalador Oficial de Windows (.exe / .msi)
-echo [3] Compilar Ejecutable Portable (.exe 1-Clic)
+echo [2] Compilar Programa Ejecutable de Windows (dist\CRM_AustralDrone_Enterprise.exe)
+echo [3] Abrir Ejecutable Compilado (.exe)
 echo ====================================================================
 set /p op="Opcion (1, 2 o 3): "
 
 if "%op%"=="1" (
     echo.
-    echo Invocando Programa Nativo...
-    npx electron .
+    echo Invocando Programa Nativo de Escritorio...
+    cmd.exe /c "npx electron ."
     goto fin
 )
 
 if "%op%"=="2" (
     echo.
-    echo Compilando Instalador Oficial de Windows (dist/CRM AustralDrone Setup.exe)...
-    npx electron-builder --win nsis
+    echo Compilando ejecutable nativo de Windows (dist\CRM_AustralDrone_Enterprise.exe)...
+    cmd.exe /c "npx electron-packager . CRM_AustralDrone_Enterprise --platform=win32 --arch=x64 --out=dist --overwrite"
+    echo.
+    echo ¡COMPILACION EXITOSA!
+    echo Tu programa ejecutable esta listo en:
+    echo dist\CRM_AustralDrone_Enterprise-win32-x64\CRM_AustralDrone_Enterprise.exe
     goto fin
 )
 
 if "%op%"=="3" (
     echo.
-    echo Compilando Ejecutable Portable (dist/CRM AustralDrone Portable.exe)...
-    npx electron-builder --win portable
+    echo Lanzando CRM_AustralDrone_Enterprise.exe...
+    start "" "dist\CRM_AustralDrone_Enterprise-win32-x64\CRM_AustralDrone_Enterprise.exe"
     goto fin
 )
 
 :fin
 echo.
-echo Operacion finalizada exitosamente.
+echo Operacion finalizada.
 pause

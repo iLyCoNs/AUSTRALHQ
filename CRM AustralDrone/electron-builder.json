@@ -8,14 +8,7 @@
     "**/*"
   ],
   "win": {
-    "target": ["nsis", "portable"],
-    "icon": "assets/icon.ico"
-  },
-  "nsis": {
-    "oneClick": false,
-    "allowToChangeInstallationDirectory": true,
-    "createDesktopShortcut": true,
-    "createStartMenuShortcut": true,
-    "shortcutName": "CRM AustralDrone Enterprise"
+    "target": ["portable", "dir"],
+    "verifyUpdateCodeSignature": false
   }
 }

@@ -1,23 +1,6 @@
+# Node & Electron builds
 node_modules/
-.DS_Store
+dist/
 *.log
-.gemini/
-antigravity/
-brain/
-scratch/
-task-*.log
-*.zip
-AGENTE_NICOLE/
-LOGS_HISTORICOS/
-REPORTES_AGENTES/CAZADOR360/*.json
-REPORTES_AGENTES/FILTRO_ANALISTA/*.json
-REPORTES_AGENTES/YAPOCL/*.json
-REPORTES_AGENTES/FB_HUNTER/*.json
-REPORTES_AGENTES/TROYA/*.json
-REPORTES_AGENTES/LEGAL/*.json
-.env
-config_secrets.json
-*.env
-__pycache__/
-*.pyc
-
+CRM AustralDrone/dist/
+CRM AustralDrone/node_modules/
