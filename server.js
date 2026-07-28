@@ -91,6 +91,51 @@ function saveSecret(keyName, value) {
 }
 
 // HTTP Server
+
+// Función de Sincronización Automática al Despertar de Render.com (Notion API + Vercel Chatbot Logs)
+async function syncHistoricalAbsenceLogs() {
+    console.log('[CAMILA WAKEUP PROTOCOL] Servidor iniciado/despertado. Sincronizando historial de ausencia...');
+    try {
+        const logDir = path.join(__dirname, 'LOGS_HISTORICOS', 'logs_secretaria_camila');
+        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true });
+        const logFile = path.join(logDir, 'LOG_WEB_CHATBOT.json');
+
+        let localLogs = [];
+        if (fs.existsSync(logFile)) {
+            try { localLogs = JSON.parse(fs.readFileSync(logFile, 'utf8')); } catch(e){}
+        }
+
+        // Consultar Vercel Edge Chatbot (que no duerme)
+        try {
+            const vercelRes = await fetch('https://chatbot-ad-mocha.vercel.app/api/leads', { method: 'GET' });
+            if (vercelRes.ok) {
+                const remoteLeads = await vercelRes.json();
+                if (Array.isArray(remoteLeads)) {
+                    remoteLeads.forEach(rLead => {
+                        if (!localLogs.some(l => l.capturedPhone === rLead.capturedPhone && l.timestamp === rLead.timestamp)) {
+                            localLogs.unshift({
+                                timestamp: rLead.timestamp || new Date().toISOString(),
+                                event: rLead.event || 'web_lead_captured_during_sleep',
+                                businessName: 'Austral Drone',
+                                capturedPhone: rLead.capturedPhone || rLead.phone || 'N/A',
+                                leadScore: rLead.leadScore || 80,
+                                lastMessage: rLead.lastMessage || rLead.message || 'Capturado durante ausencia en Render',
+                                estado: 'SINCRONIZADO TRAS DESPERTAR'
+                            });
+                        }
+                    });
+                }
+            }
+        } catch(e) {}
+
+        fs.writeFileSync(logFile, JSON.stringify(localLogs.slice(0, 150), null, 2), 'utf8');
+        console.log(`[CAMILA WAKEUP PROTOCOL OK] Sincronización finalizada. Total registros: ${localLogs.length}`);
+    } catch(err) {
+        console.error('[CAMILA WAKEUP ERR]:', err);
+    }
+}
+
+
 const server = http.createServer((req, res) => {
     // CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -1515,6 +1560,22 @@ const server = http.createServer((req, res) => {
                 res.end(JSON.stringify({ error: err.message }));
             }
         });
+        return;
+    }
+
+    
+    // API Route: GET /api/ping (Keep-Alive Anti-Adormecimiento para Render.com)
+    if (req.method === 'GET' && req.url.startsWith('/api/ping')) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: "ONLINE", timestamp: new Date().toISOString(), service: "AustralHQ Server" }));
+        return;
+    }
+
+    // API Route: POST /api/secretaria/sync-absence (Sincronización Manual/Auto de Ausencia tras Despertar)
+    if (req.method === 'POST' && req.url.startsWith('/api/secretaria/sync-absence')) {
+        syncHistoricalAbsenceLogs();
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ status: "SUCCESS", message: "Sincronización de ausencia ejecutada por Secretaría Camila." }));
         return;
     }
 
