@@ -1,0 +1,125 @@
+{
+  "name": "Camila Autonomous Prospecting & Growth Engine -- AustralHQ",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "name": "Cron Trigger Cada 4 Horas",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "camila-auto-trigger",
+        "options": {}
+      },
+      "name": "Webhook Camila Trigger Manual",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "command": "python AGENTES/cazador_meta/cazador_meta_api.py"
+      },
+      "name": "Ejecutar Agente Cazador Meta",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        500,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://localhost:8080/api/camila/projections",
+        "options": {}
+      },
+      "name": "Calcular Proyección Financiera Camila",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        750,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "1024898120",
+        "text": "=👩‍💼 <b>Secretaría Camila — Informe de Proyección para Nicole & Don Jaime</b>\n\n📊 <b>Estado de Producción:</b> {{ $json.estado_produccion }}\n🚀 <b>Leads Calificados Hoy:</b> {{ $json.leads_hoy }}\n💰 <b>Proyección Semanal Cotizaciones ($100k CLP):</b> ${{ $json.proyeccion_semanal_clp }} CLP\n📈 <b>Meta Mensual Cartera:</b> ${{ $json.meta_mensual_usd }} USD\n\n💡 <b>Recomendación Estratégica Camila para Nicole:</b> {{ $json.recomendacion_nicole }}",
+        "additionalFields": {
+          "parse_mode": "HTML"
+        }
+      },
+      "name": "Notificación Telegram Nicole & Jaime",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Cron Trigger Cada 4 Horas": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Agente Cazador Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook Camila Trigger Manual": {
+      "main": [
+        [
+          {
+            "node": "Ejecutar Agente Cazador Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ejecutar Agente Cazador Meta": {
+      "main": [
+        [
+          {
+            "node": "Calcular Proyección Financiera Camila",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calcular Proyección Financiera Camila": {
+      "main": [
+        [
+          {
+            "node": "Notificación Telegram Nicole & Jaime",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
