@@ -17,7 +17,7 @@ def build_pdf(filename):
 
     styles = getSampleStyleSheet()
     
-    # Palette Elegante Neuromarketing Pro
+    # Palette Elegante Pro
     COLOR_PRIMARY = colors.HexColor('#6366f1')   # Indigo / Royal Purple
     COLOR_SECONDARY = colors.HexColor('#05050f') # Deep Midnight Navy
     COLOR_ACCENT = colors.HexColor('#06b6d4')    # Electric Cyan
@@ -38,7 +38,7 @@ def build_pdf(filename):
     )
     h1_style = ParagraphStyle(
         'H1', parent=styles['Normal'],
-        fontName='Helvetica-Bold', fontSize=13, leading=16, textColor=COLOR_SECONDARY, spaceAfter=5, spaceBefore=7
+        fontName='Helvetica-Bold', fontSize=13, leading=16, textColor=COLOR_SECONDARY, spaceAfter=5, spaceBefore=8
     )
     h2_style = ParagraphStyle(
         'H2', parent=styles['Normal'],
@@ -70,7 +70,7 @@ def build_pdf(filename):
         Paragraph("<b>DOSSIER MAESTRO COMERCIAL & ARQUITECTURA TECNOLÓGICA v4.1</b><br/>PROPUESTA DE INTEGRACIÓN ENTERPRISE INMOBILIARIA", cover_title_style),
     ], [
         Paragraph("<b>SECRETARÍA CAMILA™ + CHATBOT AI GENERATIVO 24/7</b><br/>"
-                  "La primera Plataforma Autónoma de Ventas, Calificación BANT, Neuromarketing Digital y Atribución ROI<br/>"
+                  "La primera Plataforma Autónoma de Ventas, Calificación BANT y Atribución ROI Inmobiliaria<br/>"
                   "<i>Especialmente diseñada para Inmobiliarias, Corredoras y Loteos de la Región de Los Lagos</i>", cover_sub_style)
     ]]
 
@@ -116,7 +116,7 @@ def build_pdf(filename):
             Paragraph("<b>Secretaría Camila™ (Nuestra Solución v4.1)</b>", table_cell_style),
             Paragraph("Suscripción Plana LATAM", table_cell_style),
             Paragraph("<b>$590.000 - $1.290.000 CLP / mes</b><br/>(~$630 - $1.380 USD / mes)", table_cell_style),
-            Paragraph("<b>Cero costo por resolución, Neuromarketing UI, dictado por voz 🎙️ y Base de Datos SQL.</b>", table_cell_style)
+            Paragraph("<b>Cero costo por resolución, dictado por voz 🎙️ y Base de Datos SQL.</b>", table_cell_style)
         ]
     ]
 
@@ -185,7 +185,7 @@ def build_pdf(filename):
     story.append(PageBreak()) # PÁGINA 2
 
     # =============================================================
-    # PAGE 2: BASE DE DATOS SQL, IMPORTADOR MULTI-FORMATO & NEUROMARKETING UI
+    # PAGE 2: BASE DE DATOS SQL, IMPORTADOR MULTI-FORMATO & SIMBIOSIS
     # =============================================================
     story.append(Paragraph("3. MOTOR DE BASE DE DATOS SQL ($0 USD) E IMPORTADOR MULTI-FORMATO", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
@@ -207,60 +207,9 @@ def build_pdf(filename):
     story.append(Spacer(1, 10))
 
     # =============================================================
-    # SECCIÓN 4: EXPERIENCIA VISUAL NEUROMARKETING DIGITAL UI 3.0
+    # SECCIÓN 4: LA SIMBIOSIS Y LA CONEXIÓN INMOBILIARIA EN TIEMPO REAL
     # =============================================================
-    story.append(Paragraph("4. EXPERIENCIA VISUAL & NEUROMARKETING DIGITAL UI 3.0", h1_style))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
-
-    p_neuro = ("Para garantizar un **impacto comercial de shock tecnológico e impresionar a los clientes desde el primer segundo**, "
-               "la Plataforma Autónoma del CEO incorpora los estándares más avanzados de Neuromarketing Digital:")
-    story.append(Paragraph(p_neuro, body_style))
-
-    neuro_data = [
-        [Paragraph("Elemento Visual UI 3.0", table_header_style), Paragraph("Efecto de Neuromarketing Digital", table_header_style), Paragraph("Impacto Comercial en la Plataforma", table_header_style)],
-        [
-            Paragraph("<b>Canvas de Partículas Neón HTML5</b>", table_cell_style),
-            Paragraph("Fondo animado de luz ultravioleta y cian en constante movimiento.", table_cell_style),
-            Paragraph("Transmite modernidad, dinamismo y vanguardia tecnológica a primera vista.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>Tarjetas Glassmorphism 3.0 Glow</b>", table_cell_style),
-            Paragraph("Bordes con gradientes luminosos y desenfoque 3D (`backdrop-filter 25px`).", table_cell_style),
-            Paragraph("Estántica sofisticada que transmite solidez y exclusividad corporativa.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>Insignias Lead Score Glow Gauges</b>", table_cell_style),
-            Paragraph("Medidores de puntuación BANT con resplandor neón verde (`#34d399`) y oro (`#fbbf24`).", table_cell_style),
-            Paragraph("Captura la atención inmediata del corredor sobre los clientes con mayor capacidad de compra.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>Consola de Voz con Micrófono 🎙️</b>", table_cell_style),
-            Paragraph("Botón de dictado por voz con animación de pulso rojo radiante.", table_cell_style),
-            Paragraph("Permite al CEO hablarle a Camila como a una secretaria humana real.", table_cell_style)
-        ],
-        [
-            Paragraph("<b>Disparadores a WhatsApp Web (`📲 WhatsApp`)</b>", table_cell_style),
-            Paragraph("Botón verde con resplandor neón en cada fila del CRM.", table_cell_style),
-            Paragraph("Inicia llamadas o chats de WhatsApp en 1 click sin tener que digitar el número.", table_cell_style)
-        ]
-    ]
-
-    t_neuro = Table(neuro_data, colWidths=[130, 205, 213])
-    t_neuro.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 5),
-        ('GRID', (0,0), (-1,-1), 0.5, COLOR_BORDER),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
-    ]))
-    story.append(t_neuro)
-
-    story.append(PageBreak()) # PÁGINA 3
-
-    # =============================================================
-    # PAGE 3: LA SIMBIOSIS, ESCALABILIDAD & ARQUITECTURA EN CASCADA
-    # =============================================================
-    story.append(Paragraph("5. LA SIMBIOSIS Y LA CONEXIÓN INMOBILIARIA EN TIEMPO REAL", h1_style))
+    story.append(Paragraph("4. LA SIMBIOSIS Y LA CONEXIÓN INMOBILIARIA EN TIEMPO REAL", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
 
     symbiosis_data = [
@@ -286,12 +235,13 @@ def build_pdf(filename):
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
     ]))
     story.append(t_symbiosis)
-    story.append(Spacer(1, 8))
+
+    story.append(PageBreak()) # PÁGINA 3
 
     # =============================================================
-    # SECCIÓN 6: ESCALABILIDAD TECNOLÓGICA & ARQUITECTURA EN CASCADA
+    # PAGE 3: ESCALABILIDAD TECNOLÓGICA & VENTAJA COMPETITIVA
     # =============================================================
-    story.append(Paragraph("6. ESCALABILIDAD TECNOLÓGICA Y ARQUITECTURA EN CASCADA 70B", h1_style))
+    story.append(Paragraph("5. ESCALABILIDAD TECNOLÓGICA Y ARQUITECTURA EN CASCADA 70B", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
 
     story.append(Paragraph("• <b>Inyección Dinámica de Catálogo SQL a la IA:</b> Cada vez que un usuario pregunta por parcelas en la web, Camila consulta la base de datos SQL en tiempo real y recomienda exactamente los loteos disponibles con sus superficies en m² y precios en $ CLP.", bullet_style))
@@ -302,9 +252,9 @@ def build_pdf(filename):
     story.append(Spacer(1, 10))
 
     # =============================================================
-    # SECCIÓN 7: VENTAJA COMPETITIVA Y MATRIZ COMPARATIVA
+    # SECCIÓN 6: VENTAJA COMPETITIVA Y MATRIZ COMPARATIVA
     # =============================================================
-    story.append(Paragraph("7. VENTAJA COMPETITIVA INSUPERABLE CONTRA LA COMPETENCIA", h1_style))
+    story.append(Paragraph("6. VENTAJA COMPETITIVA INSUPERABLE CONTRA LA COMPETENCIA", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
 
     comp_data = [
@@ -327,7 +277,7 @@ def build_pdf(filename):
         [
             Paragraph("<b>Consola para el CEO</b>", table_cell_style),
             Paragraph("No tiene consola. Solo entrega una planilla Excel a fin de mes.", table_cell_style),
-            Paragraph("<b>Plataforma Autónoma Neuromarketing UI con micrófono 🎙️</b>, CRM y WhatsApp.", table_cell_style)
+            Paragraph("<b>Plataforma Autónoma con micrófono 🎙️</b>, CRM y WhatsApp.", table_cell_style)
         ],
         [
             Paragraph("<b>Atribución de Ventas ROI</b>", table_cell_style),
@@ -346,12 +296,12 @@ def build_pdf(filename):
     ]))
     story.append(t_comp)
 
-    story.append(PageBreak()) # PÁGINA 4
+    story.append(Spacer(1, 10))
 
     # =============================================================
-    # PAGE 4: PLANES DE INVERSIÓN & CERRADO COMERCIAL
+    # SECCIÓN 7: ESTRUCTURA DE INVERSIÓN COMERCIAL ENTERPRISE EN CHILE ($ CLP)
     # =============================================================
-    story.append(Paragraph("8. ESTRUCTURA DE INVERSIÓN COMERCIAL ENTERPRISE EN CHILE ($ CLP)", h1_style))
+    story.append(Paragraph("7. ESTRUCTURA DE INVERSIÓN COMERCIAL ENTERPRISE EN CHILE ($ CLP)", h1_style))
     story.append(HRFlowable(width="100%", thickness=1.5, color=COLOR_PRIMARY, spaceAfter=6))
 
     p_pricing_intro = ("Considerando el valor real de mercado internacional ($30.000 USD/año en plataformas como Conversica o Qualified) "
@@ -363,7 +313,7 @@ def build_pdf(filename):
         [
             Paragraph("<b>PLAN CORREDORA PRO</b><br/><i>Para corredoras de propiedades de la zona</i>", table_cell_style),
             Paragraph("<b>$590.000 CLP</b><br/>+ IVA / mes<br/><i>(~$630 USD/mes)</i>", table_cell_style),
-            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram y/o WhatsApp Business.<br/>• Plataforma Autónoma Neuromarketing UI con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.", table_cell_style)
+            Paragraph("• ChatBot IA 24/7 en sitio web (1 dominio).<br/>• Alertas a Telegram y/o WhatsApp Business.<br/>• Plataforma Autónoma con micrófono de voz y CRM.<br/>• Atribución de Ventas e impresor de informes ROI.", table_cell_style)
         ],
         [
             Paragraph("<b>PLAN INMOBILIARIA MULTI-PROYECTO</b><br/><i>Para desarrolladores inmobiliarios y loteos</i>", table_cell_style),
@@ -391,30 +341,30 @@ def build_pdf(filename):
         ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, COLOR_BG_LIGHT])
     ]))
     story.append(t_planes)
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
     # JUSTIFICACIÓN FINANCIERA DE ALTO IMPACTO
     story.append(Paragraph("<b>Justificación Financiera e Insuperable Retorno de Inversión (ROI):</b>", h2_style))
     story.append(Paragraph("1. <b>Comparativa contra Personal Humano:</b> Contratar ejecutivos humanos para cubrir turnos nocturnos y fines de semana cuesta más de <b>$1.200.000 CLP mensuales</b> por turno (más leyes sociales e imposiciones). Camila cuesta la mitad, trabaja los 365 días del año, jamás pide licencias y atiende a 100 clientes en paralelo.", bullet_style))
     story.append(Paragraph("2. <b>Retorno de Inversión Inmediato:</b> Con <b>UNA SOLA parcela o departamento vendido al año</b> rescatado un domingo a las 11 PM, la corredora recupera el costo de <b>2 a 3 años completos del servicio de Camila</b>. Todo lo demás es utilidad neta para la empresa.", bullet_style))
 
-    story.append(Spacer(1, 14))
+    story.append(Spacer(1, 10))
 
     # FOOTER CLOSING
     footer_data = [[
         Paragraph("<b>¿Listo para dotar a tu inmobiliaria con la mejor tecnología de IA del mercado mundial?</b><br/>"
-                  "Contáctanos hoy para activar la versión de prueba de Secretaría Camila™ v4.1 en tu sitio web.", ParagraphStyle('FText4', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=10, textColor=colors.white, alignment=1))
+                  "Contáctanos hoy para activar la versión de prueba de Secretaría Camila™ v4.1 en tu sitio web.", ParagraphStyle('FText5', parent=styles['Normal'], fontName='Helvetica-Bold', fontSize=9.5, textColor=colors.white, alignment=1))
     ]]
     t_footer = Table(footer_data, colWidths=[548])
     t_footer.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), COLOR_PRIMARY),
-        ('PADDING', (0,0), (-1,-1), 12),
+        ('PADDING', (0,0), (-1,-1), 10),
         ('ALIGN', (0,0), (-1,-1), 'CENTER')
     ]))
     story.append(t_footer)
 
     doc.build(story)
-    print(f"Dossier Maestro Robust PDF generado exitosamente en: {filename}")
+    print(f"Dossier Maestro PDF actualizado (sin punto 4) generado exitosamente en: {filename}")
 
 if __name__ == '__main__':
     out_dir = r"c:\Users\LyCoNs\Desktop\Secretaria Camila+CHATBOTAI"
